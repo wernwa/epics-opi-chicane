@@ -53,7 +53,8 @@ def demag():
 
     print 'starting to demagnetize'
 
-    for count in range(2,10):
+    steps = 101
+    for count in range(1,steps):
         if count%2 > 0:
             relee.setterVolt.put(relee_val)
         else:
@@ -62,14 +63,16 @@ def demag():
         for i in range(2,len(ps)):
             if ps[i] == None:
                 continue
-            volts = float(ps_heightV[i]/count)
+            volts = ps_heightV[i]-count*ps_heightV[i]/steps
             ps[i].setterVolt.put(volts)
             print '%d %f (ps:%d %f)' %(count,volts,i,ps_heightV[i])
-        sleep(0.2)
+        sleep(0.5)
+    ## TODO set all ps to 0
+
 
 
 def onChanges(pvname=None, value=None, char_value=None, **kw):
-    print 'PV Changed! ', pvname, char_value
+    print 'PV Changed! %s %0.3f' %(pvname, value)
 
 if __name__ == "__main__":
     print 'Initializing Devices'
