@@ -36,6 +36,7 @@ def init_devices():
             print 'init ps%d'%i
 
 
+
 def demag():
     relee_val = 10
     ps_heightV = []
@@ -53,6 +54,7 @@ def demag():
 
     print 'starting to demagnetize'
 
+    ''' do demag in steps '''
     steps = 101
     for count in range(1,steps):
         if count%2 > 0:
@@ -67,7 +69,15 @@ def demag():
             ps[i].setterVolt.put(volts)
             print '%d %f (ps:%d %f)' %(count,volts,i,ps_heightV[i])
         sleep(0.5)
-    ## TODO set all ps to 0
+
+
+    ''' set all ps to 0 '''
+    for i in range(2,len(ps)):
+        if ps[i] == None:
+            continue
+        volts = 0
+        ps[i].setterVolt.put(volts)
+        print '%d %f (ps:%d %f)' %(count,volts,i,ps_heightV[i])
 
 
 
