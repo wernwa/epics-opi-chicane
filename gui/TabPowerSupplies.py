@@ -22,8 +22,8 @@ class TabPowerSupplies(wx.Panel):
 
         hbox = wx.BoxSizer(wx.HORIZONTAL)
 
-        print 'init the devices'
-        init_devices()
+        #print 'init the devices'
+        #init_devices()
 
         fgs = wx.FlexGridSizer(3, 4, 5, 5)
 

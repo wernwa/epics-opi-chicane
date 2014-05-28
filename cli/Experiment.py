@@ -31,8 +31,7 @@ def init_devices():
         for i in range(len(ps)):
             if ps[i] == None:
                 continue
-            ps[i].setterVolt.put(ps_conf['ps%d'%i])
-            ps[i].getterVolt.put(ps_conf['ps%d'%i])
+            ps[i].putVolt(ps_conf['ps%d'%i])
             print 'init ps%d'%i
 
 
@@ -55,7 +54,7 @@ def demag():
     print 'starting to demagnetize'
 
     ''' do demag in steps '''
-    steps = 101
+    steps = 10
     for count in range(1,steps):
         if count%2 > 0:
             relee.setterVolt.put(relee_val)
@@ -66,9 +65,9 @@ def demag():
             if ps[i] == None:
                 continue
             volts = ps_heightV[i]-count*ps_heightV[i]/steps
-            ps[i].setterVolt.put(volts)
+            ps[i].putVolt(volts)
             print '%d %f (ps:%d %f)' %(count,volts,i,ps_heightV[i])
-        sleep(0.5)
+        sleep(1)
 
 
     ''' set all ps to 0 '''
@@ -76,7 +75,7 @@ def demag():
         if ps[i] == None:
             continue
         volts = 0
-        ps[i].setterVolt.put(volts)
+        ps[i].putVolt(volts)
         print '%d %f (ps:%d %f)' %(count,volts,i,ps_heightV[i])
 
 
@@ -89,5 +88,5 @@ if __name__ == "__main__":
     init_devices()
 
     ps[8].setterVolt.add_callback(onChanges)
-    relee.setterVolt.add_callback(onChanges)
+    #relee.setterVolt.add_callback(onChanges)
 

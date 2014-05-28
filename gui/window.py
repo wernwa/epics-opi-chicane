@@ -73,8 +73,8 @@ class MainFrame(wx.Frame):
 
 if __name__ == "__main__":
 
-    #print 'init the devices'
-    #init_devices()
+    print 'init the devices'
+    init_devices()
 
     app = wx.App()
     MainFrame().Show()
