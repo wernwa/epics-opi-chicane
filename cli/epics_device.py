@@ -23,6 +23,13 @@ class PowerSupply:
         self.getterAmp = PV(getterAmpName)
         self.setterAmp = PV(setterAmpName)
 
+    def getVolt(self):
+        return self.getterVolt.get()
+
+    def getAmpare(self):
+        return self.getterAmp.get()
+
+
     def putVolt(self, volt):
         self.setterVolt.put(volt)
         self.getterVolt.put(volt)

@@ -1,11 +1,13 @@
 
 from epics_device import PowerSupply
+from physics_device import Magnet
 import json
 from time import sleep
 
 relee = None
 ps = []         # alias for powersupply
 powersupply = ps
+magn = []
 
 def init_devices():
     global relee
@@ -34,6 +36,15 @@ def init_devices():
             ps[i].putVolt(ps_conf['ps%d'%i])
             print 'init ps%d'%i
 
+    global magn
+    magn.append(None) # avoid 0 index
+    magn.append(Magnet(ps[8]))# 1
+    magn.append(None) # 2
+    magn.append(None) # 3
+    magn.append(None) # 4
+    magn.append(None) # 5
+    magn.append(None) # 6
+    magn.append(None) # 7
 
 
 def demag():
