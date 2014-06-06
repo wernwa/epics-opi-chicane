@@ -14,6 +14,7 @@ from Experiment import *
 import wx
 from TabPowerSupplies import TabPowerSupplies
 from TabSchikane import TabSchikane
+from TabLog import TabLog
 
 
 
@@ -45,6 +46,7 @@ class MainFrame(wx.Frame):
         page1 = TabSchikane(nb)
         page2 = TabPowerSupplies(nb)
         page3 = PageThree(nb)
+        page4 = TabLog(nb)
 
         # add the pages to the notebook with the label to show on the tab
         nb.AddPage(page1, "Overview")
@@ -52,6 +54,7 @@ class MainFrame(wx.Frame):
 
         nb.AddPage(page2, "Power Supplies")
         nb.AddPage(page3, "Magnetic Fields")
+        nb.AddPage(page4, "LOG")
 
         # finally, put the notebook in a sizer for the panel to manage
         # the layout
