@@ -58,7 +58,7 @@ class TabLog(wx.Panel):
             #    file.close()
             def writeGPlotData():
                 data = '# t random\n'
-                for i in range(1,10):
+                for i in range(1,100):
                     data += '%i %0.3f\n' %(i,random())
                 with io.open('pipe-data', 'w') as f:
                     f.write(unicode(data))
