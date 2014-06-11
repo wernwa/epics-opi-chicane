@@ -15,11 +15,14 @@ from thread import start_new_thread
 import pipes
 import tempfile
 from random import random
+import time
 
 class TabLog(wx.Panel):
 
     st_quad1 = None
     b_show = None
+    imagewx = None
+
 
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
@@ -29,33 +32,47 @@ class TabLog(wx.Panel):
         hbox = wx.BoxSizer(wx.HORIZONTAL)
 
 
-        self.b_show = wx.Button(parent=panel, pos=wx.Point(50, 490), label="Load")
-        self.b_show.Bind(wx.EVT_BUTTON, self.OnDemag)
+        self.b_show = wx.Button(parent=panel, pos=wx.Point(50, 490), label="LoadStat")
+        self.b_show.Bind(wx.EVT_BUTTON, self.OnLoadStat2)
         panel.SetSizer(hbox)
 
 
-    def OnDemag(self, event):
-       # def demagThread():
-       #     self.b_show.Enable(False)
+    def OnLoadStat2(self, event):
 
-       #     imageFile = 'pipe-image'
-       #     png = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
-       #     imagewx = wx.StaticBitmap(self, -1, png, (5, 5), (png.GetWidth(), png.GetHeight()))
+        start_time = time.time()
 
-       #     self.b_show.Enable(True)
+        data = '# t random\n'
+        for i in range(1,100):
+            data += '%i %0.3f\n' %(i,random())
+            with io.open('random.dat', 'w') as f:
+                f.write(unicode(data))
+                f.close()
+        os.system('gnuplot random.gp')
 
-       # start_new_thread( demagThread,() )
+
+        image = wx.Image('random.png').ConvertToBitmap()
+
+        if self.imagewx == None:
+            self.imagewx = wx.StaticBitmap(self, -1, image, (5, 5), (image.GetWidth(), image.GetHeight()))
+        else:
+            self.imagewx.SetBitmap(image)
+
+        diff_time = time.time() - start_time
+
+        print '%0.3fs' %(diff_time)
+
+
+
+
+    def OnLoadStat(self, event):
+
+        start_time = time.time()
+
         t = tempfile.NamedTemporaryFile(mode='r')
 
-
-        imageFile = 'pics/crop_Zplus_Cat-III_L2.jpg'
         pipe_file_name = 'pipe-image'
 
         def writePipeThread():
-            #buff = None
-            #with io.open(imageFile, 'rb') as file:
-            #    buff = file.read()
-            #    file.close()
             def writeGPlotData():
                 data = '# t random\n'
                 for i in range(1,100):
@@ -75,7 +92,13 @@ class TabLog(wx.Panel):
             image = wx.ImageFromStream(stream).ConvertToBitmap()
             pipe_file.close()
 
-        #png = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
-        imagewx = wx.StaticBitmap(self, -1, image, (5, 5), (image.GetWidth(), image.GetHeight()))
+        if self.imagewx == None:
+            self.imagewx = wx.StaticBitmap(self, -1, image, (5, 5), (image.GetWidth(), image.GetHeight()))
+        else:
+            self.imagewx.SetBitmap(image)
+
+        diff_time = time.time() - start_time
+
+        print '%0.3fs' %(diff_time)
 
 
