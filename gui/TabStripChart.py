@@ -17,6 +17,19 @@ import tempfile
 from random import random
 import time
 
+
+class StripChartMemory:
+    time = []
+    data = []
+
+    #def __init__(self):
+    #    time
+
+    def add(self, t,d):
+        self.time.insert(0,t)
+        self.data.insert(0,d)
+
+
 class TabStripChart(wx.Panel):
 
     st_quad1 = None
@@ -28,6 +41,7 @@ class TabStripChart(wx.Panel):
     chart_gp_pipe = 'strip-chart-gp'
     chart_gp_file = 'strip-chart.gp'
 
+    strip_random = StripChartMemory()
 
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
@@ -46,6 +60,11 @@ class TabStripChart(wx.Panel):
         os.system('mkfifo %s' %self.chart_image_pipe)
         os.system('mkfifo %s' %self.chart_gp_pipe)
 
+        def fill_random_data():
+            while True:
+                self.strip_random.add(time.time(), random())
+                time.sleep(1+random())
+        start_new_thread( fill_random_data ,() )
 
 
 #    def OnLoadStat2(self, event):
@@ -85,24 +104,29 @@ class TabStripChart(wx.Panel):
         def writePipeThread():
             def writeGPlotData():
                 data = '# t random\n'
-                for i in range(1,100):
-                    data += '%i %0.3f\n' %(i,random())
+                for i in range(len(self.strip_random.time)):
+                    time_now = time.time()
+                    data += '%0.0f %0.3f\n' %(self.strip_random.time[i]-time_now,self.strip_random.data[i])
+                print data
                 with io.open(self.chart_data_pipe, 'w') as f:
                     f.write(unicode(data))
                     f.close()
             start_new_thread( writeGPlotData ,() )
 
-           # def writeGPlotCommands():
-           #     gp_pipe = open(self.chart_gp_pipe,'w')
-           #     with io.open(self.chart_gp_file, 'r') as f:
-           #         gp_pipe.write(f.read())
-           #         f.close()
-           #     gp_pipe.close()
+            with io.open(self.chart_gp_file, 'r') as f:
+                gp_commands_str = f.read()
+                f.close()
 
-           # #start_new_thread( writeGPlotCommands() ,() )
-           # writeGPlotCommands()
+            def startGnuPlot():
+                os.system('gnuplot %s' %self.chart_gp_pipe)
+            start_new_thread( startGnuPlot ,() )
 
-            os.system('gnuplot %s' %self.chart_gp_file)
+            ### write gnuplot commands ###
+            with io.open(self.chart_gp_pipe,'w') as gp_pipe:
+                gp_pipe.write(gp_commands_str)
+                gp_pipe.close()
+
+
         start_new_thread( writePipeThread,() )
 
 
