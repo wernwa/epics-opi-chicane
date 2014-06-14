@@ -21,13 +21,23 @@ import time
 class StripChartMemory:
     time = []
     data = []
+    limit = None
 
-    #def __init__(self):
-    #    time
+    def __init__(self, limit=60):
+        self.limit = limit
 
     def add(self, t,d):
         self.time.insert(0,t)
         self.data.insert(0,d)
+
+    def delete_data_over_limit(self):
+        time_now = time.time()
+
+        for i in range(len(self.time)):
+            if self.time[i] < time_now - self.limit:
+                del self.time[i:len(self.time)]
+                del self.data[i:len(self.data)]
+                break
 
 
 class TabStripChart(wx.Panel):
@@ -42,6 +52,7 @@ class TabStripChart(wx.Panel):
     chart_gp_file = 'strip-chart.gp'
 
     strip_random = StripChartMemory()
+    strip_chart_continue = False
 
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
@@ -51,63 +62,58 @@ class TabStripChart(wx.Panel):
         hbox = wx.BoxSizer(wx.HORIZONTAL)
 
 
-        self.b_show = wx.Button(parent=panel, pos=wx.Point(50, 490), label="LoadStat")
-        self.b_show.Bind(wx.EVT_BUTTON, self.OnLoadStat)
+
+
+        self.b_show = wx.Button(parent=panel, pos=wx.Point(50, 490), label="Start StripChart")
+        #self.b_show.Bind(wx.EVT_BUTTON, self.OnStartStop_StripChart)
+        self.b_show.Bind(wx.EVT_BUTTON, self.UpdateStripChart)
         panel.SetSizer(hbox)
 
         # init the pipes for gnuplot
-        os.system('mkfifo %s' %self.chart_data_pipe)
-        os.system('mkfifo %s' %self.chart_image_pipe)
-        os.system('mkfifo %s' %self.chart_gp_pipe)
+
+        os.system('mkfifo %s' %(self.chart_data_pipe))
+        os.system('mkfifo %s' %(self.chart_image_pipe))
+        os.system('mkfifo %s' %(self.chart_gp_pipe))
+
+        #os.system('if [ ! -f %s ]; then mkfifo %s; fi' %(self.chart_data_pipe,self.chart_data_pipe))
+        #os.system('if [ ! -f %s ]; then mkfifo %s; fi' %(self.chart_image_pipe,self.chart_image_pipe))
+        #os.system('if [ ! -f %s ]; then mkfifo %s; fi' %(self.chart_gp_pipe,self.chart_gp_pipe))
 
         def fill_random_data():
             while True:
-                self.strip_random.add(time.time(), random())
+                self.strip_random.add(time.time(), (random()+random())*random())
                 time.sleep(1+random())
         start_new_thread( fill_random_data ,() )
 
 
-#    def OnLoadStat2(self, event):
-#
-#        start_time = time.time()
-#
-#        data = '# t random\n'
-#        for i in range(1,100):
-#            data += '%i %0.3f\n' %(i,random())
-#            with io.open('random.dat', 'w') as f:
-#                f.write(unicode(data))
-#                f.close()
-#        os.system('gnuplot random.gp')
-#
-#
-#        image = wx.Image('random.png').ConvertToBitmap()
-#
-#        if self.imagewx == None:
-#            self.imagewx = wx.StaticBitmap(self, -1, image, (5, 5), (image.GetWidth(), image.GetHeight()))
-#        else:
-#            self.imagewx.SetBitmap(image)
-#
-#        diff_time = time.time() - start_time
-#
-#        print '%0.3fs' %(diff_time)
+
+    # StripChart start stop
+    def OnStartStop_StripChart(self, event):
+        self.strip_chart_continue = not(self.strip_chart_continue)
+        def StripChartLoop():
+            while self.strip_chart_continue:
+                print 'inside StripChartLoop'
+                self.UpdateStripChart(event)
+                #self.UpdateStripChart2(event)
+                time.sleep(2)
+        if self.strip_chart_continue == True:
+            start_new_thread( StripChartLoop,() )
 
 
-
-
-    def OnLoadStat(self, event):
+    def UpdateStripChart(self, event):
 
         start_time = time.time()
 
-        #t = tempfile.NamedTemporaryFile(mode='r')
 
 
         def writePipeThread():
             def writeGPlotData():
+                self.strip_random.delete_data_over_limit()
                 data = '# t random\n'
                 for i in range(len(self.strip_random.time)):
                     time_now = time.time()
                     data += '%0.0f %0.3f\n' %(self.strip_random.time[i]-time_now,self.strip_random.data[i])
-                print data
+                #print data
                 with io.open(self.chart_data_pipe, 'w') as f:
                     f.write(unicode(data))
                     f.close()
@@ -148,7 +154,39 @@ class TabStripChart(wx.Panel):
 
 
     def __del__(self):
-        os.system('rm %s' %self.chart_data_pipe)
-        os.system('rm %s' %self.chart_image_pipe)
-        os.system('rm %s' %self.chart_gp_pipe)
+        os.system('rm %s' %(self.chart_data_pipe))
+        os.system('rm %s' %(self.chart_image_pipe))
+        os.system('rm %s' %(self.chart_gp_pipe))
+
+
+        #os.system('if [ -f %s ]; then rm %s; fi' %(self.chart_data_pipe,self.chart_data_pipe))
+        #os.system('if [ -f %s ]; then rm %s; fi' %(self.chart_image_pipe,self.chart_image_pipe))
+        #os.system('if [ -f %s ]; then rm %s; fi' %(self.chart_gp_pipe,self.chart_gp_pipe))
+
+
+    # UpdateStripChart without pipes
+    def UpdateStripChart2(self, event):
+
+        start_time = time.time()
+
+
+        data = '# t random\n'
+        for i in range(1,100):
+            data += '%i %0.3f\n' %(i,random())
+            with io.open('random.dat', 'w') as f:
+                f.write(unicode(data))
+                f.close()
+        os.system('gnuplot random.gp')
+
+
+        image = wx.Image('random.png').ConvertToBitmap()
+
+        if self.imagewx == None:
+            self.imagewx = wx.StaticBitmap(self, -1, image, (5, 5), (image.GetWidth(), image.GetHeight()))
+        else:
+            self.imagewx.SetBitmap(image)
+
+        diff_time = time.time() - start_time
+
+        print '%0.3fs' %(diff_time)
 
