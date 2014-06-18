@@ -28,11 +28,8 @@ class StripChartMemory:
         self.limit = limit
 
     def add(self, t,d):
-        self.time.append(t)
-        self.data.append(d)
-
-        #self.time.insert(0,t)
-        #self.data.insert(0,d)
+        self.time.insert(0,t)
+        self.data.insert(0,d)
 
     def delete_data_over_limit(self):
         time_now = time.time()
@@ -81,14 +78,25 @@ class TabStripChart(wx.Panel):
             os.system('FILE=%s; if [ ! -f $FILE ]; then mkfifo $FILE; fi' %(self.chart_image_pipe))
             os.system('FILE=%s; if [ ! -f $FILE ]; then mkfifo $FILE; fi' %(self.chart_gp_pipe))
 
+        self.zpslan08V_strip_chart = StripChartMemory()
+        ps[8].getterVolt.add_callback(self.onPVChanges)
 
         def fill_random_data():
             while True:
-                self.strip_random.add(time.time(), (random()+random())*random())
+                self.zpslan08V_strip_chart.add(time.time(), (random()+random())*random())
                 time.sleep(1+random())
         start_new_thread( fill_random_data ,() )
 
 
+
+    def onPVChanges(self, pvname=None, value=None, char_value=None, **kw):
+        #print 'PV Changed! %s %0.3f' %(pvname, value)
+        if pvname == 'zpslan08-GetVoltage':
+            self.zpslan08V_strip_chart.add(time.time(),value)
+
+
+        #if pvname == 'zpslan08-GetAmpare':
+        #    self.st_quad1.SetLabel("Quadrupol 1\n%.3fV \n%.3fA\n###K" %(magn[1].powersupply.getVolt(),value))
 
 
 
@@ -97,6 +105,8 @@ class TabStripChart(wx.Panel):
         self.strip_chart_continue = not(self.strip_chart_continue)
         def StripChartLoop():
             while self.strip_chart_continue:
+                if len(self.zpslan08V_strip_chart.time)<=1:
+                    self.zpslan08V_strip_chart.add(time.time(),ps[8].getVolt())
                 if self.use_pipes_for_gnuplot:
                     self.UpdateStripChart(event)
                 else:
@@ -118,13 +128,12 @@ class TabStripChart(wx.Panel):
 
 
         def writeGPlotData():
-            self.strip_random.delete_data_over_limit()
+            self.zpslan08V_strip_chart.delete_data_over_limit()
             data = '# t random\n'
-            print 'data count %d'%len(self.strip_random.time)
-            for i in range(len(self.strip_random.time)):
+            for i in range(len(self.zpslan08V_strip_chart.time)):
                 time_now = time.time()
-                data += '%0.0f %0.3f\n' %(self.strip_random.time[i]-time_now,self.strip_random.data[i])
-            #print data
+                data += '%0.3f %0.3f\n' %(self.zpslan08V_strip_chart.time[i]-time_now,self.zpslan08V_strip_chart.data[i])
+            print data
             with io.open(self.chart_data_pipe, 'w') as f:
                 f.write(unicode(data))
                 f.close()
