@@ -78,14 +78,15 @@ class TabStripChart(wx.Panel):
             os.system('FILE=%s; if [ ! -f $FILE ]; then mkfifo $FILE; fi' %(self.chart_image_pipe))
             os.system('FILE=%s; if [ ! -f $FILE ]; then mkfifo $FILE; fi' %(self.chart_gp_pipe))
 
+        ## init one test PV variable ##
         self.zpslan08V_strip_chart = StripChartMemory()
         ps[8].getterVolt.add_callback(self.onPVChanges)
 
-        def fill_random_data():
-            while True:
-                self.zpslan08V_strip_chart.add(time.time(), (random()+random())*random())
-                time.sleep(1+random())
-        start_new_thread( fill_random_data ,() )
+        #def fill_random_data():
+        #    while True:
+        #        self.zpslan08V_strip_chart.add(time.time(), (random()+random())*random())
+        #        time.sleep(1+random())
+        #start_new_thread( fill_random_data ,() )
 
 
 
@@ -94,9 +95,6 @@ class TabStripChart(wx.Panel):
         if pvname == 'zpslan08-GetVoltage':
             self.zpslan08V_strip_chart.add(time.time(),value)
 
-
-        #if pvname == 'zpslan08-GetAmpare':
-        #    self.st_quad1.SetLabel("Quadrupol 1\n%.3fV \n%.3fA\n###K" %(magn[1].powersupply.getVolt(),value))
 
 
 
@@ -133,7 +131,7 @@ class TabStripChart(wx.Panel):
             for i in range(len(self.zpslan08V_strip_chart.time)):
                 time_now = time.time()
                 data += '%0.3f %0.3f\n' %(self.zpslan08V_strip_chart.time[i]-time_now,self.zpslan08V_strip_chart.data[i])
-            print data
+            #print data
             with io.open(self.chart_data_pipe, 'w') as f:
                 f.write(unicode(data))
                 f.close()
