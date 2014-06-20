@@ -20,25 +20,52 @@ import time
 
 
 class StripChartMemory:
-    time = []
-    data = []
 
 
-    def __init__(self, limit=60):
+    def __init__(self, pv, limit=60):
         self.limit = limit
+        self.time = []
+        self.data = []
+        self.pv = pv
+        self.pv.add_callback(self.onPVChanges)
 
     def add(self, t,d):
-        self.time.insert(0,t)
-        self.data.insert(0,d)
+        if t == None:
+            t = time.time()
+        self.time.append(t)
+        self.data.append(d)
+
+        #self.time.insert(0,t)
+        #self.data.insert(0,d)
 
     def delete_data_over_limit(self):
         time_now = time.time()
 
         for i in range(len(self.time)):
-            if self.time[i] < time_now - self.limit:
-                del self.time[i:len(self.time)]
-                del self.data[i:len(self.data)]
+            if self.time[i] > time_now - self.limit:
+                del self.time[0:i]
+                del self.data[0:i]
+                #del self.time[i:len(self.time)]
+                #del self.data[i:len(self.data)]
                 break
+
+
+    def print_gnuplot_data(self, chart_data_pipe):
+        self.delete_data_over_limit()
+        data = '# t \n'
+        for i in range(len(self.time)):
+            time_now = time.time()
+            data += '%0.3f %0.3f\n' %(self.time[i]-time_now,self.data[i])
+        with io.open(chart_data_pipe, 'w') as f:
+            f.write(unicode(data))
+            f.close()
+
+    def onPVChanges(self, pvname=None, value=None, char_value=None, **kw):
+        # epics timestamp vom Record scheint nicht gleich dem python time.time() timestamp zu sein
+        # Aus dem Grund verwende die von python
+        #self.strip_chart01.add(ps[8].getterVolt.timestamp,value)
+        self.add(time.time(),value)
+
 
 
 class TabStripChart(wx.Panel):
@@ -49,12 +76,14 @@ class TabStripChart(wx.Panel):
     b_show = None
     imagewx = None
 
-    chart_data_pipe = 'strip-chart-data'
+    chart_data_pipe01 = 'strip-chart-data-01'
+    chart_data_pipe02 = 'strip-chart-data-02'
+    chart_data_pipe03 = 'strip-chart-data-03'
+    chart_data_pipe04 = 'strip-chart-data-04'
     chart_image_pipe = 'strip-chart-image'
     chart_gp_pipe = 'strip-chart-gp'
     chart_gp_file = 'strip-chart.gp'
 
-    strip_random = StripChartMemory()
     strip_chart_continue = False
 
     def __init__(self, parent):
@@ -74,26 +103,24 @@ class TabStripChart(wx.Panel):
         # init the pipes for gnuplot
 
         if self.use_pipes_for_gnuplot:
-            os.system('FILE=%s; if [ ! -f $FILE ]; then mkfifo $FILE; fi' %(self.chart_data_pipe))
+            os.system('FILE=%s; if [ ! -f $FILE ]; then mkfifo $FILE; fi' %(self.chart_data_pipe01))
+            os.system('FILE=%s; if [ ! -f $FILE ]; then mkfifo $FILE; fi' %(self.chart_data_pipe02))
+            os.system('FILE=%s; if [ ! -f $FILE ]; then mkfifo $FILE; fi' %(self.chart_data_pipe03))
+            os.system('FILE=%s; if [ ! -f $FILE ]; then mkfifo $FILE; fi' %(self.chart_data_pipe04))
             os.system('FILE=%s; if [ ! -f $FILE ]; then mkfifo $FILE; fi' %(self.chart_image_pipe))
             os.system('FILE=%s; if [ ! -f $FILE ]; then mkfifo $FILE; fi' %(self.chart_gp_pipe))
 
-        ## init one test PV variable ##
-        self.zpslan08V_strip_chart = StripChartMemory()
-        ps[8].getterVolt.add_callback(self.onPVChanges)
+        ## init two test PV variables ##
+        self.strip_chart01 = StripChartMemory(ps[8].getterVolt)
+        self.strip_chart02 = StripChartMemory(ps[1].getterVolt)
 
         #def fill_random_data():
         #    while True:
-        #        self.zpslan08V_strip_chart.add(time.time(), (random()+random())*random())
+        #        self.strip_chart01.add(time.time(), (random()+random())*random())
         #        time.sleep(1+random())
         #start_new_thread( fill_random_data ,() )
 
 
-
-    def onPVChanges(self, pvname=None, value=None, char_value=None, **kw):
-        #print 'PV Changed! %s %0.3f' %(pvname, value)
-        if pvname == 'zpslan08-GetVoltage':
-            self.zpslan08V_strip_chart.add(time.time(),value)
 
 
 
@@ -103,8 +130,8 @@ class TabStripChart(wx.Panel):
         self.strip_chart_continue = not(self.strip_chart_continue)
         def StripChartLoop():
             while self.strip_chart_continue:
-                if len(self.zpslan08V_strip_chart.time)<=1:
-                    self.zpslan08V_strip_chart.add(time.time(),ps[8].getVolt())
+                if len(self.strip_chart01.time)<=1:
+                    self.strip_chart01.add(time.time(),ps[8].getVolt())
                 if self.use_pipes_for_gnuplot:
                     self.UpdateStripChart(event)
                 else:
@@ -121,20 +148,13 @@ class TabStripChart(wx.Panel):
 
     def UpdateStripChart(self, event):
 
-        start_time = time.time()
+        #start_time = time.time()
 
 
 
         def writeGPlotData():
-            self.zpslan08V_strip_chart.delete_data_over_limit()
-            data = '# t random\n'
-            for i in range(len(self.zpslan08V_strip_chart.time)):
-                time_now = time.time()
-                data += '%0.3f %0.3f\n' %(self.zpslan08V_strip_chart.time[i]-time_now,self.zpslan08V_strip_chart.data[i])
-            #print data
-            with io.open(self.chart_data_pipe, 'w') as f:
-                f.write(unicode(data))
-                f.close()
+            self.strip_chart01.print_gnuplot_data(self.chart_data_pipe01)
+            self.strip_chart02.print_gnuplot_data(self.chart_data_pipe02)
         start_new_thread( writeGPlotData ,() )
 
         with io.open(self.chart_gp_file, 'r') as f:
@@ -166,17 +186,21 @@ class TabStripChart(wx.Panel):
             else:
                 self.imagewx.SetBitmap(image)
 
-            diff_time = time.time() - start_time
-
-            print '%0.3fs' %(diff_time)
+            #diff_time = time.time() - start_time
+            #print '%0.3fs' %(diff_time)
         self.call_routine_over_event( last_part_for_event_gui )
 
 
     def __del__(self):
         ### delete temporary gnuplot files ###
-        os.system('FILE=%s; if [ -e $FILE ]; then rm $FILE; fi' %(self.chart_data_pipe))
+        os.system('FILE=%s; if [ -e $FILE ]; then rm $FILE; fi' %(self.chart_data_pipe01))
+        os.system('FILE=%s; if [ -e $FILE ]; then rm $FILE; fi' %(self.chart_data_pipe02))
+        os.system('FILE=%s; if [ -e $FILE ]; then rm $FILE; fi' %(self.chart_data_pipe03))
+        os.system('FILE=%s; if [ -e $FILE ]; then rm $FILE; fi' %(self.chart_data_pipe04))
         os.system('FILE=%s; if [ -e $FILE ]; then rm $FILE; fi' %(self.chart_image_pipe))
         os.system('FILE=%s; if [ -e $FILE ]; then rm $FILE; fi' %(self.chart_gp_pipe))
+
+
 
 
     # UpdateStripChart without pipes
