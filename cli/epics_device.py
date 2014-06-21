@@ -26,7 +26,7 @@ class PowerSupply:
     def getVolt(self):
         return self.getterVolt.get()
 
-    def getAmpare(self):
+    def getAmpere(self):
         return self.getterAmp.get()
 
 
@@ -35,7 +35,7 @@ class PowerSupply:
         self.getterVolt.put(volt)
 
 
-    def putAmpare(self, ampare):
+    def putAmpere(self, ampare):
         self.setterAmp.put(ampare)
         self.getterAmp.put(ampare)
 

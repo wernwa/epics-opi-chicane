@@ -59,9 +59,9 @@ class TabSchikane(wx.Panel):
     def onPVChanges(self, pvname=None, value=None, char_value=None, **kw):
         #print 'PV Changed! %s %0.3f' %(pvname, value)
         if pvname == 'zpslan08-GetVoltage':
-            self.st_quad1.SetLabel("Quadrupol 1\n%.3fV \n%.3fA\n###K" %(value,magn[1].powersupply.getAmpare()))
+            self.st_quad1.SetLabel("Quadrupol 1\n%.3fV \n%.3fA\n###K" %(value,magn[1].powersupply.getAmpere()))
 
-        if pvname == 'zpslan08-GetAmpare':
+        if pvname == 'zpslan08-GetAmpere':
             self.st_quad1.SetLabel("Quadrupol 1\n%.3fV \n%.3fA\n###K" %(magn[1].powersupply.getVolt(),value))
 
 

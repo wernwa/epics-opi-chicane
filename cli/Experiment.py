@@ -12,7 +12,7 @@ magn = []
 def init_devices():
     global relee
     relee = PowerSupply('zpslan01-GetVoltage','zpslan01-SetVoltage',
-                        'zpslan01-GetAmpare','zpslan01-SetAmpare')
+                        'zpslan01-GetAmpere','zpslan01-SetAmpere')
     global ps
     ps.append(None) # avoid 0 index
     ps.append(relee)# 1
@@ -22,7 +22,7 @@ def init_devices():
     ps.append(None) # 5
     ps.append(None) # 6
     ps.append(None) # 7
-    ps.append(PowerSupply('zpslan08-GetVoltage','zpslan08-SetVoltage','zpslan08-GetAmpare','zpslan08-SetAmpare'))
+    ps.append(PowerSupply('zpslan08-GetVoltage','zpslan08-SetVoltage','zpslan08-GetAmpere','zpslan08-SetAmpere'))
     ps.append(None) # 9
     ps.append(None) # 10
 

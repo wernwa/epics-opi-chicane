@@ -18,7 +18,7 @@ class PowerSupplyControls:
     """ epics variables  """
     ps = None # The Powersupply
 
-    """ text inputs for Volt and Ampare values """
+    """ text inputs for Volt and Ampere values """
     tcV = None
     tcA = None
 

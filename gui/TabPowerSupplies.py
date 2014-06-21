@@ -39,7 +39,7 @@ class TabPowerSupplies(wx.Panel):
 
 
         fgs.AddMany([
-            (wx.StaticText(panel, label="")), (wx.StaticText(panel, label="Volts")),(wx.StaticText(panel, label="Ampare")),(wx.StaticText(panel, label="")),
+            (wx.StaticText(panel, label="")), (wx.StaticText(panel, label="Volts")),(wx.StaticText(panel, label="Ampere")),(wx.StaticText(panel, label="")),
             (wx.StaticText(panel, label="PS1 Relay:")), (ps1.tcV, 1, wx.EXPAND),(ps1.tcA, 1, wx.EXPAND), (ps1.b),
             (wx.StaticText(panel, label="PS2:")), (ps2.tcV, 1, wx.EXPAND),(ps2.tcA, 1, wx.EXPAND), (ps2.b),
             (wx.StaticText(panel, label="PS3:")), (ps3.tcV, 1, wx.EXPAND),(ps3.tcA, 1, wx.EXPAND), (ps3.b),
