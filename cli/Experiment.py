@@ -7,12 +7,19 @@ from epics_device import PowerSupply
 from physics_device import Magnet
 import json
 from time import sleep
-from config import *
 
 relee = None
 ps = []         # alias for powersupply
 powersupply = ps
 magn = []
+
+data_conf = None
+def load_data_conf():
+    global data_conf
+    with open('config.json', 'rb') as fp:
+        data_conf = json.load(fp)
+
+    #data_conf = json.load(fp)
 
 def init_devices():
     global relee
@@ -32,14 +39,9 @@ def init_devices():
     ps.append(None) # 10
 
     ''' initialize powersupplies  '''
-   # with open('config.json', 'rb') as fp:
-   #     data_conf = json.load(fp)
-   #     ps_conf = data_conf['powersupplies']
-   #     for i in range(len(ps)):
-   #         if ps[i] == None:
-   #             continue
-   #         ps[i].putVolt(ps_conf['ps%d'%i])
-   #         print 'init ps%d'%i
+    global data_conf
+    if data_conf==None:
+        load_data_conf()
 
     ps_conf = data_conf['powersupplies']
     for i in range(len(ps)):
@@ -47,6 +49,7 @@ def init_devices():
             continue
         ps[i].putVolt(ps_conf['ps%d'%i])
         print 'init ps%d'%i
+
 
     global magn
     magn.append(None) # avoid 0 index
@@ -108,8 +111,9 @@ def onChanges(pvname=None, value=None, char_value=None, **kw):
 
 if __name__ == "__main__":
     print 'Initializing Devices'
+    load_data_conf()
     init_devices()
 
-    ps[8].setterVolt.add_callback(onChanges)
+    #ps[8].setterVolt.add_callback(onChanges)
     #relee.setterVolt.add_callback(onChanges)
 
