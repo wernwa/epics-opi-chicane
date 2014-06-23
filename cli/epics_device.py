@@ -18,10 +18,10 @@ class PowerSupply:
     def __init__(self, getterVoltName, setterVoltName,
                         getterAmpName, setterAmpName):
 
-        self.getterVolt = PV(getterVoltName)
-        self.setterVolt = PV(setterVoltName)
-        self.getterAmp = PV(getterAmpName)
-        self.setterAmp = PV(setterAmpName)
+        self.getterVolt = PV(getterVoltName, auto_monitor=True )
+        self.setterVolt = PV(setterVoltName, auto_monitor=True)
+        self.getterAmp = PV(getterAmpName, auto_monitor=True)
+        self.setterAmp = PV(setterAmpName, auto_monitor=True)
 
     def getVolt(self):
         return self.getterVolt.get()

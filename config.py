@@ -1,4 +1,8 @@
-{
+
+
+
+
+data_conf = {
   "powersupplies": {
     "__note__": "set the initial Voltage of the powersupplies",
     "ps1": 10,

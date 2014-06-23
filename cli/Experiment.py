@@ -1,8 +1,13 @@
 
+
+
+import sys
+sys.path.insert(0, './')
 from epics_device import PowerSupply
 from physics_device import Magnet
 import json
 from time import sleep
+from config import *
 
 relee = None
 ps = []         # alias for powersupply
@@ -27,14 +32,21 @@ def init_devices():
     ps.append(None) # 10
 
     ''' initialize powersupplies  '''
-    with open('config.json', 'rb') as fp:
-        data_conf = json.load(fp)
-        ps_conf = data_conf['powersupplies']
-        for i in range(len(ps)):
-            if ps[i] == None:
-                continue
-            ps[i].putVolt(ps_conf['ps%d'%i])
-            print 'init ps%d'%i
+   # with open('config.json', 'rb') as fp:
+   #     data_conf = json.load(fp)
+   #     ps_conf = data_conf['powersupplies']
+   #     for i in range(len(ps)):
+   #         if ps[i] == None:
+   #             continue
+   #         ps[i].putVolt(ps_conf['ps%d'%i])
+   #         print 'init ps%d'%i
+
+    ps_conf = data_conf['powersupplies']
+    for i in range(len(ps)):
+        if ps[i] == None:
+            continue
+        ps[i].putVolt(ps_conf['ps%d'%i])
+        print 'init ps%d'%i
 
     global magn
     magn.append(None) # avoid 0 index

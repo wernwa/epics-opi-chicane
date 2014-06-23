@@ -49,6 +49,9 @@ class StripChartMemory:
                 #del self.data[i:len(self.data)]
                 break
 
+    def clean(self):
+        self.time = []
+        self.data = []
 
     def print_gnuplot_data(self, chart_data_pipe):
         self.delete_data_over_limit()
@@ -142,6 +145,10 @@ class TabStripChart(wx.Panel):
             start_new_thread( StripChartLoop,() )
         else:
             self.b_show.SetLabel('start')
+            self.strip_chart01.clean()
+            self.strip_chart02.clean()
+            #self.strip_chart03.clean()
+            #self.strip_chart04.clean()
 
 
 
