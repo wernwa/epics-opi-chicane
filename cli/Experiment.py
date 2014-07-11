@@ -63,7 +63,7 @@ def init_devices():
 
 
 def demag():
-    relee_val = 10
+    relee_val = 24
     ps_heightV = []
     ps_heightV.append(None) # avoid 0 index
     ps_heightV.append(ps[1].getterVolt.get())# 1
@@ -104,7 +104,8 @@ def demag():
         ps[i].putVolt(volts)
         print '%d %f (ps:%d %f)' %(count,volts,i,ps_heightV[i])
 
-
+    ''' set relee to 0 '''
+    relee.putVolt(0)
 
 def onChanges(pvname=None, value=None, char_value=None, **kw):
     print 'PV Changed! %s %0.3f' %(pvname, value)
