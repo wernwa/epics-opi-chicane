@@ -3,10 +3,12 @@
 
 import sys
 sys.path.insert(0, './')
+from epics import PV
 from epics_device import PowerSupply
 from physics_device import Magnet
 import json
 from time import sleep
+from time import strftime
 
 relee = None
 ps = []         # alias for powersupply
@@ -107,8 +109,32 @@ def demag():
     ''' set relee to 0 '''
     relee.putVolt(0)
 
-def onChanges(pvname=None, value=None, char_value=None, **kw):
+
+log_pvs = None
+
+def log_records():
+
+    records = ['zpslan01-GetVoltage','zpslan08-GetVoltage']
+    global log_pvs
+    log_pvs = [PV(records[0], auto_monitor=True ),
+           PV(records[1], auto_monitor=True )]
+
+    for i in range(0,len(log_pvs)):
+        log_pvs[i].add_callback(log_on_change)
+
+def log_on_change(pvname=None, value=None, char_value=None, **kw):
     print 'PV Changed! %s %0.3f' %(pvname, value)
+    fo = open("log.txt", "a")
+    string = '%s' %strftime("%Y-%m-%H:%M:%S_%s")
+    for i in range(0,len(log_pvs)):
+        string += ' %s' %log_pvs[i].get()
+    string += '\n';
+    fo.write(string)
+    fo.close()
+
+
+#def onChanges(pvname=None, value=None, char_value=None, **kw):
+#    print 'PV Changed! %s %0.3f' %(pvname, value)
 
 if __name__ == "__main__":
     print 'Initializing Devices'
