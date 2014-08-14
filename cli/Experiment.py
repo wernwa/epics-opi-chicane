@@ -133,8 +133,8 @@ def log_on_change(pvname=None, value=None, char_value=None, **kw):
     fo.close()
 
 
-#def onChanges(pvname=None, value=None, char_value=None, **kw):
-#    print 'PV Changed! %s %0.3f' %(pvname, value)
+def onChanges(pvname=None, value=None, char_value=None, **kw):
+    print 'PV Changed! %s %0.3f' %(pvname, value)
 
 if __name__ == "__main__":
     print 'Initializing Devices'
