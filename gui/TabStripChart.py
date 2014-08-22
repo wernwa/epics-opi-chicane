@@ -73,6 +73,7 @@ class StripChartMemory:
         self.time = []
         self.data = []
         self.pv = pv
+        self.add(time.time(),pv.get())
         self.pv.add_callback(self.onPVChanges)
 
     def add(self, t,d):
@@ -113,6 +114,7 @@ class StripChartMemory:
         # epics timestamp vom Record scheint nicht gleich dem python time.time() timestamp zu sein
         # Aus dem Grund verwende die von python
         #self.strip_chart01.add(ps[8].getterVolt.timestamp,value)
+        print 'adding value tu the strip chart memory %f'%value
         self.add(time.time(),value)
 
 class BoundControlBox(wx.Panel):
@@ -172,8 +174,10 @@ class TabStripChart(wx.Panel):
         wx.Panel.__init__(self, parent)
 
         self.datagen = DataGen()
-        self.data = [self.datagen.next()]
-        self.paused = False
+        #self.data = [self.datagen.next()]
+        ## init two test PV variables ##
+        self.strip_chart02 = StripChartMemory(ps[8].getterVolt)
+        self.paused = True
 
         #self.create_menu()
         #self.create_status_bar()
@@ -181,8 +185,6 @@ class TabStripChart(wx.Panel):
 
 
 
-        ## init two test PV variables ##
-        self.strip_chart01 = StripChartMemory(ps[8].getterVolt)
 
         self.redraw_timer = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.on_redraw_timer, self.redraw_timer)
@@ -269,7 +271,7 @@ class TabStripChart(wx.Panel):
         # to the plotted line series
         #
         self.plot_data = self.axes.plot(
-            self.data,
+            self.strip_chart02.data,
             linewidth=1,
             color=(1, 1, 0),
             )[0]
@@ -282,7 +284,7 @@ class TabStripChart(wx.Panel):
         # xmax.
         #
         if self.xmax_control.is_auto():
-            xmax = len(self.data) if len(self.data) > 50 else 50
+            xmax = len(self.strip_chart02.time) if len(self.strip_chart02.time) > 50 else 50
         else:
             xmax = int(self.xmax_control.manual_value())
 
@@ -299,12 +301,12 @@ class TabStripChart(wx.Panel):
         # the whole data set.
         #
         if self.ymin_control.is_auto():
-            ymin = round(min(self.data), 0) - 1
+            ymin = round(min(self.strip_chart02.data), 0) - 1
         else:
             ymin = int(self.ymin_control.manual_value())
 
         if self.ymax_control.is_auto():
-            ymax = round(max(self.data), 0) + 1
+            ymax = round(max(self.strip_chart02.data), 0) + 1
         else:
             ymax = int(self.ymax_control.manual_value())
 
@@ -328,11 +330,13 @@ class TabStripChart(wx.Panel):
         pylab.setp(self.axes.get_xticklabels(),
             visible=self.cb_xlab.IsChecked())
 
-        # TODO assighn to epics records
-        self.plot_data.set_xdata(np.arange(len(self.data)))
-        self.plot_data.set_ydata(np.array(self.data))
-        #self.plot_data.set_xdata(np.arange(strip_chart02.time))
-        #self.plot_data.set_ydata(np.array(strip_chart02.data))
+        # assighn to epics records
+        #self.plot_data.set_xdata(np.arange(len(self.data)))
+        #self.plot_data.set_ydata(np.array(self.data))
+        self.plot_data.set_xdata(np.arange(len(self.strip_chart02.time)))
+        self.plot_data.set_ydata(np.array(self.strip_chart02.data))
+
+        #print self.strip_chart02.data
 
         self.canvas.draw()
 
@@ -369,9 +373,9 @@ class TabStripChart(wx.Panel):
         # if paused do not add data, but still redraw the plot
         # (to respond to scale modifications, grid change, etc.)
         #
-        if not self.paused:
-            self.data.append(self.datagen.next())
-
+        #if not self.paused:
+        #    self.data.append(self.datagen.next())
+        self.strip_chart02.add(time.time(),self.strip_chart02.pv.get())
         self.draw_plot()
 
     def on_exit(self, event):
