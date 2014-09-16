@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python -i cli/Experiment.py
+ipython -i cli/Experiment.py

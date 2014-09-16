@@ -33,6 +33,8 @@ class TabSchikane(wx.Panel):
 
         static_text = wx.StaticText(label="Dipol      \n#.##V \n#.##A\n###K", parent=panel,pos=wx.Point(50, 400))
         self.st_quad1 = wx.StaticText(label="Quadrupol 1\n#.##V \n#.##A\n###K", parent=panel,pos=wx.Point(150, 400))
+        #self.st_quad1 = wx.TextCtrl(parent=panel,pos=wx.Point(150, 400),style=wx.TE_MULTILINE | wx.TE_READONLY)
+        #self.st_quad1.SetValue("Quadrupol 1\n#.##V \n#.##A\n###K")
         static_text = wx.StaticText(label="Quadrupol 2\n#.##V\n#.##A\n###K", parent=panel,pos=wx.Point(250, 400))
         static_text = wx.StaticText(label="Quadrupol 3\n#.##V\n#.##A\n###K", parent=panel,pos=wx.Point(350, 400))
         static_text = wx.StaticText(label="Quadrupol 4\n#.##V\n#.##A\n###K", parent=panel,pos=wx.Point(470, 400))
@@ -57,11 +59,31 @@ class TabSchikane(wx.Panel):
         start_new_thread( demagThread,() )
 
     def onPVChanges(self, pvname=None, value=None, char_value=None, **kw):
-        #print 'PV Changed! %s %0.3f' %(pvname, value)
-        if pvname == 'zpslan08-GetVoltage':
-            self.st_quad1.SetLabel("Quadrupol 1\n%.3fV \n%.3fA\n###K" %(value,magn[1].powersupply.getAmpere()))
-
-        if pvname == 'zpslan08-GetAmpere':
-            self.st_quad1.SetLabel("Quadrupol 1\n%.3fV \n%.3fA\n###K" %(magn[1].powersupply.getVolt(),value))
 
 
+        def changeLables(evt):
+            #print 'PV Changed! %s %0.3f' %(pvname, value)
+            if pvname == 'zpslan08-GetVoltage':
+                #self.st_quad1.SetLabel("Quadrupol 1\n%.3fV \n%.3fA\n###K" %(value,magn[1].powersupply.getAmpere()))
+                str = "Quadrupol 1\n%.3fV \n%.3fA\n###K" %(value,magn[1].powersupply.getAmpere())
+                self.st_quad1.SetLabel( str )
+
+            if pvname == 'zpslan08-GetAmpere':
+                self.st_quad1.SetLabel("Quadrupol 1\n%.3fV \n%.3fA\n###K" %(magn[1].powersupply.getVolt(),value))
+
+
+        self.call_routine_over_event( changeLables )
+
+
+    SomeNewEvent=None
+    def call_routine_over_event(self, handler):
+
+        if self.SomeNewEvent==None:
+            self.SomeNewEvent, self.EVT_SOME_NEW_EVENT = wx.lib.newevent.NewEvent()
+            self.Bind(self.EVT_SOME_NEW_EVENT, handler)
+
+            # Create the event
+            self.evt = self.SomeNewEvent()
+
+        # Post the event
+        wx.PostEvent(self, self.evt)

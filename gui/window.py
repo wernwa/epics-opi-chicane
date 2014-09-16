@@ -52,8 +52,6 @@ class MainFrame(wx.Frame):
 
         # add the pages to the notebook with the label to show on the tab
         nb.AddPage(page1, "Overview")
-
-
         nb.AddPage(page2, "Power Supplies")
         nb.AddPage(page3, "Magnetic Fields")
         nb.AddPage(page4, "StripChartGNUPLOT (old)")

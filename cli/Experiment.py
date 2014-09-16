@@ -11,6 +11,17 @@ from time import sleep
 from time import strftime
 
 relee = None
+ps1 = None
+ps2 = None
+ps3 = None
+ps4 = None
+ps5 = None
+ps6 = None
+ps7 = None
+ps8 = None
+ps9 = None
+ps10 = None
+
 ps = []         # alias for powersupply
 powersupply = ps
 magn = []
@@ -24,21 +35,23 @@ def load_data_conf():
     #data_conf = json.load(fp)
 
 def init_devices():
-    global relee
-    relee = PowerSupply('zpslan01-GetVoltage','zpslan01-SetVoltage',
+    global ps, relee, ps1, ps2, ps3, ps4, ps5, ps6, ps7, ps8, ps9, ps10
+    ps1 = relee = PowerSupply('zpslan01-GetVoltage','zpslan01-SetVoltage',
                         'zpslan01-GetAmpere','zpslan01-SetAmpere')
-    global ps
-    ps.append(None) # avoid 0 index
-    ps.append(relee)# 1
-    ps.append(None) # 2
-    ps.append(None) # 3
-    ps.append(None) # 4
-    ps.append(None) # 5
-    ps.append(None) # 6
-    ps.append(None) # 7
-    ps.append(PowerSupply('zpslan08-GetVoltage','zpslan08-SetVoltage','zpslan08-GetAmpere','zpslan08-SetAmpere'))
-    ps.append(None) # 9
-    ps.append(None) # 10
+    ps8 = PowerSupply('zpslan08-GetVoltage','zpslan08-SetVoltage','zpslan08-GetAmpere','zpslan08-SetAmpere')
+
+    if (len(ps)==0):
+        ps.append(None) # avoid 0 index
+        ps.append(relee)# 1
+        ps.append(None) # 2
+        ps.append(None) # 3
+        ps.append(None) # 4
+        ps.append(None) # 5
+        ps.append(None) # 6
+        ps.append(None) # 7
+        ps.append(ps8)
+        ps.append(None) # 9
+        ps.append(None) # 10
 
     ''' initialize powersupplies  '''
     global data_conf
@@ -54,14 +67,15 @@ def init_devices():
 
 
     global magn
-    magn.append(None) # avoid 0 index
-    magn.append(Magnet(ps[8]))# 1
-    magn.append(None) # 2
-    magn.append(None) # 3
-    magn.append(None) # 4
-    magn.append(None) # 5
-    magn.append(None) # 6
-    magn.append(None) # 7
+    if (len(magn)==0):
+        magn.append(None) # avoid 0 index
+        magn.append(Magnet(ps[8]))# 1
+        magn.append(None) # 2
+        magn.append(None) # 3
+        magn.append(None) # 4
+        magn.append(None) # 5
+        magn.append(None) # 6
+        magn.append(None) # 7
 
 
 def demag():
@@ -136,10 +150,30 @@ def log_on_change(pvname=None, value=None, char_value=None, **kw):
 def onChanges(pvname=None, value=None, char_value=None, **kw):
     print 'PV Changed! %s %0.3f' %(pvname, value)
 
+def monitor_ps(powersupply):
+    powersupply.setterVolt.add_callback(onChanges)
+    powersupply.setterAmp.add_callback(onChanges)
+
+def help():
+    print '''
+------------------------------------------------
+    help()          print this info
+    init_devices()  initializes the devices with standard values from the config.json file
+    ps1 - ps10      global objects to the PowerSupply class. Methods:
+                        getVolt(), putVolt(),
+                        getAmpere(), putAmpere()
+                    ps1 - ps10 are initialized after calling init_devices()
+    demag()         demagnetezising all Magnets at once
+    monitor_ps(ps)  Print ampare and volt changes of the given powersupply
+------------------------------------------------
+    '''
+
+
 if __name__ == "__main__":
     print 'Initializing Devices'
     load_data_conf()
-    init_devices()
+    help()
+    #init_devices()
 
     #ps[8].setterVolt.add_callback(onChanges)
     #relee.setterVolt.add_callback(onChanges)
