@@ -16,6 +16,7 @@ from TabPowerSupplies import TabPowerSupplies
 from TabSchikane import TabSchikane
 from TabStripChartGNUPLOT import TabStripChartGNUPLOT
 from TabStripChart import TabStripChart
+from TabMultipoleCurrent import TabMultipoleCurrent
 
 
 
@@ -46,16 +47,18 @@ class MainFrame(wx.Frame):
         # create the page windows as children of the notebook
         page1 = TabSchikane(nb)
         page2 = TabPowerSupplies(nb)
-        page3 = PageThree(nb)
-        page4 = TabStripChartGNUPLOT(nb)
+        #page3 = PageThree(nb)
+        #page4 = TabStripChartGNUPLOT(nb)
         page5 = TabStripChart(nb)
+        page6 = TabMultipoleCurrent(nb)
 
         # add the pages to the notebook with the label to show on the tab
         nb.AddPage(page1, "Overview")
         nb.AddPage(page2, "Power Supplies")
-        nb.AddPage(page3, "Magnetic Fields")
-        nb.AddPage(page4, "StripChartGNUPLOT (old)")
+        #nb.AddPage(page3, "Magnetic Fields")
+        #nb.AddPage(page4, "StripChartGNUPLOT (old)")
         nb.AddPage(page5, "StripChart")
+        nb.AddPage(page6, "Multipole Current")
 
         # finally, put the notebook in a sizer for the panel to manage
         # the layout
