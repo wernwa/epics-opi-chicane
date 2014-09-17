@@ -114,7 +114,7 @@ class StripChartMemory:
         # epics timestamp vom Record scheint nicht gleich dem python time.time() timestamp zu sein
         # Aus dem Grund verwende die von python
         #self.strip_chart01.add(ps[8].getterVolt.timestamp,value)
-        print 'adding value tu the strip chart memory %f'%value
+        #print 'adding value tu the strip chart memory %f'%value
         self.add(time.time(),value)
 
 class BoundControlBox(wx.Panel):
@@ -177,6 +177,7 @@ class TabStripChart(wx.Panel):
         #self.data = [self.datagen.next()]
         ## init two test PV variables ##
         self.strip_chart02 = StripChartMemory(ps[8].getterVolt)
+        #self.strip_chart02 = StripChartMemory(t1)
         self.paused = True
 
         #self.create_menu()
@@ -262,7 +263,7 @@ class TabStripChart(wx.Panel):
 
         self.axes = self.fig.add_subplot(111)
         self.axes.set_axis_bgcolor('black')
-        self.axes.set_title('Very important random data', size=12)
+        self.axes.set_title('Very important TITLE (TODO)', size=12)
 
         pylab.setp(self.axes.get_xticklabels(), fontsize=8)
         pylab.setp(self.axes.get_yticklabels(), fontsize=8)

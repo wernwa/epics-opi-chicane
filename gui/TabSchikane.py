@@ -49,6 +49,13 @@ class TabSchikane(wx.Panel):
         panel.SetSizer(hbox)
 
         ps[8].getterVolt.add_callback(self.onPVChanges)
+        #t1.add_callback(self.onPVChanges)
+        #t2.add_callback(self.onPVChanges)
+        #t3.add_callback(self.onPVChanges)
+        #t4.add_callback(self.onPVChanges)
+        #t5.add_callback(self.onPVChanges)
+        #t6.add_callback(self.onPVChanges)
+        #t7.add_callback(self.onPVChanges)
 
     def OnDemag(self, event):
         def demagThread():
@@ -71,6 +78,10 @@ class TabSchikane(wx.Panel):
             if pvname == 'zpslan08-GetAmpere':
                 self.st_quad1.SetLabel("Quadrupol 1\n%.3fV \n%.3fA\n###K" %(magn[1].powersupply.getVolt(),value))
 
+            if pvname == 'SHICANE:M1:T':
+                #self.st_quad1.SetLabel("Quadrupol 1\n%.3fV \n%.3fA\n%.2fK" %(magn[1].powersupply.getVolt(),
+                #                                                            magn[1].powersupply.getAmpere(),value))
+                print 't1 changed %f'%value
 
         self.call_routine_over_event( changeLables )
 

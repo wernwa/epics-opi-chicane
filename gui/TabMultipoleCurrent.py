@@ -88,10 +88,11 @@ class TabMultipoleCurrent(wx.Panel):
         ax.hold(False)
         #ax.plot(data, '*-')
 
-        #self.figure.xlabel(r'current I [A]')
-        #self.figure.ylabel(r'multipole strength k [$\frac{1}{\mbox{m}}$]')
-        ax.plot(self.I_arr,self.k_arr, marker='o', linestyle='--', color='r',label='sext multipole m')
-        ax.plot(self.xnew,self.spline(self.xnew), linestyle='-', color='g',label='spline')
+        ax.set_xlabel(r'current I [A]')
+        ax.set_ylabel(r'multipole strength k [$\frac{1}{\mbox{m}}$]')
+        #ax.plot(self.I_arr,self.k_arr, marker='o', linestyle='--', color='r',label='quad multipole m')
+        #ax.plot(self.xnew,self.spline(self.xnew), linestyle='-', color='g',label='spline')
+        ax.plot(self.I_arr,self.k_arr, 'or--',self.xnew,self.spline(self.xnew),'g-')
 
         self.canvas.draw()
 

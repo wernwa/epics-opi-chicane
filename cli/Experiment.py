@@ -22,6 +22,14 @@ ps8 = None
 ps9 = None
 ps10 = None
 
+#t1 = PV('SHICANE:M1:T', auto_monitor=True )
+#t2 = PV('SHICANE:M2:T', auto_monitor=True )
+#t3 = PV('SHICANE:M3:T', auto_monitor=True )
+#t4 = PV('SHICANE:M4:T', auto_monitor=True )
+#t5 = PV('SHICANE:M5:T', auto_monitor=True )
+#t6 = PV('SHICANE:M6:T', auto_monitor=True )
+#t7 = PV('SHICANE:M7:T', auto_monitor=True )
+
 ps = []         # alias for powersupply
 powersupply = ps
 magn = []
