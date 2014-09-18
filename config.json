@@ -16,14 +16,14 @@
 
   "powersupplies_note": "set the initial Voltage of the powersupplies in V",
   "powersupplies": {
-    "ps1": 0,
+    "ps1": 0.0,
     "ps2": 0.0,
     "ps3": 0.0,
     "ps4": 0.0,
     "ps5": 0.0,
     "ps6": 0.0,
     "ps7": 0.0,
-    "ps8": 12.0,
+    "ps8": 0.0,
     "ps9": 0.0
   }
 }

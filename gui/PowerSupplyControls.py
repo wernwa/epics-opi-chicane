@@ -51,7 +51,7 @@ class PowerSupplyControls:
         self.b.Bind(wx.EVT_BUTTON, self.Refresh)
         self.tcV.Bind(wx.EVT_KEY_DOWN, self.Return_pressed)
 
-        self.ps.getterVolt.add_callback(Experiment.onChanges)
+        #self.ps.getterVolt.add_callback(Experiment.onChanges)
 
     def onChanges(self, pvname=None, value=None, char_value=None, **kw):
         print 'PV Changed! ', pvname, char_value

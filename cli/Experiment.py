@@ -22,7 +22,7 @@ ps8 = None
 ps9 = None
 ps10 = None
 
-#t1 = PV('SHICANE:M1:T', auto_monitor=True )
+t1 = PV('SHICANE:M1:T', auto_monitor=True )
 #t2 = PV('SHICANE:M2:T', auto_monitor=True )
 #t3 = PV('SHICANE:M3:T', auto_monitor=True )
 #t4 = PV('SHICANE:M4:T', auto_monitor=True )
@@ -158,6 +158,14 @@ def log_on_change(pvname=None, value=None, char_value=None, **kw):
 def onChanges(pvname=None, value=None, char_value=None, **kw):
     print 'PV Changed! %s %0.3f' %(pvname, value)
 
+write = sys.stdout.write
+def onConnectionChange(pvname=None, conn= None, **kws):
+    write('PV connection status changed: %s %s\n' % (pvname,  repr(conn)))
+    sys.stdout.flush()
+
+def monitor_temp(t):
+    t.add_callback(onChanges)
+
 def monitor_ps(powersupply):
     powersupply.setterVolt.add_callback(onChanges)
     powersupply.setterAmp.add_callback(onChanges)
@@ -173,6 +181,7 @@ def help():
                     ps1 - ps10 are initialized after calling init_devices()
     demag()         demagnetezising all Magnets at once
     monitor_ps(ps)  Print ampare and volt changes of the given powersupply
+    monitor_temp(t) Print temperature changes of the given temp-sensor
 ------------------------------------------------
     '''
 

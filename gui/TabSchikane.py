@@ -49,7 +49,7 @@ class TabSchikane(wx.Panel):
         panel.SetSizer(hbox)
 
         ps[8].getterVolt.add_callback(self.onPVChanges)
-        #t1.add_callback(self.onPVChanges)
+        t1.add_callback(self.onPVChanges)
         #t2.add_callback(self.onPVChanges)
         #t3.add_callback(self.onPVChanges)
         #t4.add_callback(self.onPVChanges)
@@ -67,21 +67,22 @@ class TabSchikane(wx.Panel):
 
     def onPVChanges(self, pvname=None, value=None, char_value=None, **kw):
 
+        #print '%s changed %f'%(pvname,value)
 
         def changeLables(evt):
             #print 'PV Changed! %s %0.3f' %(pvname, value)
-            if pvname == 'zpslan08-GetVoltage':
-                #self.st_quad1.SetLabel("Quadrupol 1\n%.3fV \n%.3fA\n###K" %(value,magn[1].powersupply.getAmpere()))
-                str = "Quadrupol 1\n%.3fV \n%.3fA\n###K" %(value,magn[1].powersupply.getAmpere())
-                self.st_quad1.SetLabel( str )
+            #if pvname == 'zpslan08-GetVoltage':
+            #    #self.st_quad1.SetLabel("Quadrupol 1\n%.3fV \n%.3fA\n###K" %(value,magn[1].powersupply.getAmpere()))
+            #    str = "Quadrupol 1\n%.3fV \n%.3fA\n###K" %(value,magn[1].powersupply.getAmpere())
+            #    self.st_quad1.SetLabel( str )
+#
+ #           if pvname == 'zpslan08-GetAmpere':
+ #               self.st_quad1.SetLabel("Quadrupol 1\n%.3fV \n%.3fA\n###K" %(magn[1].powersupply.getVolt(),value))
 
-            if pvname == 'zpslan08-GetAmpere':
-                self.st_quad1.SetLabel("Quadrupol 1\n%.3fV \n%.3fA\n###K" %(magn[1].powersupply.getVolt(),value))
-
-            if pvname == 'SHICANE:M1:T':
-                #self.st_quad1.SetLabel("Quadrupol 1\n%.3fV \n%.3fA\n%.2fK" %(magn[1].powersupply.getVolt(),
-                #                                                            magn[1].powersupply.getAmpere(),value))
-                print 't1 changed %f'%value
+            if pvname == 'zpslan08-GetVoltage'  or pvname == 'zpslan08-GetAmpere' or pvname == 'SHICANE:M1:T':
+                self.st_quad1.SetLabel("Quadrupol 1\n%.3fV \n%.3fA\n%.2fK" %(magn[1].powersupply.getVolt(),
+                                                                            magn[1].powersupply.getAmpere(),t1.get()))
+                #print 't1 changed %f'%value
 
         self.call_routine_over_event( changeLables )
 
