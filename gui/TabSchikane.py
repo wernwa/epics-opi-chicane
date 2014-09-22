@@ -65,6 +65,13 @@ class TabSchikane(wx.Panel):
 
         start_new_thread( demagThread,() )
 
+    def pv_get_str(self, pv):
+        value = pv.get()
+        str_val = '##.###'
+        if value!=None:
+            str_val = '%.3f'%value
+        return str_val
+
     def onPVChanges(self, pvname=None, value=None, char_value=None, **kw):
 
         #print '%s changed %f'%(pvname,value)
@@ -80,8 +87,11 @@ class TabSchikane(wx.Panel):
  #               self.st_quad1.SetLabel("Quadrupol 1\n%.3fV \n%.3fA\n###K" %(magn[1].powersupply.getVolt(),value))
 
             if pvname == 'zpslan08-GetVoltage'  or pvname == 'zpslan08-GetAmpere' or pvname == 'SHICANE:M1:T':
-                self.st_quad1.SetLabel("Quadrupol 1\n%.3fV \n%.3fA\n%.2fK" %(magn[1].powersupply.getVolt(),
-                                                                            magn[1].powersupply.getAmpere(),t1.get()))
+                self.st_quad1.SetLabel("Quadrupol 1\n%sV \n%sA\n%sK" %(self.pv_get_str(magn[1].powersupply.getterVolt),
+                                                                        self.pv_get_str(magn[1].powersupply.getterAmp),
+                                                                        self.pv_get_str(t1)
+                                                                            )
+                                        )
                 #print 't1 changed %f'%value
 
         self.call_routine_over_event( changeLables )

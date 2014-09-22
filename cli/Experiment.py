@@ -6,6 +6,7 @@ sys.path.insert(0, './')
 from epics import PV
 from epics_device import PowerSupply
 from physics_device import Magnet
+from PV_CONN import PV_CONN
 import json
 from time import sleep
 from time import strftime
@@ -22,13 +23,13 @@ ps8 = None
 ps9 = None
 ps10 = None
 
-t1 = PV('SHICANE:M1:T', auto_monitor=True )
-#t2 = PV('SHICANE:M2:T', auto_monitor=True )
-#t3 = PV('SHICANE:M3:T', auto_monitor=True )
-#t4 = PV('SHICANE:M4:T', auto_monitor=True )
-#t5 = PV('SHICANE:M5:T', auto_monitor=True )
-#t6 = PV('SHICANE:M6:T', auto_monitor=True )
-#t7 = PV('SHICANE:M7:T', auto_monitor=True )
+t1 = PV_CONN('SHICANE:M1:T', auto_monitor=True )
+t2 = PV_CONN('SHICANE:M2:T', auto_monitor=True )
+t3 = PV_CONN('SHICANE:M3:T', auto_monitor=True )
+t4 = PV_CONN('SHICANE:M4:T', auto_monitor=True )
+t5 = PV_CONN('SHICANE:M5:T', auto_monitor=True )
+t6 = PV_CONN('SHICANE:M6:T', auto_monitor=True )
+t7 = PV_CONN('SHICANE:M7:T', auto_monitor=True )
 
 ps = []         # alias for powersupply
 powersupply = ps
