@@ -48,7 +48,7 @@ class TabSchikane(wx.Panel):
         self.b_demag.Bind(wx.EVT_BUTTON, self.OnDemag)
         panel.SetSizer(hbox)
 
-        ps[8].getterVolt.add_callback(self.onPVChanges)
+        ps8.getterVolt.add_callback(self.onPVChanges)
         t1.add_callback(self.onPVChanges)
         #t2.add_callback(self.onPVChanges)
         #t3.add_callback(self.onPVChanges)
@@ -56,6 +56,7 @@ class TabSchikane(wx.Panel):
         #t5.add_callback(self.onPVChanges)
         #t6.add_callback(self.onPVChanges)
         #t7.add_callback(self.onPVChanges)
+
 
     def OnDemag(self, event):
         def demagThread():
@@ -66,6 +67,7 @@ class TabSchikane(wx.Panel):
         start_new_thread( demagThread,() )
 
     def pv_get_str(self, pv):
+        #print 'TabSchikane.pv_get_str ',pv
         value = pv.get()
         str_val = '##.###'
         if value!=None:
@@ -87,8 +89,8 @@ class TabSchikane(wx.Panel):
  #               self.st_quad1.SetLabel("Quadrupol 1\n%.3fV \n%.3fA\n###K" %(magn[1].powersupply.getVolt(),value))
 
             if pvname == 'zpslan08-GetVoltage'  or pvname == 'zpslan08-GetAmpere' or pvname == 'SHICANE:M1:T':
-                self.st_quad1.SetLabel("Quadrupol 1\n%sV \n%sA\n%sK" %(self.pv_get_str(magn[1].powersupply.getterVolt),
-                                                                        self.pv_get_str(magn[1].powersupply.getterAmp),
+                self.st_quad1.SetLabel("Quadrupol 1\n%sV \n%sA\n%sK" %(self.pv_get_str(ps8.getterVolt),
+                                                                        self.pv_get_str(ps8.getterAmp),
                                                                         self.pv_get_str(t1)
                                                                             )
                                         )
@@ -109,3 +111,5 @@ class TabSchikane(wx.Panel):
 
         # Post the event
         wx.PostEvent(self, self.evt)
+
+

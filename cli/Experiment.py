@@ -31,6 +31,10 @@ t5 = PV_CONN('SHICANE:M5:T', auto_monitor=True )
 t6 = PV_CONN('SHICANE:M6:T', auto_monitor=True )
 t7 = PV_CONN('SHICANE:M7:T', auto_monitor=True )
 
+ps1 = relee = PowerSupply('zpslan01-GetVoltage','zpslan01-SetVoltage',
+                        'zpslan01-GetAmpere','zpslan01-SetAmpere')
+ps8 = PowerSupply('zpslan08-GetVoltage','zpslan08-SetVoltage','zpslan08-GetAmpere','zpslan08-SetAmpere')
+
 ps = []         # alias for powersupply
 powersupply = ps
 magn = []
@@ -45,9 +49,6 @@ def load_data_conf():
 
 def init_devices():
     global ps, relee, ps1, ps2, ps3, ps4, ps5, ps6, ps7, ps8, ps9, ps10
-    ps1 = relee = PowerSupply('zpslan01-GetVoltage','zpslan01-SetVoltage',
-                        'zpslan01-GetAmpere','zpslan01-SetAmpere')
-    ps8 = PowerSupply('zpslan08-GetVoltage','zpslan08-SetVoltage','zpslan08-GetAmpere','zpslan08-SetAmpere')
 
     if (len(ps)==0):
         ps.append(None) # avoid 0 index
@@ -91,14 +92,14 @@ def demag():
     relee_val = 24
     ps_heightV = []
     ps_heightV.append(None) # avoid 0 index
-    ps_heightV.append(ps[1].getterVolt.get())# 1
+    ps_heightV.append(ps1.getterVolt.get())# 1
     ps_heightV.append(None) # 2
     ps_heightV.append(None) # 3
     ps_heightV.append(None) # 4
     ps_heightV.append(None) # 5
     ps_heightV.append(None) # 6
     ps_heightV.append(None) # 7
-    ps_heightV.append(ps[8].getterVolt.get())
+    ps_heightV.append(ps8.getterVolt.get())
     ps_heightV.append(None) # 9
     ps_heightV.append(None) # 10
 

@@ -9,7 +9,7 @@ import epics
 class PV_CONN(epics.PV):
     def __init__(self, *args, **kwargs):
         super(PV_CONN, self).__init__(*args, **kwargs)
-        self.conn=True
+        self.conn=False
         self.connection_callbacks.append(self.onConnectionChange)
 
     def onConnectionChange(self, pvname=None, conn= None, **kws):

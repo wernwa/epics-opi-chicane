@@ -29,7 +29,7 @@ class PageThree(wx.Panel):
 class MainFrame(wx.Frame):
     def __init__(self):
         wx.Frame.__init__(self, None, title="Magnets Control GUI", pos=(150,150), size=(800,600))
-        #self.Bind(wx.EVT_CLOSE, self.OnClose)
+        self.Bind(wx.EVT_CLOSE, self.OnClose)
 
         menuBar = wx.MenuBar()
         menu = wx.Menu()
@@ -45,20 +45,14 @@ class MainFrame(wx.Frame):
         nb = wx.Notebook(p)
 
         # create the page windows as children of the notebook
-        page1 = TabSchikane(nb)
-        page2 = TabPowerSupplies(nb)
-        #page3 = PageThree(nb)
-        #page4 = TabStripChartGNUPLOT(nb)
-        #page5 = TabStripChart(nb)
-        page6 = TabMultipoleCurrent(nb)
 
         # add the pages to the notebook with the label to show on the tab
-        nb.AddPage(page1, "Overview")
-        nb.AddPage(page2, "Power Supplies")
-        #nb.AddPage(page3, "Magnetic Fields")
-        #nb.AddPage(page4, "StripChartGNUPLOT (old)")
-        nb.AddPage(TabStripChart(nb), "StripChart")
-        nb.AddPage(page6, "Multipole Current")
+        nb.AddPage(TabSchikane(nb), "Overview")
+        nb.AddPage(TabPowerSupplies(nb), "Power Supplies")
+        #nb.AddPage(PageThree(nb), "Magnetic Fields")
+        #nb.AddPage(TabStripChartGNUPLOT(nb), "StripChartGNUPLOT (old)")
+        #nb.AddPage(TabStripChart(nb), "StripChart")
+        nb.AddPage(TabMultipoleCurrent(nb), "Multipole Current")
 
         # finally, put the notebook in a sizer for the panel to manage
         # the layout
@@ -69,19 +63,27 @@ class MainFrame(wx.Frame):
 
 
     def OnClose(self, event):
-        dlg = wx.MessageDialog(self,
-            "Do you really want to close this application?",
-            "Confirm Exit", wx.OK|wx.CANCEL|wx.ICON_QUESTION)
-        result = dlg.ShowModal()
-        dlg.Destroy()
-        if result == wx.ID_OK:
-            self.Destroy()
+        #dlg = wx.MessageDialog(self,
+        #    "Do you really want to close this application?",
+        #    "Confirm Exit", wx.OK|wx.CANCEL|wx.ICON_QUESTION)
+        #result = dlg.ShowModal()
+        #dlg.Destroy()
+        #if result == wx.ID_OK:
+        #    self.Destroy()
+
+        # TODO release all PVs from callbacks
+        used_pvs = (ps8.getterVolt,ps8.getterAmp,t1)
+
+        for pv in used_pvs:
+            pv.disconnect()
+
+        self.Destroy()
 
 
 if __name__ == "__main__":
 
-    print 'init the devices'
-    init_devices()
+    #print 'init the devices'
+    #init_devices()
 
     app = wx.App()
     MainFrame().Show()
