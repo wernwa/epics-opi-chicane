@@ -23,13 +23,13 @@ ps8 = None
 ps9 = None
 ps10 = None
 
-t1 = PV_CONN('SHICANE:M1:T', auto_monitor=True )
-t2 = PV_CONN('SHICANE:M2:T', auto_monitor=True )
-t3 = PV_CONN('SHICANE:M3:T', auto_monitor=True )
-t4 = PV_CONN('SHICANE:M4:T', auto_monitor=True )
-t5 = PV_CONN('SHICANE:M5:T', auto_monitor=True )
-t6 = PV_CONN('SHICANE:M6:T', auto_monitor=True )
-t7 = PV_CONN('SHICANE:M7:T', auto_monitor=True )
+t1 = PV_CONN('shicane:q1:temp', auto_monitor=True )
+t2 = PV_CONN('shicane:q2:temp', auto_monitor=True )
+t3 = PV_CONN('shicane:q3:temp', auto_monitor=True )
+t4 = PV_CONN('shicane:q4:temp', auto_monitor=True )
+t5 = PV_CONN('shicane:q5:temp', auto_monitor=True )
+t6 = PV_CONN('shicane:q6:temp', auto_monitor=True )
+t7 = PV_CONN('shicane:q7:temp', auto_monitor=True )
 
 ps1 = relee = PowerSupply('zpslan01-GetVoltage','zpslan01-SetVoltage',
                         'zpslan01-GetAmpere','zpslan01-SetAmpere')

@@ -88,7 +88,7 @@ class TabSchikane(wx.Panel):
  #           if pvname == 'zpslan08-GetAmpere':
  #               self.st_quad1.SetLabel("Quadrupol 1\n%.3fV \n%.3fA\n###K" %(magn[1].powersupply.getVolt(),value))
 
-            if pvname == 'zpslan08-GetVoltage'  or pvname == 'zpslan08-GetAmpere' or pvname == 'SHICANE:M1:T':
+            if pvname == ps8.getterVolt.pvname  or pvname == ps8.getterAmp.pvname or pvname == t1.pvname:
                 self.st_quad1.SetLabel("Quadrupol 1\n%sV \n%sA\n%sK" %(self.pv_get_str(ps8.getterVolt),
                                                                         self.pv_get_str(ps8.getterAmp),
                                                                         self.pv_get_str(t1)
