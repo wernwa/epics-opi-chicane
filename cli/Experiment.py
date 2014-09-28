@@ -12,16 +12,16 @@ from time import sleep
 from time import strftime
 
 relee = None
-ps1 = None
-ps2 = None
-ps3 = None
-ps4 = None
-ps5 = None
-ps6 = None
-ps7 = None
-ps8 = None
-ps9 = None
-ps10 = None
+ps1 = relee = PowerSupply('shicane:zps:relee:volt','shicane:zps:relee:curr')
+ps2 =  PowerSupply('shicane:zps:2:volt','shicane:zps:2:curr')
+ps3 =  PowerSupply('shicane:zps:3:volt','shicane:zps:3:curr')
+ps4 =  PowerSupply('shicane:zps:4:volt','shicane:zps:4:curr')
+ps5 =  PowerSupply('shicane:zps:5:volt','shicane:zps:5:curr')
+ps6 =  PowerSupply('shicane:zps:6:volt','shicane:zps:6:curr')
+ps7 =  PowerSupply('shicane:zps:7:volt','shicane:zps:7:curr')
+ps8 =  PowerSupply('shicane:zps:8:volt','shicane:zps:8:curr')
+ps9 =  PowerSupply('shicane:zps:9:volt','shicane:zps:9:curr')
+ps10 = PowerSupply('shicane:zps:10:volt','shicane:zps:10:curr')
 
 t1 = PV_CONN('shicane:q1:temp', auto_monitor=True )
 t2 = PV_CONN('shicane:q2:temp', auto_monitor=True )
@@ -31,9 +31,6 @@ t5 = PV_CONN('shicane:q5:temp', auto_monitor=True )
 t6 = PV_CONN('shicane:q6:temp', auto_monitor=True )
 t7 = PV_CONN('shicane:q7:temp', auto_monitor=True )
 
-ps1 = relee = PowerSupply('zpslan01-GetVoltage','zpslan01-SetVoltage',
-                        'zpslan01-GetAmpere','zpslan01-SetAmpere')
-ps8 = PowerSupply('zpslan08-GetVoltage','zpslan08-SetVoltage','zpslan08-GetAmpere','zpslan08-SetAmpere')
 
 ps = []         # alias for powersupply
 powersupply = ps
@@ -72,7 +69,7 @@ def init_devices():
     for i in range(len(ps)):
         if ps[i] == None:
             continue
-        ps[i].putVolt(ps_conf['ps%d'%i])
+        ps[i].setVolt(ps_conf['ps%d'%i])
         print 'init ps%d'%i
 
 
@@ -92,14 +89,14 @@ def demag():
     relee_val = 24
     ps_heightV = []
     ps_heightV.append(None) # avoid 0 index
-    ps_heightV.append(ps1.getterVolt.get())# 1
+    ps_heightV.append(ps1.Volt.get())# 1
     ps_heightV.append(None) # 2
     ps_heightV.append(None) # 3
     ps_heightV.append(None) # 4
     ps_heightV.append(None) # 5
     ps_heightV.append(None) # 6
     ps_heightV.append(None) # 7
-    ps_heightV.append(ps8.getterVolt.get())
+    ps_heightV.append(ps8.Volt.get())
     ps_heightV.append(None) # 9
     ps_heightV.append(None) # 10
 
@@ -109,15 +106,15 @@ def demag():
     steps = 10
     for count in range(1,steps):
         if count%2 > 0:
-            relee.setterVolt.put(relee_val)
+            relee.Volt.put(relee_val)
         else:
-            relee.setterVolt.put(0)
+            relee.Volt.put(0)
 
         for i in range(2,len(ps)):
             if ps[i] == None:
                 continue
             volts = ps_heightV[i]-count*ps_heightV[i]/steps
-            ps[i].putVolt(volts)
+            ps[i].setVolt(volts)
             print '%d %f (ps:%d %f)' %(count,volts,i,ps_heightV[i])
         sleep(1)
 
@@ -127,24 +124,15 @@ def demag():
         if ps[i] == None:
             continue
         volts = 0
-        ps[i].putVolt(volts)
+        ps[i].setVolt(volts)
         print '%d %f (ps:%d %f)' %(count,volts,i,ps_heightV[i])
 
     ''' set relee to 0 '''
-    relee.putVolt(0)
+    relee.setVolt(0)
 
 
 log_pvs = None
 
-def log_records():
-
-    records = ['zpslan01-GetVoltage','zpslan08-GetVoltage']
-    global log_pvs
-    log_pvs = [PV(records[0], auto_monitor=True ),
-           PV(records[1], auto_monitor=True )]
-
-    for i in range(0,len(log_pvs)):
-        log_pvs[i].add_callback(log_on_change)
 
 def log_on_change(pvname=None, value=None, char_value=None, **kw):
     print 'PV Changed! %s %0.3f' %(pvname, value)
@@ -169,8 +157,8 @@ def monitor_temp(t):
     t.add_callback(onChanges)
 
 def monitor_ps(powersupply):
-    powersupply.setterVolt.add_callback(onChanges)
-    powersupply.setterAmp.add_callback(onChanges)
+    powersupply.Volt.add_callback(onChanges)
+    powersupply.Curr.add_callback(onChanges)
 
 def help():
     print '''
@@ -178,8 +166,8 @@ def help():
     help()          print this info
     init_devices()  initializes the devices with standard values from the config.json file
     ps1 - ps10      global objects to the PowerSupply class. Methods:
-                        getVolt(), putVolt(),
-                        getAmpere(), putAmpere()
+                        getVolt(), setVolt(),
+                        getCurr(), setCurr()
                     ps1 - ps10 are initialized after calling init_devices()
     demag()         demagnetezising all Magnets at once
     monitor_ps(ps)  Print ampare and volt changes of the given powersupply

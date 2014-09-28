@@ -176,7 +176,7 @@ class TabStripChart(wx.Panel):
         self.datagen = DataGen()
         #self.data = [self.datagen.next()]
         ## init two test PV variables ##
-        self.strip_chart02 = StripChartMemory(ps8.getterVolt)
+        self.strip_chart02 = StripChartMemory(ps8.Volt)
         #self.strip_chart02 = StripChartMemory(t1)
         self.paused = True
 

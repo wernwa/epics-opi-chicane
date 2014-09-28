@@ -13,7 +13,7 @@ class PV_CONN(epics.PV):
         self.connection_callbacks.append(self.onConnectionChange)
 
     def onConnectionChange(self, pvname=None, conn= None, **kws):
-        #write('PV connection status changed: %s %s\n' % (pvname,  repr(conn)))
+        #sys.stdout.write('PV connection status changed: %s %s\n' % (pvname,  repr(conn)))
         #sys.stdout.flush()
         self.conn=conn
 

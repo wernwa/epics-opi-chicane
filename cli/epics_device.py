@@ -11,32 +11,23 @@ from PV_CONN import PV_CONN
 
 
 class PowerSupply:
-    getterVolt = None
-    setterVolt = None
-    getterAmp = None
-    setterAmp = None
 
-    def __init__(self, getterVoltName, setterVoltName,
-                        getterAmpName, setterAmpName):
+    def __init__(self, VoltName, CurrName):
 
-        self.getterVolt = PV_CONN(getterVoltName, auto_monitor=True )
-        self.setterVolt = PV_CONN(setterVoltName, auto_monitor=True)
-        self.getterAmp =  PV_CONN(getterAmpName, auto_monitor=True)
-        self.setterAmp =  PV_CONN(setterAmpName, auto_monitor=True)
+        self.Volt = PV_CONN(VoltName, auto_monitor=True)
+        self.Curr = PV_CONN(CurrName, auto_monitor=True)
 
     def getVolt(self):
-        return self.getterVolt.get()
+        return self.Volt.get()
 
-    def getAmpere(self):
-        return self.getterAmp.get()
-
-
-    def putVolt(self, volt):
-        self.setterVolt.put(volt)
-        self.getterVolt.put(volt)
+    def getCurr(self):
+        return self.Curr.get()
 
 
-    def putAmpere(self, ampare):
-        self.setterAmp.put(ampare)
-        self.getterAmp.put(ampare)
+    def setVolt(self, volt):
+        self.Volt.put(volt)
+
+
+    def setCurr(self, ampare):
+        self.Curr.put(ampare)
 

@@ -11,6 +11,7 @@ from epics import PV
 from Experiment import *
 from PowerSupplyControls import PowerSupplyControls
 from thread import start_new_thread
+import time
 
 class TabSchikane(wx.Panel):
 
@@ -48,7 +49,7 @@ class TabSchikane(wx.Panel):
         self.b_demag.Bind(wx.EVT_BUTTON, self.OnDemag)
         panel.SetSizer(hbox)
 
-        ps8.getterVolt.add_callback(self.onPVChanges)
+        ps8.Volt.add_callback(self.onPVChanges)
         t1.add_callback(self.onPVChanges)
         #t2.add_callback(self.onPVChanges)
         #t3.add_callback(self.onPVChanges)
@@ -57,6 +58,21 @@ class TabSchikane(wx.Panel):
         #t6.add_callback(self.onPVChanges)
         #t7.add_callback(self.onPVChanges)
 
+        # refresh labels
+        self.alive=True
+        def refresh_labels():
+            # TODO Thread beim beenden beenden
+            while self.alive:
+                self.call_routine_over_event( self.changeLables )
+                time.sleep(3)
+        start_new_thread(refresh_labels,())
+
+    def changeLables(self,evt):
+        self.st_quad1.SetLabel("Quadrupol 1\n%sV \n%sA\n%sK" %(self.pv_get_str(ps8.Volt),
+                                                                        self.pv_get_str(ps8.Curr),
+                                                                        self.pv_get_str(t1)
+                                                                            )
+                                        )
 
     def OnDemag(self, event):
         def demagThread():
@@ -88,9 +104,9 @@ class TabSchikane(wx.Panel):
  #           if pvname == 'zpslan08-GetAmpere':
  #               self.st_quad1.SetLabel("Quadrupol 1\n%.3fV \n%.3fA\n###K" %(magn[1].powersupply.getVolt(),value))
 
-            if pvname == ps8.getterVolt.pvname  or pvname == ps8.getterAmp.pvname or pvname == t1.pvname:
-                self.st_quad1.SetLabel("Quadrupol 1\n%sV \n%sA\n%sK" %(self.pv_get_str(ps8.getterVolt),
-                                                                        self.pv_get_str(ps8.getterAmp),
+            if pvname == ps8.Volt.pvname  or pvname == ps8.Curr.pvname or pvname == t1.pvname:
+                self.st_quad1.SetLabel("Quadrupol 1\n%sV \n%sA\n%sK" %(self.pv_get_str(ps8.Volt),
+                                                                        self.pv_get_str(ps8.Curr),
                                                                         self.pv_get_str(t1)
                                                                             )
                                         )

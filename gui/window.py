@@ -47,12 +47,13 @@ class MainFrame(wx.Frame):
         # create the page windows as children of the notebook
 
         # add the pages to the notebook with the label to show on the tab
-        nb.AddPage(TabSchikane(nb), "Overview")
+        self.tabShicane = TabSchikane(nb)
+        nb.AddPage(self.tabShicane, "Overview")
         nb.AddPage(TabPowerSupplies(nb), "Power Supplies")
-        #nb.AddPage(PageThree(nb), "Magnetic Fields")
-        #nb.AddPage(TabStripChartGNUPLOT(nb), "StripChartGNUPLOT (old)")
-        #nb.AddPage(TabStripChart(nb), "StripChart")
+            #nb.AddPage(PageThree(nb), "Magnetic Fields")
+            #nb.AddPage(TabStripChartGNUPLOT(nb), "StripChartGNUPLOT (old)")
         nb.AddPage(TabMultipoleCurrent(nb), "Multipole Current")
+        nb.AddPage(TabStripChart(nb), "StripChart")
 
         # finally, put the notebook in a sizer for the panel to manage
         # the layout
@@ -72,10 +73,13 @@ class MainFrame(wx.Frame):
         #    self.Destroy()
 
         # TODO release all PVs from callbacks
-        used_pvs = (ps8.getterVolt,ps8.getterAmp,t1)
+        used_pvs = (ps8.Volt,ps8.Curr,t1)
+        # Thread noch aktiv, besser destructor!
+        self.tabShicane.alive=False
 
         for pv in used_pvs:
             pv.disconnect()
+
 
         self.Destroy()
 
