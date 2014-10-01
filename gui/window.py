@@ -50,10 +50,10 @@ class MainFrame(wx.Frame):
         self.tabShicane = TabSchikane(nb)
         nb.AddPage(self.tabShicane, "Overview")
         nb.AddPage(TabPowerSupplies(nb), "Power Supplies")
+        nb.AddPage(TabMultipoleCurrent(nb), "Multipole Current")
+        #nb.AddPage(TabStripChart(nb), "StripChart")
             #nb.AddPage(PageThree(nb), "Magnetic Fields")
             #nb.AddPage(TabStripChartGNUPLOT(nb), "StripChartGNUPLOT (old)")
-        nb.AddPage(TabMultipoleCurrent(nb), "Multipole Current")
-        nb.AddPage(TabStripChart(nb), "StripChart")
 
         # finally, put the notebook in a sizer for the panel to manage
         # the layout
@@ -73,12 +73,18 @@ class MainFrame(wx.Frame):
         #    self.Destroy()
 
         # TODO release all PVs from callbacks
-        used_pvs = (ps8.Volt,ps8.Curr,t1)
+        global quad1, quad2, quad3, quad4, quad5, quad6, quad7, dipol1, dipol2
+        magnets = [quad1, quad2, quad3, quad4, quad5, quad6, quad7, dipol1, dipol2]
+
+        for m in magnets:
+            for pv_str in m:
+                m[pv_str].disconnect()
+
+        #used_pvs = (ps8.Volt,ps8.Curr,q7_volt, q7_curr, q7_temp)
+
         # Thread noch aktiv, besser destructor!
         self.tabShicane.alive=False
 
-        for pv in used_pvs:
-            pv.disconnect()
 
 
         self.Destroy()
