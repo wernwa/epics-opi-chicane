@@ -74,6 +74,18 @@ dipol2 = {d2_volt.pvname:d2_volt, d2_curr.pvname:d2_curr,d2_temp.pvname:d2_temp,
             ps10.Volt.pvname:ps10.Volt, ps10.Curr.pvname:ps10.Curr }
 
 ps = []         # alias for powersupply
+ps.append(None) # avoid 0 index
+ps.append(relee)# 1
+ps.append(ps2) # 2
+ps.append(ps3) # 3
+ps.append(ps4) # 4
+ps.append(ps5) # 5
+ps.append(ps6) # 6
+ps.append(ps7) # 7
+ps.append(ps8)
+ps.append(ps9) # 9
+ps.append(ps10) # 10
+
 powersupply = ps
 magn = []
 
@@ -131,15 +143,15 @@ def demag():
     ps_heightV = []
     ps_heightV.append(None) # avoid 0 index
     ps_heightV.append(ps1.Volt.get())# 1
-    ps_heightV.append(None) # 2
-    ps_heightV.append(None) # 3
-    ps_heightV.append(None) # 4
-    ps_heightV.append(None) # 5
-    ps_heightV.append(None) # 6
-    ps_heightV.append(None) # 7
+    ps_heightV.append(ps2.Volt.get()) # 2
+    ps_heightV.append(ps3.Volt.get()) # 3
+    ps_heightV.append(ps4.Volt.get()) # 4
+    ps_heightV.append(ps5.Volt.get()) # 5
+    ps_heightV.append(ps6.Volt.get()) # 6
+    ps_heightV.append(ps7.Volt.get()) # 7
     ps_heightV.append(ps8.Volt.get())
-    ps_heightV.append(None) # 9
-    ps_heightV.append(None) # 10
+    ps_heightV.append(ps9.Volt.get()) # 9
+    ps_heightV.append(ps10.Volt.get()) # 10
 
     print 'starting to demagnetize'
 
