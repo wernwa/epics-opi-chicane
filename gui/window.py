@@ -74,16 +74,21 @@ class MainFrame(wx.Frame):
 
         # TODO release all PVs from callbacks
         global quad1, quad2, quad3, quad4, quad5, quad6, quad7, dipol1, dipol2
+        global temp_all
         magnets = [quad1, quad2, quad3, quad4, quad5, quad6, quad7, dipol1, dipol2]
+
 
         for m in magnets:
             for pv_str in m:
                 m[pv_str].disconnect()
 
-        #used_pvs = (ps8.Volt,ps8.Curr,q7_volt, q7_curr, q7_temp)
+        used_pvs = [temp_all,ps_volt_all,ps_curr_all]
+        for pv in used_pvs:
+            pv.disconnect()
 
         # Thread noch aktiv, besser destructor!
-        self.tabShicane.alive=False
+        #self.tabShicane.alive=False
+        self.tabShicane.__del__()
 
 
 

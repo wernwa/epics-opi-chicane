@@ -15,6 +15,36 @@ import time
 
 class TabSchikane(wx.Panel):
 
+    q1_volt='##.##'
+    q2_volt='##.##'
+    q3_volt='##.##'
+    q4_volt='##.##'
+    q5_volt='##.##'
+    q6_volt='##.##'
+    q7_volt='##.##'
+    d1_volt='##.##'
+    d2_volt='##.##'
+
+    q1_curr='##.##'
+    q2_curr='##.##'
+    q3_curr='##.##'
+    q4_curr='##.##'
+    q5_curr='##.##'
+    q6_curr='##.##'
+    q7_curr='##.##'
+    d1_curr='##.##'
+    d2_curr='##.##'
+
+    q1_temp='##.##'
+    q2_temp='##.##'
+    q3_temp='##.##'
+    q4_temp='##.##'
+    q5_temp='##.##'
+    q6_temp='##.##'
+    q7_temp='##.##'
+    d1_temp='##.##'
+    d2_temp='##.##'
+
     st_quad1 = None
     b_demag = None
 
@@ -47,41 +77,76 @@ class TabSchikane(wx.Panel):
         self.b_demag.Bind(wx.EVT_BUTTON, self.OnDemag)
         panel.SetSizer(hbox)
 
-        q1_volt.add_callback(self.onPVChanges)
-        q1_curr.add_callback(self.onPVChanges)
-        q1_temp.add_callback(self.onPVChanges)
+        #q1_volt.add_callback(self.onPVChanges)
+        #q1_curr.add_callback(self.onPVChanges)
+        #q1_temp.add_callback(self.onPVChanges)
 
-        q2_volt.add_callback(self.onPVChanges)
-        q2_curr.add_callback(self.onPVChanges)
-        q2_temp.add_callback(self.onPVChanges)
+        #q2_volt.add_callback(self.onPVChanges)
+        #q2_curr.add_callback(self.onPVChanges)
+        #q2_temp.add_callback(self.onPVChanges)
 
-        q3_volt.add_callback(self.onPVChanges)
-        q3_curr.add_callback(self.onPVChanges)
-        q3_temp.add_callback(self.onPVChanges)
+        #q3_volt.add_callback(self.onPVChanges)
+        #q3_curr.add_callback(self.onPVChanges)
+        #q3_temp.add_callback(self.onPVChanges)
 
-        q4_volt.add_callback(self.onPVChanges)
-        q4_curr.add_callback(self.onPVChanges)
-        q4_temp.add_callback(self.onPVChanges)
+        #q4_volt.add_callback(self.onPVChanges)
+        #q4_curr.add_callback(self.onPVChanges)
+        #q4_temp.add_callback(self.onPVChanges)
 
-        q5_volt.add_callback(self.onPVChanges)
-        q5_curr.add_callback(self.onPVChanges)
-        q5_temp.add_callback(self.onPVChanges)
+        #q5_volt.add_callback(self.onPVChanges)
+        #q5_curr.add_callback(self.onPVChanges)
+        #q5_temp.add_callback(self.onPVChanges)
 
-        q6_volt.add_callback(self.onPVChanges)
-        q6_curr.add_callback(self.onPVChanges)
-        q6_temp.add_callback(self.onPVChanges)
+        #q6_volt.add_callback(self.onPVChanges)
+        #q6_curr.add_callback(self.onPVChanges)
+        #q6_temp.add_callback(self.onPVChanges)
 
-        q7_volt.add_callback(self.onPVChanges)
-        q7_curr.add_callback(self.onPVChanges)
-        q7_temp.add_callback(self.onPVChanges)
+        #q7_volt.add_callback(self.onPVChanges)
+        #q7_curr.add_callback(self.onPVChanges)
+        #q7_temp.add_callback(self.onPVChanges)
 
-        d1_volt.add_callback(self.onPVChanges)
-        d1_curr.add_callback(self.onPVChanges)
-        d1_temp.add_callback(self.onPVChanges)
+        #d1_volt.add_callback(self.onPVChanges)
+        #d1_curr.add_callback(self.onPVChanges)
+        #d1_temp.add_callback(self.onPVChanges)
 
-        d2_volt.add_callback(self.onPVChanges)
-        d2_curr.add_callback(self.onPVChanges)
-        d2_temp.add_callback(self.onPVChanges)
+        #d2_volt.add_callback(self.onPVChanges)
+        #d2_curr.add_callback(self.onPVChanges)
+        #d2_temp.add_callback(self.onPVChanges)
+
+        self.q1_volt=q1_volt.get()
+        self.q2_volt=q2_volt.get()
+        self.q3_volt=q3_volt.get()
+        self.q4_volt=q4_volt.get()
+        self.q5_volt=q5_volt.get()
+        self.q6_volt=q6_volt.get()
+        self.q7_volt=q7_volt.get()
+        self.d1_volt=d1_volt.get()
+        self.d2_volt=d2_volt.get()
+
+        self.q1_curr=q1_curr.get()
+        self.q2_curr=q2_curr.get()
+        self.q3_curr=q3_curr.get()
+        self.q4_curr=q4_curr.get()
+        self.q5_curr=q5_curr.get()
+        self.q6_curr=q6_curr.get()
+        self.q7_curr=q7_curr.get()
+        self.d1_curr=d1_curr.get()
+        self.d2_curr=d2_curr.get()
+
+        self.q1_temp=q1_temp.get()
+        self.q2_temp=q2_temp.get()
+        self.q3_temp=q3_temp.get()
+        self.q4_temp=q4_temp.get()
+        self.q5_temp=q5_temp.get()
+        self.q6_temp=q6_temp.get()
+        self.q7_temp=q7_temp.get()
+        self.d1_temp=d1_temp.get()
+        self.d2_temp=d2_temp.get()
+
+
+        temp_all.add_callback(self.onPVChanges)
+        ps_curr_all.add_callback(self.onPVChanges)
+        ps_volt_all.add_callback(self.onPVChanges)
 
 
         # refresh labels
@@ -89,10 +154,14 @@ class TabSchikane(wx.Panel):
         def refresh_labels():
             # TODO Thread beim beenden beenden
             while self.alive:
-                self.call_routine_over_event( self.changeLables )
-                time.sleep(3)
+                #self.call_routine_over_event( self.changeLables )
+                self.call_routine_over_event( self.labels_update )
+                time.sleep(0.5)
         start_new_thread(refresh_labels,())
 
+    def __del__(self):
+        self.alive=False
+        time.sleep(0.5)
 
     def OnDemag(self, event):
         def demagThread():
@@ -109,6 +178,17 @@ class TabSchikane(wx.Panel):
         if value!=None:
             str_val = '%.3f'%value
         return str_val
+
+    def labels_update(self,evt):
+        self.st_quad1.SetLabel("Quadrupol 1\n%s V \n%s A\n%s °C" %(self.q1_volt,self.q1_curr,self.q1_temp))
+        self.st_quad2.SetLabel("Quadrupol 2\n%s V \n%s A\n%s °C" %(self.q2_volt,self.q2_curr,self.q2_temp))
+        self.st_quad3.SetLabel("Quadrupol 3\n%s V \n%s A\n%s °C" %(self.q3_volt,self.q3_curr,self.q3_temp))
+        self.st_quad4.SetLabel("Quadrupol 4\n%s V \n%s A\n%s °C" %(self.q4_volt,self.q4_curr,self.q4_temp))
+        self.st_quad5.SetLabel("Quadrupol 5\n%s V \n%s A\n%s °C" %(self.q5_volt,self.q5_curr,self.q5_temp))
+        self.st_quad6.SetLabel("Quadrupol 6\n%s V \n%s A\n%s °C" %(self.q6_volt,self.q6_curr,self.q6_temp))
+        self.st_quad7.SetLabel("Quadrupol 7\n%s V \n%s A\n%s °C" %(self.q7_volt,self.q7_curr,self.q7_temp))
+        self.st_dipol1.SetLabel("Dipol 1\n%s V \n%s A\n%s °C" %(self.d1_volt,self.d1_curr,self.d1_temp))
+        self.st_dipol2.SetLabel("Dipol 2\n%s V \n%s A\n%s °C" %(self.d2_volt,self.d2_curr,self.d2_temp))
 
     curr_pvname_changed = None
     def changeLables(self,evt):
@@ -168,9 +248,53 @@ class TabSchikane(wx.Panel):
 
         #print '%s changed %f'%(pvname,value)
 
-        self.curr_pvname_changed=pvname
-        self.call_routine_over_event( self.changeLables )
+        #self.curr_pvname_changed=pvname
+        #self.call_routine_over_event( self.changeLables )
+        relee_plus=0
+        relee_minus=24
+        sign=None
 
+        if pvname==temp_all.pvname:
+            arr = value.tostring().split(' ')
+            self.q1_temp=arr[0]
+            self.q2_temp=arr[1]
+            self.q3_temp=arr[2]
+            self.q4_temp=arr[3]
+            self.q5_temp=arr[4]
+            self.q6_temp=arr[5]
+            self.q7_temp=arr[6]
+            self.d1_temp=arr[7]
+            self.d2_temp=arr[8]
+
+        elif pvname==ps_volt_all.pvname:
+            arr = value.tostring().split(' ')
+            relee=round(float(arr[0]))
+            if relee==relee_plus: sign=1
+            else: sign=-1
+            self.q1_volt=sign*float(arr[1])
+            self.q2_volt=sign*float(arr[2])
+            self.q3_volt=sign*float(arr[3])
+            self.q4_volt=sign*float(arr[4])
+            self.q5_volt=sign*float(arr[5])
+            self.q6_volt=sign*float(arr[6])
+            self.q7_volt=sign*float(arr[7])
+            self.d1_volt=sign*float(arr[8])
+            self.d2_volt=sign*float(arr[9])
+
+        elif pvname==ps_curr_all.pvname:
+            arr = value.tostring().split(' ')
+            relee=round(float(arr[0]))
+            if relee==relee_plus: sign=1
+            else: sign=-1
+            self.q1_curr=sign*float(arr[1])
+            self.q2_curr=sign*float(arr[2])
+            self.q3_curr=sign*float(arr[3])
+            self.q4_curr=sign*float(arr[4])
+            self.q5_curr=sign*float(arr[5])
+            self.q6_curr=sign*float(arr[6])
+            self.q7_curr=sign*float(arr[7])
+            self.d1_curr=sign*float(arr[8])
+            self.d2_curr=sign*float(arr[9])
 
     SomeNewEvent=None
     def call_routine_over_event(self, handler):

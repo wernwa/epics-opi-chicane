@@ -32,6 +32,7 @@ q6_temp = PV_CONN('shicane:q6:temp', auto_monitor=True )
 q7_temp = PV_CONN('shicane:q7:temp', auto_monitor=True )
 d1_temp = PV_CONN('shicane:d1:temp', auto_monitor=True )
 d2_temp = PV_CONN('shicane:d2:temp', auto_monitor=True )
+temp_all = PV_CONN('shicane:temp_all', auto_monitor=True )
 
 q1_volt = PV_CONN('shicane:q1:volt', auto_monitor=True )
 q2_volt = PV_CONN('shicane:q2:volt', auto_monitor=True )
@@ -42,6 +43,7 @@ q6_volt = PV_CONN('shicane:q6:volt', auto_monitor=True )
 q7_volt = PV_CONN('shicane:q7:volt', auto_monitor=True )
 d1_volt = PV_CONN('shicane:d1:volt', auto_monitor=True )
 d2_volt = PV_CONN('shicane:d2:volt', auto_monitor=True )
+ps_volt_all = PV_CONN('shicane:ps_volt_all', auto_monitor=True )
 
 q1_curr = PV_CONN('shicane:q1:curr', auto_monitor=True )
 q2_curr = PV_CONN('shicane:q2:curr', auto_monitor=True )
@@ -52,6 +54,7 @@ q6_curr = PV_CONN('shicane:q6:curr', auto_monitor=True )
 q7_curr = PV_CONN('shicane:q7:curr', auto_monitor=True )
 d1_curr = PV_CONN('shicane:d1:curr', auto_monitor=True )
 d2_curr = PV_CONN('shicane:d2:curr', auto_monitor=True )
+ps_curr_all = PV_CONN('shicane:ps_curr_all', auto_monitor=True )
 
 
 quad1 = {q1_volt.pvname:q1_volt, q1_curr.pvname:q1_curr,q1_temp.pvname:q1_temp,
@@ -168,7 +171,7 @@ def demag():
                 continue
             volts = ps_heightV[i]-count*ps_heightV[i]/steps
             ps[i].setVolt(volts)
-            print '%d %f (ps:%d %f)' %(count,volts,i,ps_heightV[i])
+            #print '%d %f (ps:%d %f)' %(count,volts,i,ps_heightV[i])
         sleep(1)
 
 
@@ -178,7 +181,7 @@ def demag():
             continue
         volts = 0
         ps[i].setVolt(volts)
-        print '%d %f (ps:%d %f)' %(count,volts,i,ps_heightV[i])
+        #print '%d %f (ps:%d %f)' %(count,volts,i,ps_heightV[i])
 
     ''' set relee to 0 '''
     relee.setVolt(0)
