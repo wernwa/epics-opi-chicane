@@ -13,7 +13,9 @@ from PowerSupplyControls import PowerSupplyControls
 from thread import start_new_thread
 import time
 
-class TabSchikane(wx.Panel):
+shicane_type=None
+
+class DataPanel(wx.Panel):
 
     q1_volt='##.##'
     q2_volt='##.##'
@@ -49,34 +51,53 @@ class TabSchikane(wx.Panel):
     b_demag = None
 
     def __init__(self, parent):
-        wx.Panel.__init__(self, parent)
+        wx.Panel.__init__(self, parent, style=wx.SUNKEN_BORDER)
+        #panel2 = wx.Panel(self,-1, style=wx.SUNKEN_BORDER)
 
         panel = self
 
-        hbox = wx.BoxSizer(wx.HORIZONTAL)
+        #hbox = wx.BoxSizer(wx.HORIZONTAL)
 
 
-        #imageFile = 'pics/schikane_alpha.png'
-        imageFile = 'pics/Quadruplett_2_pos_scaled.png'
-        image = wx.Image(imageFile, wx.BITMAP_TYPE_ANY)
-        #image = image.Scale(0.5,0.5)
-        png = image.ConvertToBitmap()
-        imagewx = wx.StaticBitmap(self, -1, png, (5, 5), (png.GetWidth(), png.GetHeight()))
-        hbox.Add(imagewx, proportion=1, flag=wx.ALL|wx.EXPAND, border=15)
+        ##imageFile = 'pics/schikane_alpha.png'
+        #imageFile = 'pics/Quadruplett_2_pos_scaled.png'
+        #image = wx.Image(imageFile, wx.BITMAP_TYPE_ANY)
+        ##image = image.Scale(0.5,0.5)
+        #png = image.ConvertToBitmap()
+        #imagewx = wx.StaticBitmap(self, -1, png, (5, 5), (png.GetWidth(), png.GetHeight()))
+        #hbox.Add(imagewx, proportion=1, flag=wx.ALL|wx.EXPAND, border=15)
 
-        self.lpos_quadruplett = {
-            'q1': {'x':50,'y':400},
-            'q2': {'x':150,'y':400},
-            'q3': {'x':250,'y':400},
-            'q4': {'x':350,'y':400},
-            'd1': {'x':450,'y':400},
-            'q5': {'x':550,'y':400},
-            'q6': {'x':650,'y':400},
-            'q7': {'x':750,'y':400},
-            'd2': {'x':850,'y':400},
+        self.lpos_triplett = {
+            'q1': {'x':50,'y':10},
+            'q2': {'x':150,'y':10},
+            'q3': {'x':250,'y':10},
+            'd1': {'x':350,'y':10},
+            'q4': {'x':450,'y':10},
+            'q5': {'x':550,'y':10},
+            'q6': {'x':650,'y':10},
+            'd2': {'x':750,'y':10},
+            'q7': {'x':850,'y':10},
         }
-
-        lpos = self.lpos_quadruplett
+        self.lpos_quadruplett = {
+            'q1': {'x':50,'y':10},
+            'q2': {'x':150,'y':10},
+            'q3': {'x':250,'y':10},
+            'q4': {'x':350,'y':10},
+            'd1': {'x':450,'y':10},
+            'q5': {'x':550,'y':10},
+            'q6': {'x':650,'y':10},
+            'q7': {'x':750,'y':10},
+            'd2': {'x':850,'y':10},
+        }
+        global shicane_type
+        shicane_type = sys.argv[1]
+        if shicane_type=='quadruplett':
+            lpos = self.lpos_quadruplett
+        elif shicane_type=='triplett':
+            lpos = self.lpos_triplett
+        else:
+            print 'TODO'
+            exit(0)
         text_color_quad = (120,10,10)
         text_color_dipol = (10,10,120)
 
@@ -98,9 +119,10 @@ class TabSchikane(wx.Panel):
         self.st_quad6 = wx.StaticText(label="Quadrupol 6\n#.##V\n#.##A\n##°C",   parent=panel,
                 pos=wx.Point(lpos['q6']['x'],lpos['q1']['y']))
         self.st_quad6.SetForegroundColour(text_color_quad)
-        self.st_quad7 = wx.StaticText(label="Quadrupol 7\n#.##V \n#.##A\n##°C",  parent=panel,
+        if shicane_type=='quadruplett':
+            self.st_quad7 = wx.StaticText(label="Quadrupol 7\n#.##V \n#.##A\n##°C",  parent=panel,
                 pos=wx.Point(lpos['q7']['x'],lpos['q1']['y']))
-        self.st_quad7.SetForegroundColour(text_color_quad)
+            self.st_quad7.SetForegroundColour(text_color_quad)
         self.st_dipol1 = wx.StaticText(label="Dipol      \n#.##V \n#.##A\n##°C", parent=panel,
                 pos=wx.Point(lpos['d1']['x'],lpos['q1']['y']))
         self.st_dipol1.SetForegroundColour(text_color_dipol)
@@ -108,9 +130,9 @@ class TabSchikane(wx.Panel):
                 pos=wx.Point(lpos['d2']['x'],lpos['q1']['y']))
         self.st_dipol2.SetForegroundColour(text_color_dipol)
 
-        self.b_demag = wx.Button(parent=panel, pos=wx.Point(50, 490), label="Demag")
-        self.b_demag.Bind(wx.EVT_BUTTON, self.OnDemag)
-        panel.SetSizer(hbox)
+        #self.b_demag = wx.Button(parent=panel, pos=wx.Point(50, 490), label="Demag")
+        #self.b_demag.Bind(wx.EVT_BUTTON, self.OnDemag)
+        #panel.SetSizer(hbox)
 
         #q1_volt.add_callback(self.onPVChanges)
         #q1_curr.add_callback(self.onPVChanges)
@@ -207,7 +229,7 @@ class TabSchikane(wx.Panel):
         start_new_thread( demagThread,() )
 
     def pv_get_str(self, pv):
-        #print 'TabSchikane.pv_get_str ',pv
+        #print 'DataPanel.pv_get_str ',pv
         value = pv.get()
         str_val = '##.###'
         if value!=None:
@@ -215,13 +237,15 @@ class TabSchikane(wx.Panel):
         return str_val
 
     def labels_update(self,evt):
+        global shicane_type
         self.st_quad1.SetLabel("Quadrupol 1\n%s V \n%s A\n%s °C" %(self.q1_volt,self.q1_curr,self.q1_temp))
         self.st_quad2.SetLabel("Quadrupol 2\n%s V \n%s A\n%s °C" %(self.q2_volt,self.q2_curr,self.q2_temp))
         self.st_quad3.SetLabel("Quadrupol 3\n%s V \n%s A\n%s °C" %(self.q3_volt,self.q3_curr,self.q3_temp))
         self.st_quad4.SetLabel("Quadrupol 4\n%s V \n%s A\n%s °C" %(self.q4_volt,self.q4_curr,self.q4_temp))
         self.st_quad5.SetLabel("Quadrupol 5\n%s V \n%s A\n%s °C" %(self.q5_volt,self.q5_curr,self.q5_temp))
         self.st_quad6.SetLabel("Quadrupol 6\n%s V \n%s A\n%s °C" %(self.q6_volt,self.q6_curr,self.q6_temp))
-        self.st_quad7.SetLabel("Quadrupol 7\n%s V \n%s A\n%s °C" %(self.q7_volt,self.q7_curr,self.q7_temp))
+        if shicane_type=='quadruplett':
+            self.st_quad7.SetLabel("Quadrupol 7\n%s V \n%s A\n%s °C" %(self.q7_volt,self.q7_curr,self.q7_temp))
         self.st_dipol1.SetLabel("Dipol 1\n%s V \n%s A\n%s °C" %(self.d1_volt,self.d1_curr,self.d1_temp))
         self.st_dipol2.SetLabel("Dipol 2\n%s V \n%s A\n%s °C" %(self.d2_volt,self.d2_curr,self.d2_temp))
 

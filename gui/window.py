@@ -13,10 +13,11 @@ from Experiment import *
 
 import wx
 from TabPowerSupplies import TabPowerSupplies
-from TabSchikane import TabSchikane
+from TabOverview import TabOverview
 from TabStripChartGNUPLOT import TabStripChartGNUPLOT
 from TabStripChart import TabStripChart
 from TabMultipoleCurrent import TabMultipoleCurrent
+from DataPanel import DataPanel
 
 
 
@@ -28,7 +29,7 @@ class PageThree(wx.Panel):
 
 class MainFrame(wx.Frame):
     def __init__(self):
-        wx.Frame.__init__(self, None, title="Magnets Control GUI", pos=(150,150), size=(800,600))
+        wx.Frame.__init__(self, None, title="Magnets Control GUI", pos=(10,10), size=(1000,800))
         self.Bind(wx.EVT_CLOSE, self.OnClose)
 
         menuBar = wx.MenuBar()
@@ -47,8 +48,7 @@ class MainFrame(wx.Frame):
         # create the page windows as children of the notebook
 
         # add the pages to the notebook with the label to show on the tab
-        self.tabShicane = TabSchikane(nb)
-        nb.AddPage(self.tabShicane, "Overview")
+        nb.AddPage(TabOverview(nb), "Overview")
         nb.AddPage(TabPowerSupplies(nb), "Power Supplies")
         nb.AddPage(TabMultipoleCurrent(nb), "Multipole Current")
         #nb.AddPage(TabStripChart(nb), "StripChart")
@@ -61,6 +61,19 @@ class MainFrame(wx.Frame):
         sizer.Add(nb, 1, wx.EXPAND)
         p.SetSizer(sizer)
 
+        self.dataPanel = DataPanel(self)
+        #panel2 = wx.Panel(self,-1, style=wx.SUNKEN_BORDER)
+
+        #panel2.SetBackgroundColour("RED")
+
+
+        box = wx.BoxSizer(wx.VERTICAL)
+        box.Add(p, 5, wx.EXPAND)
+        box.Add(self.dataPanel, 1, wx.EXPAND)
+
+        self.SetAutoLayout(True)
+        self.SetSizer(box)
+        self.Layout()
 
 
     def OnClose(self, event):
@@ -88,7 +101,7 @@ class MainFrame(wx.Frame):
 
         # Thread noch aktiv, besser destructor!
         #self.tabShicane.alive=False
-        self.tabShicane.__del__()
+        self.dataPanel.__del__()
 
 
 
@@ -99,6 +112,7 @@ if __name__ == "__main__":
 
     #print 'init the devices'
     #init_devices()
+
 
     app = wx.App()
     MainFrame().Show()
