@@ -77,6 +77,17 @@ dipol1 = {d1_volt.pvname:d1_volt, d1_curr.pvname:d1_curr,d1_temp.pvname:d1_temp,
 dipol2 = {d2_volt.pvname:d2_volt, d2_curr.pvname:d2_curr,d2_temp.pvname:d2_temp,
             ps10.Volt.pvname:ps10.Volt, ps10.Curr.pvname:ps10.Curr }
 
+mquad1 = Magnet(ps=ps2, pv_volt=q1_volt, pv_curr=q1_curr, pv_temp=q1_temp)
+mquad2 = Magnet(ps=ps3, pv_volt=q2_volt, pv_curr=q2_curr, pv_temp=q2_temp)
+mquad3 = Magnet(ps=ps4, pv_volt=q3_volt, pv_curr=q3_curr, pv_temp=q3_temp)
+mquad4 = Magnet(ps=ps5, pv_volt=q4_volt, pv_curr=q4_curr, pv_temp=q4_temp)
+mquad5 = Magnet(ps=ps6, pv_volt=q5_volt, pv_curr=q5_curr, pv_temp=q5_temp)
+mquad6 = Magnet(ps=ps7, pv_volt=q6_volt, pv_curr=q6_curr, pv_temp=q6_temp)
+mquad7 = Magnet(ps=ps8, pv_volt=q7_volt, pv_curr=q7_curr, pv_temp=q7_temp)
+mdipol1 = Magnet(ps=ps9, pv_volt=d1_volt, pv_curr=d1_curr, pv_temp=d1_temp)
+mdipol2 = Magnet(ps=ps10, pv_volt=d2_volt, pv_curr=d2_curr, pv_temp=d2_temp)
+
+
 ps = []         # alias for powersupply
 ps.append(None) # avoid 0 index
 ps.append(relee)# 1

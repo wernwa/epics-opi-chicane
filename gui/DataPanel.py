@@ -101,33 +101,65 @@ class DataPanel(wx.Panel):
         text_color_quad = (120,10,10)
         text_color_dipol = (10,10,120)
 
+        self.font_bold = wx.Font(10, wx.DEFAULT,  wx.NORMAL, wx.BOLD)
+        self.font_normal = wx.Font(10, wx.DEFAULT, wx.NORMAL, wx.NORMAL)
+
+        def magnet_selected(event,title,magn,st):
+            parent.nb.SetSelection(1)
+            #print 'notebook tab 1 selection %s'%title
+            #st = event.GetEventObject()
+            if self.st_selected != None:
+                self.st_selected.SetFont(self.font_normal)
+            st.SetFont(self.font_bold)
+            self.st_selected = st
+            parent.tabMagnProperties.magnet_selected(event,title,magn)
+
         self.st_quad1 = wx.StaticText(label="Quadrupol 1\n#.##V \n#.##A\n##°C",  parent=panel,
                 pos=wx.Point(lpos['q1']['x'],lpos['q1']['y']))
+        self.st_quad1.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Quadrupol 1',mquad1,self.st_quad1))
         self.st_quad1.SetForegroundColour(text_color_quad)
+        self.st_selected = self.st_quad1
+        self.st_selected.SetFont(self.font_bold)
+
         self.st_quad2 = wx.StaticText(label="Quadrupol 2\n#.##V\n#.##A\n##°C",   parent=panel,
                 pos=wx.Point(lpos['q2']['x'],lpos['q1']['y']))
+        self.st_quad2.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Quadrupol 2',mquad2,self.st_quad2))
         self.st_quad2.SetForegroundColour(text_color_quad)
+
         self.st_quad3 = wx.StaticText(label="Quadrupol 3\n#.##V\n#.##A\n##°C",   parent=panel,
                 pos=wx.Point(lpos['q3']['x'],lpos['q1']['y']))
+        self.st_quad3.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Quadrupol 3',mquad3,self.st_quad3))
         self.st_quad3.SetForegroundColour(text_color_quad)
+
         self.st_quad4 = wx.StaticText(label="Quadrupol 4\n#.##V\n#.##A\n##°C",   parent=panel,
                 pos=wx.Point(lpos['q4']['x'],lpos['q1']['y']))
+        self.st_quad4.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Quadrupol 4',mquad4,self.st_quad4))
         self.st_quad4.SetForegroundColour(text_color_quad)
+
         self.st_quad5 = wx.StaticText(label="Quadrupol 5\n#.##V\n#.##A\n##°C",   parent=panel,
                 pos=wx.Point(lpos['q5']['x'],lpos['q1']['y']))
+        self.st_quad5.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Quadrupol 5',mquad5,self.st_quad5))
         self.st_quad5.SetForegroundColour(text_color_quad)
+
         self.st_quad6 = wx.StaticText(label="Quadrupol 6\n#.##V\n#.##A\n##°C",   parent=panel,
                 pos=wx.Point(lpos['q6']['x'],lpos['q1']['y']))
+        self.st_quad6.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Quadrupol 6',mquad6,self.st_quad6))
         self.st_quad6.SetForegroundColour(text_color_quad)
+
         if shicane_type=='quadruplett':
             self.st_quad7 = wx.StaticText(label="Quadrupol 7\n#.##V \n#.##A\n##°C",  parent=panel,
                 pos=wx.Point(lpos['q7']['x'],lpos['q1']['y']))
+            self.st_quad7.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Quadrupol 7',mquad7,self.st_quad7))
             self.st_quad7.SetForegroundColour(text_color_quad)
+
         self.st_dipol1 = wx.StaticText(label="Dipol      \n#.##V \n#.##A\n##°C", parent=panel,
                 pos=wx.Point(lpos['d1']['x'],lpos['q1']['y']))
+        self.st_dipol1.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Dipol 1',mdipol1,self.st_dipol1))
         self.st_dipol1.SetForegroundColour(text_color_dipol)
+
         self.st_dipol2 = wx.StaticText(label="Dipol 2    \n#.##V\n#.##A\n##°C",  parent=panel,
                 pos=wx.Point(lpos['d2']['x'],lpos['q1']['y']))
+        self.st_dipol2.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Dipol 2',mdipol2,self.st_dipol2))
         self.st_dipol2.SetForegroundColour(text_color_dipol)
 
         #self.b_demag = wx.Button(parent=panel, pos=wx.Point(50, 490), label="Demag")

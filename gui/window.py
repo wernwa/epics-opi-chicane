@@ -12,7 +12,7 @@ sys.path.insert(0, './cli')
 from Experiment import *
 
 import wx
-from TabPowerSupplies import TabPowerSupplies
+from TabMagnProperties import TabMagnProperties
 from TabOverview import TabOverview
 from TabStripChartGNUPLOT import TabStripChartGNUPLOT
 from TabStripChart import TabStripChart
@@ -43,14 +43,15 @@ class MainFrame(wx.Frame):
 
         # Here we create a panel and a notebook on the panel
         p = wx.Panel(self)
-        nb = wx.Notebook(p)
+        self.nb = nb = wx.Notebook(p)
 
         # create the page windows as children of the notebook
 
         # add the pages to the notebook with the label to show on the tab
-        nb.AddPage(TabOverview(nb), "Overview")
-        nb.AddPage(TabPowerSupplies(nb), "Power Supplies")
-        nb.AddPage(TabMultipoleCurrent(nb), "Multipole Current")
+        self.nb.AddPage(TabOverview(nb), "Overview")
+        self.tabMagnProperties = TabMagnProperties(nb)
+        self.nb.AddPage(self.tabMagnProperties, "Magnet Properties")
+        self.nb.AddPage(TabMultipoleCurrent(nb), "Multipole Current")
         #nb.AddPage(TabStripChart(nb), "StripChart")
             #nb.AddPage(PageThree(nb), "Magnetic Fields")
             #nb.AddPage(TabStripChartGNUPLOT(nb), "StripChartGNUPLOT (old)")
