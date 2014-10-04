@@ -140,8 +140,19 @@ def init_devices():
         magn.append(None) # 6
         magn.append(None) # 7
 
+demag_pv = PV('shicane:demag')
+demag_steps_pv = PV('shicane:demag:steps')
+demag_sleep_pv = PV('shicane:demag:sleep')
 
 def demag():
+    demag_steps_pv.put(5)
+    print demag_steps_pv.get()
+    demag_sleep_pv.put(2)
+    print demag_sleep_pv.get()
+    demag_pv.put(1)
+
+
+def demag_client_depr():
     relee_val = 24
     ps_heightV = []
     ps_heightV.append(None) # avoid 0 index

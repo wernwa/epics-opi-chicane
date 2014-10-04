@@ -56,22 +56,57 @@ class TabSchikane(wx.Panel):
         hbox = wx.BoxSizer(wx.HORIZONTAL)
 
 
-        imageFile = 'pics/schikane_alpha.png'
-        png = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+        #imageFile = 'pics/schikane_alpha.png'
+        imageFile = 'pics/Quadruplett_2_pos_scaled.png'
+        image = wx.Image(imageFile, wx.BITMAP_TYPE_ANY)
+        #image = image.Scale(0.5,0.5)
+        png = image.ConvertToBitmap()
         imagewx = wx.StaticBitmap(self, -1, png, (5, 5), (png.GetWidth(), png.GetHeight()))
-
         hbox.Add(imagewx, proportion=1, flag=wx.ALL|wx.EXPAND, border=15)
 
-        self.st_dipol1 = wx.StaticText(label="Dipol      \n#.##V \n#.##A\n##°C", parent=panel,pos=wx.Point(50, 400))
-        self.st_quad1 = wx.StaticText(label="Quadrupol 1\n#.##V \n#.##A\n##°C", parent=panel,pos=wx.Point(150, 400))
-        self.st_quad2 = wx.StaticText(label="Quadrupol 2\n#.##V\n#.##A\n##°C", parent=panel,pos=wx.Point(250, 400))
-        self.st_quad3 = wx.StaticText(label="Quadrupol 3\n#.##V\n#.##A\n##°C", parent=panel,pos=wx.Point(350, 400))
-        self.st_quad4 = wx.StaticText(label="Quadrupol 4\n#.##V\n#.##A\n##°C", parent=panel,pos=wx.Point(470, 400))
-        self.st_quad5 = wx.StaticText(label="Quadrupol 5\n#.##V\n#.##A\n##°C", parent=panel,pos=wx.Point(570, 400))
-        self.st_dipol2 = wx.StaticText(label="Dipol 2    \n#.##V\n#.##A\n##°C", parent=panel,pos=wx.Point(680, 400))
-        self.st_quad6 = wx.StaticText(label="Quadrupol 6\n#.##V\n#.##A\n##°C", parent=panel,pos=wx.Point(780, 400))
-        self.st_quad7 = wx.StaticText(label="Quadrupol 7\n#.##V \n#.##A\n##°C", parent=panel,pos=wx.Point(880, 400))
-        static_text = wx.StaticText(label="Undulator  \n#.##V\n#.##A\n##°C", parent=panel,pos=wx.Point(1100, 400))
+        self.lpos_quadruplett = {
+            'q1': {'x':50,'y':400},
+            'q2': {'x':150,'y':400},
+            'q3': {'x':250,'y':400},
+            'q4': {'x':350,'y':400},
+            'd1': {'x':450,'y':400},
+            'q5': {'x':550,'y':400},
+            'q6': {'x':650,'y':400},
+            'q7': {'x':750,'y':400},
+            'd2': {'x':850,'y':400},
+        }
+
+        lpos = self.lpos_quadruplett
+        text_color_quad = (120,10,10)
+        text_color_dipol = (10,10,120)
+
+        self.st_quad1 = wx.StaticText(label="Quadrupol 1\n#.##V \n#.##A\n##°C",  parent=panel,
+                pos=wx.Point(lpos['q1']['x'],lpos['q1']['y']))
+        self.st_quad1.SetForegroundColour(text_color_quad)
+        self.st_quad2 = wx.StaticText(label="Quadrupol 2\n#.##V\n#.##A\n##°C",   parent=panel,
+                pos=wx.Point(lpos['q2']['x'],lpos['q1']['y']))
+        self.st_quad2.SetForegroundColour(text_color_quad)
+        self.st_quad3 = wx.StaticText(label="Quadrupol 3\n#.##V\n#.##A\n##°C",   parent=panel,
+                pos=wx.Point(lpos['q3']['x'],lpos['q1']['y']))
+        self.st_quad3.SetForegroundColour(text_color_quad)
+        self.st_quad4 = wx.StaticText(label="Quadrupol 4\n#.##V\n#.##A\n##°C",   parent=panel,
+                pos=wx.Point(lpos['q4']['x'],lpos['q1']['y']))
+        self.st_quad4.SetForegroundColour(text_color_quad)
+        self.st_quad5 = wx.StaticText(label="Quadrupol 5\n#.##V\n#.##A\n##°C",   parent=panel,
+                pos=wx.Point(lpos['q5']['x'],lpos['q1']['y']))
+        self.st_quad5.SetForegroundColour(text_color_quad)
+        self.st_quad6 = wx.StaticText(label="Quadrupol 6\n#.##V\n#.##A\n##°C",   parent=panel,
+                pos=wx.Point(lpos['q6']['x'],lpos['q1']['y']))
+        self.st_quad6.SetForegroundColour(text_color_quad)
+        self.st_quad7 = wx.StaticText(label="Quadrupol 7\n#.##V \n#.##A\n##°C",  parent=panel,
+                pos=wx.Point(lpos['q7']['x'],lpos['q1']['y']))
+        self.st_quad7.SetForegroundColour(text_color_quad)
+        self.st_dipol1 = wx.StaticText(label="Dipol      \n#.##V \n#.##A\n##°C", parent=panel,
+                pos=wx.Point(lpos['d1']['x'],lpos['q1']['y']))
+        self.st_dipol1.SetForegroundColour(text_color_dipol)
+        self.st_dipol2 = wx.StaticText(label="Dipol 2    \n#.##V\n#.##A\n##°C",  parent=panel,
+                pos=wx.Point(lpos['d2']['x'],lpos['q1']['y']))
+        self.st_dipol2.SetForegroundColour(text_color_dipol)
 
         self.b_demag = wx.Button(parent=panel, pos=wx.Point(50, 490), label="Demag")
         self.b_demag.Bind(wx.EVT_BUTTON, self.OnDemag)
