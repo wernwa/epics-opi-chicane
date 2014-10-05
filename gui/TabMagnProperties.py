@@ -101,11 +101,15 @@ class TabMagnProperties(wx.Panel):
     def magnet_selected(self, event, title, magn):
         self.st_title.SetLabel(title+'\n')
         self.magn = magn
-        self.tcV.SetValue('%.3f'%magn.pv_volt.get())
-        self.tcA.SetValue('%.3f'%magn.pv_curr.get())
-        self.tck.SetValue('')
+        volt = magn.pv_volt.get()
+        if volt==None: volt=0
+        self.tcV.SetValue('%.3f'%volt)
+        curr = magn.pv_curr.get()
+        if curr==None: curr=0
+        self.tcA.SetValue('%.3f'%curr)
+        self.tck.SetValue('%.3f'%self.magn.get_k(curr))
         if 'Quadrupol' in title: self.st_lab_y_achsis.SetLabel('k')
-        else: self.st_lab_y_achsis.SetLabel('alpha')
+        elif 'Dipol' in title: self.st_lab_y_achsis.SetLabel('alpha')
         self.plot()
 
 
@@ -121,13 +125,9 @@ class TabMagnProperties(wx.Panel):
             elif control == self.tcA:
                 self.magn.ps.setCurr(value)
             elif control == self.tck:
-                x=self.magn.data_x
-                y=self.magn.data_y
-                spline = interp1d(y,x, kind='cubic')
                 k = float(self.tck.GetValue())
-                curr = round(spline(k),3)
-                print 'curr %f'%curr
-                self.magn.ps.setCurr(curr)
+                print 'curr %f'%self.magn.get_curr(k)
+                self.magn.ps.setCurr(self.magn.get_curr(k))
         e.Skip()
 
 
@@ -138,12 +138,9 @@ class TabMagnProperties(wx.Panel):
         elif control == self.bA:
             self.tcA.SetValue('%.3f'%self.magn.pv_curr.get())
         elif control == self.bk:
-            x=self.magn.data_x
-            y=self.magn.data_y
-            spline = interp1d(x,y, kind='cubic')
             curr = float(self.tcA.GetValue())
-            k = round(spline(curr),3)
-            self.tck.SetValue('%.3f'%k)
+            self.tck.SetValue('%.3f'%self.magn.get_k(curr))
+            print 'curr %f'%self.magn.get_k(curr)
 
     def plot(self):
 
