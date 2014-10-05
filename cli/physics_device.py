@@ -15,6 +15,9 @@ import re
 
 class Magnet:
 
+    data_xlabel=None
+    data_ylabel=None
+
     def __init__(self, ps=None, pv_volt=None, pv_curr=None, pv_temp=None):
 
         self.ps = ps
@@ -22,7 +25,6 @@ class Magnet:
         self.pv_volt = pv_volt
         self.pv_curr = pv_curr
 
-        self.load_data('data/strength-int.data')
 
 
     def load_data(self,file_name):
@@ -32,10 +34,15 @@ class Magnet:
 
         # read the data from file
         for line in file(file_name, 'r').xreadlines():
-            # omit comments
-            if (len(re.findall('^\s*?#',line))!=0): continue
             # split line into an array
             arr = re.findall('\S+',line)
+            if len(arr)==0: continue
+            # omit comments
+            if (len(re.findall('^\s*?#',line))!=0):
+                if self.data_xlabel==None:
+                    self.data_xlabel = arr[0]
+                    self.data_ylabel = arr[1]
+                continue
             # fill the x,y arrays
             x.append(float(arr[0]))
             y.append(float(arr[1]))

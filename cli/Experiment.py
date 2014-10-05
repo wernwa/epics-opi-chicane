@@ -88,6 +88,17 @@ mdipol1 = Magnet(ps=ps9, pv_volt=d1_volt, pv_curr=d1_curr, pv_temp=d1_temp)
 mdipol2 = Magnet(ps=ps10, pv_volt=d2_volt, pv_curr=d2_curr, pv_temp=d2_temp)
 
 
+mquad1.load_data('magnet-data/q1-k-I.data')
+mquad2.load_data('magnet-data/q2-k-I.data')
+mquad3.load_data('magnet-data/q3-k-I.data')
+mquad4.load_data('magnet-data/q4-k-I.data')
+mquad5.load_data('magnet-data/q5-k-I.data')
+mquad6.load_data('magnet-data/q6-k-I.data')
+mquad7.load_data('magnet-data/q7-k-I.data')
+mdipol1.load_data('magnet-data/d1-alpha-I.data')
+mdipol2.load_data('magnet-data/d2-alpha-I.data')
+
+
 ps = []         # alias for powersupply
 ps.append(None) # avoid 0 index
 ps.append(relee)# 1

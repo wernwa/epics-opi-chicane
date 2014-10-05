@@ -68,13 +68,13 @@ class TabMagnProperties(wx.Panel):
         font_bold = wx.Font(16, wx.DEFAULT,  wx.NORMAL, wx.BOLD)
         self.st_title.SetFont(font_bold)
 
-
+        self.st_lab_y_achsis = wx.StaticText(panel, label="k mstrength:")
 
         fgs.AddMany([
             (wx.StaticText(panel, label="")), (self.st_title),(wx.StaticText(panel, label="")),
             (wx.StaticText(panel, label="Volt:")), (self.tcV, 1, wx.EXPAND),(self.bV),
             (wx.StaticText(panel, label="Curr:")), (self.tcA, 1, wx.EXPAND),(self.bA),
-            (wx.StaticText(panel, label="k mstrength:")), (self.tck, 1, wx.EXPAND),(self.bk),
+            (self.st_lab_y_achsis), (self.tck, 1, wx.EXPAND),(self.bk),
         ])
 
 
@@ -88,43 +88,13 @@ class TabMagnProperties(wx.Panel):
 
 
 
-
         # plot
-#        self.figure = plt.figure()
-#
-#        self.canvas = FigureCanvas(self,-1, self.figure)
-#        #self.toolbar = NavigationToolbar(self.canvas)
-#        #self.toolbar.Hide()
-#
-#        x = self.I_arr = [0]
-#        y = self.k_arr= [0]
-#
-#
-#        # read the data from file
-#        for line in file('data/strength-int.data', 'r').xreadlines():
-#            # omit comments
-#            if (len(re.findall('^\s*?#',line))!=0): continue
-#            # split line into an array
-#            arr = re.findall('\S+',line)
-#            # fill the x,y arrays
-#            x.append(float(arr[0]))
-#            y.append(float(arr[1]))
-#
-#
-#
-#        # spline the data
-#        self.spline = interp1d(x, y, kind='cubic')
-#        self.xnew = np.linspace(x[0], x[len(x)-1], len(x)*10)
-#
-#
-#
 
         self.figure = Figure()
-        self.axes = self.figure.add_subplot(111)
         self.canvas = FigureCanvas(self,-1,self.figure)
 
         hbox.Add(fgs, proportion=1, flag=wx.ALL|wx.EXPAND, border=15)
-        hbox.Add(self.canvas, proportion=3, flag=wx.ALL|wx.EXPAND, border=15)
+        hbox.Add(self.canvas, proportion=2.5, flag=wx.ALL|wx.EXPAND, border=15)
 
         panel.SetSizer(hbox)
 
@@ -133,7 +103,9 @@ class TabMagnProperties(wx.Panel):
         self.magn = magn
         self.tcV.SetValue('%.3f'%magn.pv_volt.get())
         self.tcA.SetValue('%.3f'%magn.pv_curr.get())
-        self.tck.SetValue('TODO')
+        self.tck.SetValue('')
+        if 'Quadrupol' in title: self.st_lab_y_achsis.SetLabel('k')
+        else: self.st_lab_y_achsis.SetLabel('alpha')
         self.plot()
 
 
@@ -149,7 +121,13 @@ class TabMagnProperties(wx.Panel):
             elif control == self.tcA:
                 self.magn.ps.setCurr(value)
             elif control == self.tck:
-                print 'k TODO'
+                x=self.magn.data_x
+                y=self.magn.data_y
+                spline = interp1d(y,x, kind='cubic')
+                k = float(self.tck.GetValue())
+                curr = round(spline(k),3)
+                print 'curr %f'%curr
+                self.magn.ps.setCurr(curr)
         e.Skip()
 
 
@@ -160,30 +138,31 @@ class TabMagnProperties(wx.Panel):
         elif control == self.bA:
             self.tcA.SetValue('%.3f'%self.magn.pv_curr.get())
         elif control == self.bk:
-            self.tck.SetValue('refresh TODO')
+            x=self.magn.data_x
+            y=self.magn.data_y
+            spline = interp1d(x,y, kind='cubic')
+            curr = float(self.tcA.GetValue())
+            k = round(spline(curr),3)
+            self.tck.SetValue('%.3f'%k)
 
     def plot(self):
-#        ax = self.figure.add_subplot(111)
-#        ax.hold(False)
-#        #ax.plot(data, '*-')
-#
-#        ax.set_xlabel(r'current I [A]')
-#        #ax.set_ylabel(r'multipole strength k [$\frac{1}{\mbox{m}}$]')
-#        #ax.plot(self.I_arr,self.k_arr, marker='o', linestyle='--', color='r',label='quad multipole m')
-#        #ax.plot(self.xnew,self.spline(self.xnew), linestyle='-', color='g',label='spline')
-#        ax.plot(self.I_arr,self.k_arr, 'or--',self.xnew,self.spline(self.xnew),'g-')
-#
-#        self.canvas.draw()
 
-#        # spline the data
-#        self.spline = interp1d(x, y, kind='cubic')
-#        self.xnew = np.linspace(x[0], x[len(x)-1], len(x)*10)
+        x=self.magn.data_x
+        y=self.magn.data_y
 
-        self.axes.set_xlabel('x label')
-        self.axes.set_ylabel('y label')
-        #t = numpy.arange(0.0,10,1.0)
-        #s = [0,1,0,1,0,2,1,2,1,0]
-        #self.y_max = 1.0
-        self.axes.plot(self.magn.data_x,self.magn.data_y)
+        self.figure.clear()
+        self.axes = self.figure.add_subplot(111)
+        self.axes.grid(True)
+        self.axes.set_xlabel(self.magn.data_xlabel)
+        self.axes.set_ylabel(self.magn.data_ylabel)
+        #self.axes.plot(self.magn.data_x,self.magn.data_y)
+        self.axes.plot(x,y, marker='o', linestyle='--', color='r')
 
+        # spline the data
+        spline = interp1d(x, y, kind='cubic')
+        xnew = numpy.linspace(x[0], x[len(x)-1], len(x)*10)
+
+        self.axes.plot(xnew,spline(xnew), linestyle='-', color='g')
+
+        self.canvas.draw()
 
