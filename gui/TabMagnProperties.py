@@ -11,8 +11,24 @@ sys.path.insert(0, './cli')
 from Experiment import *
 import wx
 from epics import PV
-from PowerSupplyControls import PowerSupplyControls
 import math
+
+
+import numpy
+import matplotlib
+
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
+
+#from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
+#from matplotlib.backends.backend_wxagg import NavigationToolbar2WxAgg as NavigationToolbar
+#import matplotlib.pyplot as plt
+
+#import numpy as np
+
+from scipy.interpolate import interp1d
+import re
+
 
 class TabMagnProperties(wx.Panel):
 
@@ -72,19 +88,53 @@ class TabMagnProperties(wx.Panel):
 
 
 
-        imageFile = 'pics/crop_Zplus_Cat-III_L2.jpg'
-        png = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
-        imagewx = wx.StaticBitmap(self, -1, png, (10, 5), (png.GetWidth(), png.GetHeight()))
+
+        # plot
+#        self.figure = plt.figure()
+#
+#        self.canvas = FigureCanvas(self,-1, self.figure)
+#        #self.toolbar = NavigationToolbar(self.canvas)
+#        #self.toolbar.Hide()
+#
+#        x = self.I_arr = [0]
+#        y = self.k_arr= [0]
+#
+#
+#        # read the data from file
+#        for line in file('data/strength-int.data', 'r').xreadlines():
+#            # omit comments
+#            if (len(re.findall('^\s*?#',line))!=0): continue
+#            # split line into an array
+#            arr = re.findall('\S+',line)
+#            # fill the x,y arrays
+#            x.append(float(arr[0]))
+#            y.append(float(arr[1]))
+#
+#
+#
+#        # spline the data
+#        self.spline = interp1d(x, y, kind='cubic')
+#        self.xnew = np.linspace(x[0], x[len(x)-1], len(x)*10)
+#
+#
+#
+
+        self.figure = Figure()
+        self.axes = self.figure.add_subplot(111)
+        self.canvas = FigureCanvas(self,-1,self.figure)
 
         hbox.Add(fgs, proportion=1, flag=wx.ALL|wx.EXPAND, border=15)
-        hbox.Add(imagewx, proportion=1, flag=wx.ALL|wx.EXPAND, border=15)
+        hbox.Add(self.canvas, proportion=3, flag=wx.ALL|wx.EXPAND, border=15)
 
         panel.SetSizer(hbox)
-
 
     def magnet_selected(self, event, title, magn):
         self.st_title.SetLabel(title+'\n')
         self.magn = magn
+        self.tcV.SetValue('%.3f'%magn.pv_volt.get())
+        self.tcA.SetValue('%.3f'%magn.pv_curr.get())
+        self.tck.SetValue('TODO')
+        self.plot()
 
 
 
@@ -92,14 +142,7 @@ class TabMagnProperties(wx.Panel):
     def Return_pressed(self, e):
         keycode = e.GetKeyCode()
         if keycode == wx.WXK_RETURN or keycode == wx.WXK_NUMPAD_ENTER:
-            #value = math.fabs(float(self.tcV.GetValue()))
             value = round(float(self.tcV.GetValue()),3)
-            #self.ps.setterVolt.put(value)
-            #print 'setting  %f' %value
-            #''' actualize the getter pv (not needed if SCAN eq periodic)  '''
-            #self.ps.getterVolt.put(value)
-            #global ps2
-            #ps2.setVolt(value)
             control = e.GetEventObject()
             if control == self.tcV:
                 self.magn.ps.setVolt(value)
@@ -111,13 +154,36 @@ class TabMagnProperties(wx.Panel):
 
 
     def Refresh(self, e):
-        #dlg = wx.MessageDialog(self,
-        #    "you pressed the REFRESH button, he he",
-        #    "Confirm REFRESH", wx.OK)
+        control = e.GetEventObject()
+        if control == self.bV:
+            self.tcV.SetValue('%.3f'%self.magn.pv_volt.get())
+        elif control == self.bA:
+            self.tcA.SetValue('%.3f'%self.magn.pv_curr.get())
+        elif control == self.bk:
+            self.tck.SetValue('refresh TODO')
 
-        #result = dlg.ShowModal()
-        #dlg.Destroy()
+    def plot(self):
+#        ax = self.figure.add_subplot(111)
+#        ax.hold(False)
+#        #ax.plot(data, '*-')
+#
+#        ax.set_xlabel(r'current I [A]')
+#        #ax.set_ylabel(r'multipole strength k [$\frac{1}{\mbox{m}}$]')
+#        #ax.plot(self.I_arr,self.k_arr, marker='o', linestyle='--', color='r',label='quad multipole m')
+#        #ax.plot(self.xnew,self.spline(self.xnew), linestyle='-', color='g',label='spline')
+#        ax.plot(self.I_arr,self.k_arr, 'or--',self.xnew,self.spline(self.xnew),'g-')
+#
+#        self.canvas.draw()
 
-        #self.tcV.SetValue("%.3f" %self.ps.getterVolt.put(0))
-        print 'refresh, Bingo',e.GetEventObject()
+#        # spline the data
+#        self.spline = interp1d(x, y, kind='cubic')
+#        self.xnew = np.linspace(x[0], x[len(x)-1], len(x)*10)
+
+        self.axes.set_xlabel('x label')
+        self.axes.set_ylabel('y label')
+        #t = numpy.arange(0.0,10,1.0)
+        #s = [0,1,0,1,0,2,1,2,1,0]
+        #self.y_max = 1.0
+        self.axes.plot(self.magn.data_x,self.magn.data_y)
+
 

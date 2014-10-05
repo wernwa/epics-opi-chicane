@@ -14,9 +14,9 @@ from Experiment import *
 import wx
 from TabMagnProperties import TabMagnProperties
 from TabOverview import TabOverview
-from TabStripChartGNUPLOT import TabStripChartGNUPLOT
+#from TabStripChartGNUPLOT import TabStripChartGNUPLOT
 from TabStripChart import TabStripChart
-from TabMultipoleCurrent import TabMultipoleCurrent
+#from TabMultipoleCurrent import TabMultipoleCurrent
 from DataPanel import DataPanel
 
 
@@ -51,7 +51,7 @@ class MainFrame(wx.Frame):
         self.nb.AddPage(TabOverview(nb), "Overview")
         self.tabMagnProperties = TabMagnProperties(nb)
         self.nb.AddPage(self.tabMagnProperties, "Magnet Properties")
-        self.nb.AddPage(TabMultipoleCurrent(nb), "Multipole Current")
+        #self.nb.AddPage(TabMultipoleCurrent(nb), "Multipole Current")
         #nb.AddPage(TabStripChart(nb), "StripChart")
             #nb.AddPage(PageThree(nb), "Magnetic Fields")
             #nb.AddPage(TabStripChartGNUPLOT(nb), "StripChartGNUPLOT (old)")

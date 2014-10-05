@@ -7,6 +7,7 @@
 
 
 import wx
+import wx.lib.newevent
 from epics import PV
 from Experiment import *
 from PowerSupplyControls import PowerSupplyControls
