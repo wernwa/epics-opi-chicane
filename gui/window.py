@@ -19,7 +19,7 @@ from TabStripChart import TabStripChart
 #from TabMultipoleCurrent import TabMultipoleCurrent
 from DataPanel import DataPanel
 
-
+import thread
 
 class PageThree(wx.Panel):
     def __init__(self, parent):
@@ -29,14 +29,21 @@ class PageThree(wx.Panel):
 
 class MainFrame(wx.Frame):
     def __init__(self):
-        wx.Frame.__init__(self, None, title="Magnets Control GUI", pos=(10,10), size=(1000,800))
+        wx.Frame.__init__(self, None, title="shicane interface", pos=(10,10), size=(1000,800))
         self.Bind(wx.EVT_CLOSE, self.OnClose)
 
         menuBar = wx.MenuBar()
+
         menu = wx.Menu()
         m_exit = menu.Append(wx.ID_EXIT, "E&xit\tAlt-X", "Close window and exit program.")
         self.Bind(wx.EVT_MENU, self.OnClose, m_exit)
         menuBar.Append(menu, "&File")
+
+        menu = wx.Menu()
+        m_magn = menu.Append(wx.NewId(), "&demag\tAlt-d", "demag all magnets")
+        self.Bind(wx.EVT_MENU, self.OnDemag, m_magn)
+        menuBar.Append(menu, "&Magnets")
+
         self.SetMenuBar(menuBar)
 
         self.statusbar = self.CreateStatusBar()
@@ -76,6 +83,13 @@ class MainFrame(wx.Frame):
         self.SetSizer(box)
         self.Layout()
 
+    def OnDemag(self, event):
+        def demagThread():
+            #self.b_demag.Enable(False)
+            demag()
+            #self.b_demag.Enable(True)
+
+        thread.start_new_thread( demagThread,() )
 
     def OnClose(self, event):
         #dlg = wx.MessageDialog(self,
