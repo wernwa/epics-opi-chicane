@@ -118,11 +118,12 @@ class TabMagnProperties(wx.Panel):
     def Return_pressed(self, e):
         keycode = e.GetKeyCode()
         if keycode == wx.WXK_RETURN or keycode == wx.WXK_NUMPAD_ENTER:
-            value = round(float(self.tcV.GetValue()),3)
             control = e.GetEventObject()
             if control == self.tcV:
+                value = round(float(self.tcV.GetValue()),3)
                 self.magn.ps.setVolt(value)
             elif control == self.tcA:
+                value = round(float(self.tcA.GetValue()),3)
                 self.magn.ps.setCurr(value)
             elif control == self.tck:
                 k = float(self.tck.GetValue())

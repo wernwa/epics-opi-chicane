@@ -355,55 +355,65 @@ class DataPanel(wx.Panel):
 
         if pvname==temp_all.pvname:
             arr = value.tostring().split(' ')
-            self.q1_temp=arr[0]
-            self.q2_temp=arr[1]
-            self.q3_temp=arr[2]
-            self.q4_temp=arr[3]
-            self.q5_temp=arr[4]
-            self.q6_temp=arr[5]
-            self.q7_temp=arr[6]
-            self.d1_temp=arr[7]
-            self.d2_temp=arr[8]
+            try:
+                self.q1_temp=arr[0]
+                self.q2_temp=arr[1]
+                self.q3_temp=arr[2]
+                self.q4_temp=arr[3]
+                self.q5_temp=arr[4]
+                self.q6_temp=arr[5]
+                self.q7_temp=arr[6]
+                self.d1_temp=arr[7]
+                self.d2_temp=arr[8]
+            except IndexError as e:
+                print 'temp Indexerror'
 
         elif pvname==ps_volt_all.pvname:
+            print type(value)
             arr = value.tostring().split(' ')
             relee=round(float(arr[0]))
             if relee==relee_plus: sign=1
             else: sign=-1
-            self.q1_volt=sign*float(arr[1])
-            self.q2_volt=sign*float(arr[2])
-            self.q3_volt=sign*float(arr[3])
-            self.q4_volt=sign*float(arr[4])
-            self.q5_volt=sign*float(arr[5])
-            self.q6_volt=sign*float(arr[6])
-            self.q7_volt=sign*float(arr[7])
-            self.d1_volt=sign*float(arr[8])
-            self.d2_volt=sign*float(arr[9])
+            try:
+                self.q1_volt=sign*float(arr[1])
+                self.q2_volt=sign*float(arr[2])
+                self.q3_volt=sign*float(arr[3])
+                self.q4_volt=sign*float(arr[4])
+                self.q5_volt=sign*float(arr[5])
+                self.q6_volt=sign*float(arr[6])
+                self.q7_volt=sign*float(arr[7])
+                self.d1_volt=sign*float(arr[8])
+                self.d2_volt=sign*float(arr[9])
+            except ValueError:
+                print 'volt_all ValueError'
 
         elif pvname==ps_curr_all.pvname:
             arr = value.tostring().split(' ')
             relee=round(float(arr[0]))
             if relee==relee_plus: sign=1
             else: sign=-1
-            self.q1_curr=sign*float(arr[1])
-            self.q2_curr=sign*float(arr[2])
-            self.q3_curr=sign*float(arr[3])
-            self.q4_curr=sign*float(arr[4])
-            self.q5_curr=sign*float(arr[5])
-            self.q6_curr=sign*float(arr[6])
-            self.q7_curr=sign*float(arr[7])
-            self.d1_curr=sign*float(arr[8])
-            self.d2_curr=sign*float(arr[9])
+            try:
+                self.q1_curr=sign*float(arr[1])
+                self.q2_curr=sign*float(arr[2])
+                self.q3_curr=sign*float(arr[3])
+                self.q4_curr=sign*float(arr[4])
+                self.q5_curr=sign*float(arr[5])
+                self.q6_curr=sign*float(arr[6])
+                self.q7_curr=sign*float(arr[7])
+                self.d1_curr=sign*float(arr[8])
+                self.d2_curr=sign*float(arr[9])
 
-            self.q1_k=mquad1.get_k(float(arr[1]))
-            self.q2_k=mquad2.get_k(float(arr[2]))
-            self.q3_k=mquad3.get_k(float(arr[3]))
-            self.q4_k=mquad4.get_k(float(arr[4]))
-            self.q5_k=mquad5.get_k(float(arr[5]))
-            self.q6_k=mquad6.get_k(float(arr[6]))
-            self.q7_k=mquad7.get_k(float(arr[7]))
-            self.d1_alpha=mdipol1.get_k(float(arr[8]))
-            self.d2_alpha=mdipol2.get_k(float(arr[9]))
+                self.q1_k=mquad1.get_k(float(arr[1]))
+                self.q2_k=mquad2.get_k(float(arr[2]))
+                self.q3_k=mquad3.get_k(float(arr[3]))
+                self.q4_k=mquad4.get_k(float(arr[4]))
+                self.q5_k=mquad5.get_k(float(arr[5]))
+                self.q6_k=mquad6.get_k(float(arr[6]))
+                self.q7_k=mquad7.get_k(float(arr[7]))
+                self.d1_alpha=mdipol1.get_k(float(arr[8]))
+                self.d2_alpha=mdipol2.get_k(float(arr[9]))
+            except Exception:
+                print 'temp_all Exception'
 
     SomeNewEvent=None
     def call_routine_over_event(self, handler):
