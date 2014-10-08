@@ -1,0 +1,12 @@
+
+#optional
+tmux
+
+
+# must have cli
+sudo yum install git python-pip ipython scipy
+sudo pip install pyepics
+
+# must have gui
+sudo yum install wxPython python-matplotlib-wx
+
