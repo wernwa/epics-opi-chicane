@@ -103,10 +103,10 @@ class TabMagnProperties(wx.Panel):
         self.magn = magn
         volt = magn.pv_volt.get()
         if volt==None: volt=0
-        self.tcV.SetValue('%.3f'%volt)
+        self.tcV.SetValue('%.3f'%abs(volt))
         curr = magn.pv_curr.get()
         if curr==None: curr=0
-        self.tcA.SetValue('%.3f'%curr)
+        self.tcA.SetValue('%.3f'%abs(curr))
         self.tck.SetValue('%.3f'%self.magn.get_k(curr))
         if 'Quadrupol' in title: self.st_lab_y_achsis.SetLabel('k')
         elif 'Dipol' in title: self.st_lab_y_achsis.SetLabel('alpha')
@@ -127,7 +127,7 @@ class TabMagnProperties(wx.Panel):
                 self.magn.ps.setCurr(value)
             elif control == self.tck:
                 k = float(self.tck.GetValue())
-                print 'curr %f'%self.magn.get_curr(k)
+                #print 'curr %f'%self.magn.get_curr(k)
                 self.magn.ps.setCurr(self.magn.get_curr(k))
         e.Skip()
 
@@ -135,13 +135,13 @@ class TabMagnProperties(wx.Panel):
     def Refresh(self, e):
         control = e.GetEventObject()
         if control == self.bV:
-            self.tcV.SetValue('%.3f'%self.magn.pv_volt.get())
+            self.tcV.SetValue('%.3f'%abs(self.magn.pv_volt.get()))
         elif control == self.bA:
-            self.tcA.SetValue('%.3f'%self.magn.pv_curr.get())
+            self.tcA.SetValue('%.3f'%abs(self.magn.pv_curr.get()))
         elif control == self.bk:
             curr = float(self.tcA.GetValue())
-            self.tck.SetValue('%.3f'%self.magn.get_k(curr))
-            print 'curr %f'%self.magn.get_k(curr)
+            self.tck.SetValue('%.3f'%abs(self.magn.get_k(curr)))
+            #print 'curr %f'%self.magn.get_k(curr)
 
     def plot(self):
 

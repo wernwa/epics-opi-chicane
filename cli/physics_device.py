@@ -53,10 +53,10 @@ class Magnet:
         self.I_spline = interp1d(y,x, kind='cubic')
 
     def get_k(self,curr):
-        k = round(self.k_spline(curr),3)
+        k = round(self.k_spline(abs(curr)),3)
         return k
 
     def get_curr(self,k):
-        curr = round(self.I_spline(k),3)
+        curr = round(self.I_spline(abs(k)),3)
         return curr
 
