@@ -12,7 +12,7 @@ from Experiment import *
 import wx
 from epics import PV
 import math
-
+import thread
 
 import numpy
 import matplotlib
@@ -121,7 +121,12 @@ class TabMagnProperties(wx.Panel):
             control = e.GetEventObject()
             if control == self.tcV:
                 value = round(float(self.tcV.GetValue()),3)
-                self.magn.ps.setVolt(value)
+                #control.Enable(False)
+                #control.SetBackgroundColor((50,50,50))
+                thread.start_new_thread(self.magn.ps.setVolt,(value,))
+                #sleep(2)
+                #control.SetBackgroundColor((255,255,255))
+                #control.Enable(True)
             elif control == self.tcA:
                 value = round(float(self.tcA.GetValue()),3)
                 self.magn.ps.setCurr(value)
@@ -164,3 +169,18 @@ class TabMagnProperties(wx.Panel):
 
         self.canvas.draw()
 
+
+
+    SomeNewEvent=None
+    def call_routine_over_event(self, handler):
+
+        if self.SomeNewEvent==None:
+            self.SomeNewEvent, self.EVT_SOME_NEW_EVENT = wx.lib.newevent.NewEvent()
+            self.Bind(self.EVT_SOME_NEW_EVENT, handler)
+
+            # Create the event
+            self.evt = self.SomeNewEvent()
+
+
+        # Post the event
+        wx.PostEvent(self, self.evt)

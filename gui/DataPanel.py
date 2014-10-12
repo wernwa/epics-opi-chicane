@@ -68,27 +68,30 @@ class DataPanel(wx.Panel):
         #imagewx = wx.StaticBitmap(self, -1, png, (5, 5), (png.GetWidth(), png.GetHeight()))
         #hbox.Add(imagewx, proportion=1, flag=wx.ALL|wx.EXPAND, border=15)
 
+        dy=10
+        qy=20
+
         self.lpos_triplett = {
-            'q1': {'x':50,'y':10},
-            'q2': {'x':150,'y':10},
-            'q3': {'x':250,'y':10},
-            'd1': {'x':350,'y':10},
-            'q4': {'x':450,'y':10},
-            'q5': {'x':550,'y':10},
-            'q6': {'x':650,'y':10},
-            'd2': {'x':750,'y':10},
-            'q7': {'x':850,'y':10},
+            'q1': {'x':50,'y':qy},
+            'q2': {'x':150,'y':qy},
+            'q3': {'x':250,'y':qy},
+            'd1': {'x':350,'y':dy},
+            'q4': {'x':450,'y':qy},
+            'q5': {'x':550,'y':qy},
+            'q6': {'x':650,'y':qy},
+            'd2': {'x':750,'y':dy},
+            'q7': {'x':850,'y':qy},
         }
         self.lpos_quadruplett = {
-            'q1': {'x':50,'y':10},
-            'q2': {'x':150,'y':10},
-            'q3': {'x':250,'y':10},
-            'q4': {'x':350,'y':10},
-            'd1': {'x':450,'y':10},
-            'q5': {'x':550,'y':10},
-            'q6': {'x':650,'y':10},
-            'q7': {'x':750,'y':10},
-            'd2': {'x':850,'y':10},
+            'q1': {'x':50,'y':qy},
+            'q2': {'x':150,'y':qy},
+            'q3': {'x':250,'y':qy},
+            'q4': {'x':350,'y':qy},
+            'd1': {'x':450,'y':dy},
+            'q5': {'x':550,'y':qy},
+            'q6': {'x':650,'y':qy},
+            'q7': {'x':750,'y':qy},
+            'd2': {'x':850,'y':dy},
         }
         global shicane_type
         shicane_type = sys.argv[1]
@@ -102,6 +105,8 @@ class DataPanel(wx.Panel):
 
         text_color_quad = (50,30,30)
         text_color_dipol = (10,10,120)
+
+        self.text_color_normal = (50,30,30)
         self.text_color_heigh = (200,30,30)
         self.text_color_hihi = (255,30,30)
 
@@ -129,43 +134,44 @@ class DataPanel(wx.Panel):
         self.st_selected.SetFont(self.font_bold)
 
         self.st_quad2 = wx.StaticText(label="Quadrupol 2\n#.##V\n#.##A\n##°C",   parent=panel,
-                pos=wx.Point(lpos['q2']['x'],lpos['q1']['y']))
+                pos=wx.Point(lpos['q2']['x'],lpos['q2']['y']))
         self.st_quad2.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Quadrupol 2',mquad2,self.st_quad2))
         self.st_quad2.SetForegroundColour(text_color_quad)
 
         self.st_quad3 = wx.StaticText(label="Quadrupol 3\n#.##V\n#.##A\n##°C",   parent=panel,
-                pos=wx.Point(lpos['q3']['x'],lpos['q1']['y']))
+                pos=wx.Point(lpos['q3']['x'],lpos['q3']['y']))
         self.st_quad3.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Quadrupol 3',mquad3,self.st_quad3))
         self.st_quad3.SetForegroundColour(text_color_quad)
 
         self.st_quad4 = wx.StaticText(label="Quadrupol 4\n#.##V\n#.##A\n##°C",   parent=panel,
-                pos=wx.Point(lpos['q4']['x'],lpos['q1']['y']))
+                pos=wx.Point(lpos['q4']['x'],lpos['q4']['y']))
         self.st_quad4.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Quadrupol 4',mquad4,self.st_quad4))
         self.st_quad4.SetForegroundColour(text_color_quad)
 
         self.st_quad5 = wx.StaticText(label="Quadrupol 5\n#.##V\n#.##A\n##°C",   parent=panel,
-                pos=wx.Point(lpos['q5']['x'],lpos['q1']['y']))
+                pos=wx.Point(lpos['q5']['x'],lpos['q5']['y']))
         self.st_quad5.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Quadrupol 5',mquad5,self.st_quad5))
         self.st_quad5.SetForegroundColour(text_color_quad)
 
         self.st_quad6 = wx.StaticText(label="Quadrupol 6\n#.##V\n#.##A\n##°C",   parent=panel,
-                pos=wx.Point(lpos['q6']['x'],lpos['q1']['y']))
+                pos=wx.Point(lpos['q6']['x'],lpos['q6']['y']))
         self.st_quad6.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Quadrupol 6',mquad6,self.st_quad6))
         self.st_quad6.SetForegroundColour(text_color_quad)
 
+        self.st_quad7=None
         if shicane_type=='quadruplett':
             self.st_quad7 = wx.StaticText(label="Quadrupol 7\n#.##V \n#.##A\n##°C",  parent=panel,
-                pos=wx.Point(lpos['q7']['x'],lpos['q1']['y']))
+                pos=wx.Point(lpos['q7']['x'],lpos['q7']['y']))
             self.st_quad7.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Quadrupol 7',mquad7,self.st_quad7))
             self.st_quad7.SetForegroundColour(text_color_quad)
 
         self.st_dipol1 = wx.StaticText(label="Dipol      \n#.##V \n#.##A\n##°C", parent=panel,
-                pos=wx.Point(lpos['d1']['x'],lpos['q1']['y']))
+                pos=wx.Point(lpos['d1']['x'],lpos['d1']['y']))
         self.st_dipol1.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Dipol 1',mdipol1,self.st_dipol1))
         self.st_dipol1.SetForegroundColour(text_color_dipol)
 
         self.st_dipol2 = wx.StaticText(label="Dipol 2    \n#.##V\n#.##A\n##°C",  parent=panel,
-                pos=wx.Point(lpos['d2']['x'],lpos['q1']['y']))
+                pos=wx.Point(lpos['d2']['x'],lpos['d2']['y']))
         self.st_dipol2.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Dipol 2',mdipol2,self.st_dipol2))
         self.st_dipol2.SetForegroundColour(text_color_dipol)
 
@@ -303,20 +309,23 @@ class DataPanel(wx.Panel):
             str_val = '%.3f'%value
         return str_val
 
-    def labels_update(self,evt):
 
+
+
+    def labels_update(self,evt):
 
         # test for heigh temperature
         for i in range(0,self.temp_cnt):
+            if self.st_arr[i]==None: continue
             t = float(self.temp_all_arr[i])
             if t < self.temp_heigh:
-                self.st_arr[i].SetForegroundColour(self.st_text_color_arr[i])
+                self.st_arr[i].SetForegroundColour(self.text_color_normal)
             if self.temp_heigh <= t and t < self.temp_hihi:
                 #print self.st_arr[i]
                 self.st_arr[i].SetForegroundColour(self.text_color_heigh)
-                print 'temperature heigh %0.3f q%d'%(t,(i+1))
+                #print 'temperature heigh %0.3f q%d'%(t,(i+1))
             elif t >= self.temp_hihi:
-                print 'temperature too heigh for q%d, please start demag!!!'%(i+1)
+                #print 'temperature too heigh for q%d, please start demag!!!'%(i+1)
                 self.st_arr[i].SetForegroundColour(self.text_color_hihi)
 
 
@@ -431,8 +440,8 @@ class DataPanel(wx.Panel):
                 self.q7_volt=sign*float(arr[7])
                 self.d1_volt=sign*float(arr[8])
                 self.d2_volt=sign*float(arr[9])
-            except ValueError:
-                print 'volt_all ValueError'
+            except Exception as e:
+                print 'volt_all:',e
 
         elif pvname==ps_curr_all.pvname:
             arr = value.tostring().split(' ')
@@ -459,8 +468,8 @@ class DataPanel(wx.Panel):
                 self.q7_k=mquad7.get_k(float(arr[7]))
                 self.d1_alpha=mdipol1.get_k(float(arr[8]))
                 self.d2_alpha=mdipol2.get_k(float(arr[9]))
-            except Exception:
-                print 'temp_all Exception'
+            except Exception as e:
+                print 'temp_all:',e
 
     SomeNewEvent=None
     def call_routine_over_event(self, handler):
