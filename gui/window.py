@@ -7,7 +7,7 @@
 
 
 
-import sys
+import sys, os
 sys.path.insert(0, './cli')
 from Experiment import *
 
@@ -35,6 +35,8 @@ class MainFrame(wx.Frame):
         menuBar = wx.MenuBar()
 
         menu = wx.Menu()
+        m_loadfile = menu.Append(wx.NewId(), "&load file\tAlt-l", "load a *.py file")
+        self.Bind(wx.EVT_MENU, self.OnLoadFile, m_loadfile)
         m_exit = menu.Append(wx.ID_EXIT, "E&xit\tAlt-X", "Close window and exit program.")
         self.Bind(wx.EVT_MENU, self.OnClose, m_exit)
         menuBar.Append(menu, "&File")
@@ -42,8 +44,6 @@ class MainFrame(wx.Frame):
         menu = wx.Menu()
         m_magn = menu.Append(wx.NewId(), "&demag\tAlt-d", "demag all magnets")
         self.Bind(wx.EVT_MENU, self.OnDemag, m_magn)
-        m_init = menu.Append(wx.NewId(), "&init\tAlt-i", "init magnets from init.py file")
-        self.Bind(wx.EVT_MENU, self.OnInit, m_init)
         menuBar.Append(menu, "&Magnets")
 
         self.SetMenuBar(menuBar)
@@ -85,9 +85,28 @@ class MainFrame(wx.Frame):
         self.SetSizer(box)
         self.Layout()
 
-    def OnInit(self, event):
-        #global init_magnets
-        init_magnets()
+
+    def OnLoadFile(self, event):
+        openFileDialog = wx.FileDialog(self, message="load python file", defaultDir=os.getcwd(),
+                                     wildcard="Python files (*.py)|*.py", style=wx.OPEN | wx.FD_FILE_MUST_EXIST)
+
+        if openFileDialog.ShowModal() == wx.ID_CANCEL:
+            return     # the user changed idea...
+
+        pyfile = openFileDialog.GetPath()
+
+        execfile(pyfile)
+
+        openFileDialog.Destroy()
+
+    def OnSaveAs(self, event):
+        saveFileDialog = wx.FileDialog(self, "Save XYZ file", "", "",
+                    "XYZ files (*.xyz)|*.xyz", wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT)
+
+        if saveFileDialog.ShowModal() == wx.ID_CANCEL:
+            return     # the user changed idea...
+
+        print 'TODO'
 
     def OnDemag(self, event):
         def demagThread():
