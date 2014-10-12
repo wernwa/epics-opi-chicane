@@ -42,8 +42,8 @@ class MainFrame(wx.Frame):
         menu = wx.Menu()
         m_magn = menu.Append(wx.NewId(), "&demag\tAlt-d", "demag all magnets")
         self.Bind(wx.EVT_MENU, self.OnDemag, m_magn)
-        m_init = menu.Append(wx.NewId(), "&init\tAlt-i", "init magnets from init.py file")
-        self.Bind(wx.EVT_MENU, self.OnInit, m_init)
+        m_loadfile = menu.Append(wx.NewId(), "&load file\tAlt-l", "load a *.py file")
+        self.Bind(wx.EVT_MENU, self.OnLoadFile, m_loadfile)
         menuBar.Append(menu, "&Magnets")
 
         self.SetMenuBar(menuBar)
@@ -85,9 +85,10 @@ class MainFrame(wx.Frame):
         self.SetSizer(box)
         self.Layout()
 
-    def OnInit(self, event):
+    def OnLoadFile(self, event):
         #global init_magnets
-        init_magnets()
+        #init_magnets()
+        print 'TODO'
 
     def OnDemag(self, event):
         def demagThread():

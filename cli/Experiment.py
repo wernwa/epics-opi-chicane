@@ -10,6 +10,7 @@ from PV_CONN import PV_CONN
 import json
 from time import sleep
 from time import strftime
+from init_vars import *
 
 
 relee = PowerSupply('shicane:zps:relee:volt','shicane:zps:relee:curr')
@@ -83,8 +84,8 @@ mquad4 = Magnet(ps=ps4, pv_volt=q4_volt, pv_curr=q4_curr, pv_temp=q4_temp)
 mquad5 = Magnet(ps=ps5, pv_volt=q5_volt, pv_curr=q5_curr, pv_temp=q5_temp)
 mquad6 = Magnet(ps=ps6, pv_volt=q6_volt, pv_curr=q6_curr, pv_temp=q6_temp)
 mquad7 = Magnet(ps=ps7, pv_volt=q7_volt, pv_curr=q7_curr, pv_temp=q7_temp)
-mdipol1 = Magnet(ps=ps8, pv_volt=d1_volt, pv_curr=d1_curr, pv_temp=d1_temp)
-mdipol2 = Magnet(ps=ps9, pv_volt=d2_volt, pv_curr=d2_curr, pv_temp=d2_temp)
+mdipol1 = Magnet(ps=ps8, pv_volt=d1_volt, pv_curr=d1_curr, pv_temp=d1_temp, magn_type='dipol')
+mdipol2 = Magnet(ps=ps9, pv_volt=d2_volt, pv_curr=d2_curr, pv_temp=d2_temp, magn_type='dipol')
 
 
 mquad1.load_data('magnet-data/q1-k-I.data')
@@ -263,7 +264,6 @@ def help():
 ------------------------------------------------
     '''
 
-from init import *
 
 
 if __name__ == "__main__":
