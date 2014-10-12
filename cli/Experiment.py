@@ -14,7 +14,7 @@ from init_vars import *
 
 
 relee = PowerSupply('shicane:zps:relee:volt','shicane:zps:relee:curr')
-ps1 =  PowerSupply('shicane:zps:1:volt','shicane:zps:2:curr')
+ps1 =  PowerSupply('shicane:zps:1:volt','shicane:zps:1:curr')
 ps2 =  PowerSupply('shicane:zps:2:volt','shicane:zps:2:curr')
 ps3 =  PowerSupply('shicane:zps:3:volt','shicane:zps:3:curr')
 ps4 =  PowerSupply('shicane:zps:4:volt','shicane:zps:4:curr')

@@ -268,10 +268,6 @@ class DataPanel(wx.Panel):
         self.d1_alpha=0
         self.d2_alpha=0
 
-        temp_all.add_callback(self.onPVChanges)
-        ps_curr_all.add_callback(self.onPVChanges)
-        ps_volt_all.add_callback(self.onPVChanges)
-
 
         self.temp_all_arr = [self.q1_temp,self.q3_temp,self.q3_temp,self.q4_temp,self.q5_temp,self.q6_temp,self.q7_temp,self.d1_temp,self.d2_temp]
         self.temp_heigh = 70
@@ -288,6 +284,12 @@ class DataPanel(wx.Panel):
                 self.call_routine_over_event( self.labels_update )
                 time.sleep(0.5)
         start_new_thread(refresh_labels,())
+
+        time.sleep(0.1)
+        temp_all.add_callback(self.onPVChanges)
+        ps_curr_all.add_callback(self.onPVChanges)
+        ps_volt_all.add_callback(self.onPVChanges)
+
 
     def __del__(self):
         self.alive=False
