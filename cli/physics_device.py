@@ -9,6 +9,7 @@
 from epics import PV
 from epics_device import *
 from init_vars import *
+from PV_CONN import PV_CONN
 
 import re
 
@@ -27,6 +28,8 @@ class Magnet:
         self.pv_volt = pv_volt
         self.pv_curr = pv_curr
         self.magn_type = magn_type
+        self.pv_volt_status = PV_CONN(ps.Volt.pvname+':status', auto_monitor=True)
+        self.pv_curr_status = PV_CONN(ps.Curr.pvname+':status', auto_monitor=True)
 
         self.data_xlabel = 'I [A]'
 

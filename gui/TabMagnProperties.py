@@ -86,6 +86,7 @@ class TabMagnProperties(wx.Panel):
         self.tcA.Bind(wx.EVT_KEY_DOWN, self.Return_pressed,self.tcA)
         self.tck.Bind(wx.EVT_KEY_DOWN, self.Return_pressed,self.tck)
 
+        self.magn=None
 
 
         # plot
@@ -98,9 +99,59 @@ class TabMagnProperties(wx.Panel):
 
         panel.SetSizer(hbox)
 
+        self.colour_inactive = (90,90,90)
+        self.colour_active = (255,255,255)
+
+
+    def set_background_ctrl(self,evt):
+        self.tcV.SetBackgroundColour(self.colour_curr)
+        self.tcA.SetBackgroundColour(self.colour_curr)
+        self.tck.SetBackgroundColour(self.colour_curr)
+        if self.colour_curr == self.colour_inactive:
+            self.tcV.Enable(False)
+            self.tcA.Enable(False)
+            self.tck.Enable(False)
+        else:
+            self.tcV.Enable(True)
+            self.tcA.Enable(True)
+            self.tck.Enable(True)
+
+    def onPVChanges(self, pvname=None, value=None, char_value=None, **kw):
+        if value==1: stat='BUSY'
+        else:   stat='IDLE'
+        #print 'pvname %s value %s'%(pvname,stat)
+
+
+        if value==1:
+            self.colour_curr = self.colour_inactive
+            self.call_routine_over_event(self.set_background_ctrl)
+        else:
+            self.colour_curr = self.colour_active
+            self.call_routine_over_event(self.set_background_ctrl)
+
+
     def magnet_selected(self, event, title, magn):
-        self.st_title.SetLabel(title+'\n')
+
+        if self.magn!=None:
+            #self.magn.pv_volt_status.remove_callback(self.onPVChanges)
+            self.magn.pv_volt_status.callbacks = {}
+            #self.magn.pv_curr_status.remove_callback(self.onPVChanges)
+            self.magn.pv_curr_status.callbacks = {}
+
         self.magn = magn
+        magn.pv_volt_status.add_callback(self.onPVChanges)
+        magn.pv_curr_status.add_callback(self.onPVChanges)
+
+
+        if magn.pv_volt_status.value==1 or magn.pv_curr_status.value==1:
+            self.colour_curr = self.colour_inactive
+            self.call_routine_over_event(self.set_background_ctrl)
+        else:
+            self.colour_curr = self.colour_active
+            self.call_routine_over_event(self.set_background_ctrl)
+
+
+        self.st_title.SetLabel(title+'\n')
         volt = magn.pv_volt.get()
         if volt==None: volt=0
         self.tcV.SetValue('%.3f'%abs(volt))
@@ -122,10 +173,10 @@ class TabMagnProperties(wx.Panel):
             if control == self.tcV:
                 value = round(float(self.tcV.GetValue()),3)
                 #control.Enable(False)
-                #control.SetBackgroundColor((50,50,50))
+                #control.SetBackgroundcolour((50,50,50))
                 thread.start_new_thread(self.magn.ps.setVolt,(value,))
                 #sleep(2)
-                #control.SetBackgroundColor((255,255,255))
+                #control.SetBackgroundcolour((255,255,255))
                 #control.Enable(True)
             elif control == self.tcA:
                 value = round(float(self.tcA.GetValue()),3)
