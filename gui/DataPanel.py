@@ -318,7 +318,8 @@ class DataPanel(wx.Panel):
 
         # test for heigh temperature
         for i in range(0,self.temp_cnt):
-            if self.st_arr[i]==None: continue
+            if self.st_arr[i]==None or self.temp_all_arr[i]==None:
+                continue
             t = float(self.temp_all_arr[i])
             if t < self.temp_heigh:
                 self.st_arr[i].SetForegroundColour(self.text_color_normal)
