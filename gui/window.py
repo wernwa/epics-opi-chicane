@@ -35,8 +35,10 @@ class MainFrame(wx.Frame):
         menuBar = wx.MenuBar()
 
         menu = wx.Menu()
-        m_loadfile = menu.Append(wx.NewId(), "&load file\tAlt-l", "load a *.py file")
-        self.Bind(wx.EVT_MENU, self.OnLoadFile, m_loadfile)
+        m_handle = menu.Append(wx.NewId(), "Save current/voltage As...\tAlt-S", "save current/voltage *.py")
+        self.Bind(wx.EVT_MENU, self.OnSaveCurrVoltFile, m_handle)
+        m_handle = menu.Append(wx.NewId(), "&Load current/voltage *.py file\tAlt-L", "load a *.py file")
+        self.Bind(wx.EVT_MENU, self.OnLoadFile, m_handle)
         m_exit = menu.Append(wx.ID_EXIT, "E&xit\tAlt-X", "Close window and exit program.")
         self.Bind(wx.EVT_MENU, self.OnClose, m_exit)
         menuBar.Append(menu, "&File")
@@ -84,6 +86,50 @@ class MainFrame(wx.Frame):
         self.SetAutoLayout(True)
         self.SetSizer(box)
         self.Layout()
+
+
+    def OnSaveCurrVoltFile(self, event):
+        openFileDialog = wx.FileDialog(self, message="save current/voltage", defaultDir=os.getcwd(),
+                                     wildcard="Python files (*.py)|*.py", style=wx.SAVE)
+
+        if openFileDialog.ShowModal() == wx.ID_CANCEL:
+            return     # the user changed idea...
+
+        pyfile = openFileDialog.GetPath()
+        
+        def str_helper(string,pv):
+            val = pv.get()
+            if val==None:
+                return '#'+string%0
+            else:
+                return string%val
+            
+        
+        fh = open(pyfile,'w+')
+
+        fh.write(str_helper( 'mquad1.ps.Volt.put(%.3f)\n', mquad1.ps.Volt))
+        fh.write(str_helper( 'mquad2.ps.Volt.put(%.3f)\n', mquad2.ps.Volt))
+        fh.write(str_helper( 'mquad3.ps.Volt.put(%.3f)\n', mquad3.ps.Volt))
+        fh.write(str_helper( 'mquad4.ps.Volt.put(%.3f)\n', mquad4.ps.Volt))
+        fh.write(str_helper( 'mquad5.ps.Volt.put(%.3f)\n', mquad5.ps.Volt))
+        fh.write(str_helper( 'mquad6.ps.Volt.put(%.3f)\n', mquad6.ps.Volt))
+        fh.write(str_helper( 'mquad7.ps.Volt.put(%.3f)\n', mquad7.ps.Volt))
+        fh.write(str_helper('mdipol1.ps.Volt.put(%.3f)\n',mdipol1.ps.Volt))
+        fh.write(str_helper('mdipol2.ps.Volt.put(%.3f)\n',mdipol2.ps.Volt))
+
+        fh.write(str_helper('mquad1.ps.Curr.put(%.3f)\n',mquad1.ps.Curr))
+        fh.write(str_helper('mquad2.ps.Curr.put(%.3f)\n',mquad2.ps.Curr))
+        fh.write(str_helper('mquad3.ps.Curr.put(%.3f)\n',mquad3.ps.Curr))
+        fh.write(str_helper('mquad4.ps.Curr.put(%.3f)\n',mquad4.ps.Curr))
+        fh.write(str_helper('mquad5.ps.Curr.put(%.3f)\n',mquad5.ps.Curr))
+        fh.write(str_helper('mquad6.ps.Curr.put(%.3f)\n',mquad6.ps.Curr))
+        fh.write(str_helper('mquad7.ps.Curr.put(%.3f)\n',mquad7.ps.Curr))
+        fh.write(str_helper('mdipol1.ps.Curr.put(%.3f)\n',mdipol1.ps.Curr))
+        fh.write(str_helper('mdipol2.ps.Curr.put(%.3f)\n',mdipol2.ps.Curr))
+
+        fh.close()
+
+        openFileDialog.Destroy()
 
 
     def OnLoadFile(self, event):
