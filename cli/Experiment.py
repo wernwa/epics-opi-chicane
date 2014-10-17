@@ -168,9 +168,9 @@ demag_sleep_pv = PV('shicane:demag:sleep')
 
 def demag():
     demag_steps_pv.put(5)
-    print demag_steps_pv.get()
+    #print demag_steps_pv.get()
     demag_sleep_pv.put(2)
-    print demag_sleep_pv.get()
+    #print demag_sleep_pv.get()
     demag_pv.put(1)
 
 
