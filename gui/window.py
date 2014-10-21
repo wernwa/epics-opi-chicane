@@ -63,7 +63,7 @@ class MainFrame(wx.Frame):
         self.tabMagnProperties = TabMagnProperties(nb)
         self.nb.AddPage(self.tabMagnProperties, "Magnet Properties")
         #self.nb.AddPage(TabMultipoleCurrent(nb), "Multipole Current")
-        #nb.AddPage(TabStripChart(nb), "StripChart")
+        nb.AddPage(TabStripChart(nb), "StripChart")
             #nb.AddPage(PageThree(nb), "Magnetic Fields")
             #nb.AddPage(TabStripChartGNUPLOT(nb), "StripChartGNUPLOT (old)")
 

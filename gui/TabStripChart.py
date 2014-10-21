@@ -176,7 +176,7 @@ class TabStripChart(wx.Panel):
         self.datagen = DataGen()
         #self.data = [self.datagen.next()]
         ## init two test PV variables ##
-        self.strip_chart02 = StripChartMemory(ps8.Volt)
+        self.strip_chart02 = StripChartMemory(q1_temp)
         #self.strip_chart02 = StripChartMemory(t1)
         self.paused = True
 
@@ -374,10 +374,13 @@ class TabStripChart(wx.Panel):
         # if paused do not add data, but still redraw the plot
         # (to respond to scale modifications, grid change, etc.)
         #
-        #if not self.paused:
-        #    self.data.append(self.datagen.next())
-        self.strip_chart02.add(time.time(),self.strip_chart02.pv.get())
-        self.draw_plot()
+        if not self.paused:
+            #self.data.append(self.datagen.next())
+            value = self.strip_chart02.pv.get()
+            if value!=None:
+                print value
+                self.strip_chart02.add(time.time(),value)
+                self.draw_plot()
 
     def on_exit(self, event):
         self.Destroy()
