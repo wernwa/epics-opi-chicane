@@ -5,13 +5,13 @@ import sys
 sys.path.insert(0, './')
 from epics import PV
 from epics_device import PowerSupply
-from physics_device import Magnet
+from Magnet import Magnet
 from PV_CONN import PV_CONN
 import json
 from time import sleep
 from time import strftime
 from init_vars import *
-
+import numpy
 
 relee = PowerSupply('shicane:zps:relee:volt','shicane:zps:relee:curr')
 ps1 =  PowerSupply('shicane:zps:1:volt','shicane:zps:1:curr')
@@ -44,7 +44,7 @@ q6_volt = PV_CONN('shicane:q6:volt', auto_monitor=True )
 q7_volt = PV_CONN('shicane:q7:volt', auto_monitor=True )
 d1_volt = PV_CONN('shicane:d1:volt', auto_monitor=True )
 d2_volt = PV_CONN('shicane:d2:volt', auto_monitor=True )
-ps_volt_all = PV_CONN('shicane:ps_volt_all', auto_monitor=True )
+magn_volt_all = PV_CONN('shicane:magn_volt_all', auto_monitor=True )
 
 q1_curr = PV_CONN('shicane:q1:curr', auto_monitor=True )
 q2_curr = PV_CONN('shicane:q2:curr', auto_monitor=True )
@@ -55,8 +55,10 @@ q6_curr = PV_CONN('shicane:q6:curr', auto_monitor=True )
 q7_curr = PV_CONN('shicane:q7:curr', auto_monitor=True )
 d1_curr = PV_CONN('shicane:d1:curr', auto_monitor=True )
 d2_curr = PV_CONN('shicane:d2:curr', auto_monitor=True )
-ps_curr_all = PV_CONN('shicane:ps_curr_all', auto_monitor=True )
+magn_curr_all = PV_CONN('shicane:magn_curr_all', auto_monitor=True )
 
+
+np_q1_temp =  numpy.array([2,3,1,0])
 
 quad1 = {q1_volt.pvname:q1_volt, q1_curr.pvname:q1_curr,q1_temp.pvname:q1_temp,
             ps1.Volt.pvname:ps1.Volt, ps1.Curr.pvname:ps1.Curr }

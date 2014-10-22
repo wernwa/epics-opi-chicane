@@ -14,6 +14,7 @@ from PowerSupplyControls import PowerSupplyControls
 from thread import start_new_thread
 import time
 
+
 shicane_type=None
 
 class DataPanel(wx.Panel):
@@ -287,8 +288,8 @@ class DataPanel(wx.Panel):
 
         time.sleep(0.1)
         temp_all.add_callback(self.onPVChanges)
-        ps_curr_all.add_callback(self.onPVChanges)
-        ps_volt_all.add_callback(self.onPVChanges)
+        magn_curr_all.add_callback(self.onPVChanges)
+        magn_volt_all.add_callback(self.onPVChanges)
 
 
     def __del__(self):
@@ -348,63 +349,12 @@ class DataPanel(wx.Panel):
 
 
 
-#    curr_pvname_changed = None
-#    def changeLables_depr(self,evt):
-#        pvname = self.curr_pvname_changed
-#
-#        #global quad1, quad2, quad3, quad4, quad5, quad6, quad7, dipol1, dipol2
-#
-#        #print pvname
-#        if pvname == q1_volt.pvname  or pvname == q1_curr.pvname or pvname == q1_temp.pvname:
-#            self.st_quad1.SetLabel("Quadrupol 1\n%s V \n%s A\n%s °C" %(self.pv_get_str(q1_volt),
-#                                                                        self.pv_get_str(q1_volt),
-#                                                                        self.pv_get_str(q1_temp)
-#                                                                            ))
-#        elif pvname == q2_volt.pvname  or pvname == q2_curr.pvname or pvname == q2_temp.pvname:
-#            self.st_quad2.SetLabel("Quadrupol 2\n%s V \n%s A\n%s °C" %(self.pv_get_str(q2_volt),
-#                                                                        self.pv_get_str(q2_volt),
-#                                                                        self.pv_get_str(q2_temp)
-#                                                                            ))
-#        elif pvname == q3_volt.pvname  or pvname == q3_curr.pvname or pvname == q3_temp.pvname:
-#            self.st_quad3.SetLabel("Quadrupol 3\n%s V \n%s A\n%s °C" %(self.pv_get_str(q3_volt),
-#                                                                        self.pv_get_str(q3_volt),
-#                                                                        self.pv_get_str(q3_temp)
-#                                                                            ))
-#        elif pvname == q4_volt.pvname  or pvname == q4_curr.pvname or pvname == q4_temp.pvname:
-#            self.st_quad4.SetLabel("Quadrupol 4\n%s V \n%s A\n%s °C" %(self.pv_get_str(q4_volt),
-#                                                                        self.pv_get_str(q4_volt),
-#                                                                        self.pv_get_str(q4_temp)
-#                                                                            ))
-#        elif pvname == q5_volt.pvname  or pvname == q5_curr.pvname or pvname == q5_temp.pvname:
-#            self.st_quad5.SetLabel("Quadrupol 5\n%s V \n%s A\n%s °C" %(self.pv_get_str(q5_volt),
-#                                                                        self.pv_get_str(q5_volt),
-#                                                                        self.pv_get_str(q5_temp)
-#                                                                            ))
-#        elif pvname == q6_volt.pvname  or pvname == q6_curr.pvname or pvname == q6_temp.pvname:
-#            self.st_quad6.SetLabel("Quadrupol 6\n%s V \n%s A\n%s °C" %(self.pv_get_str(q6_volt),
-#                                                                        self.pv_get_str(q6_volt),
-#                                                                        self.pv_get_str(q6_temp)
-#                                                                            ))
-#        elif pvname == q7_volt.pvname  or pvname == q7_curr.pvname or pvname == q7_temp.pvname:
-#            self.st_quad7.SetLabel("Quadrupol 7\n%s V \n%s A\n%s °C" %(self.pv_get_str(q7_volt),
-#                                                                        self.pv_get_str(q7_volt),
-#                                                                        self.pv_get_str(q7_temp)
-#                                                                            ))
-#        elif pvname == d1_volt.pvname  or pvname == d1_curr.pvname or pvname == d1_temp.pvname:
-#            self.st_dipol1.SetLabel("Dipol 1\n%s V \n%s A\n%s °C" %(self.pv_get_str(d1_volt),
-#                                                                        self.pv_get_str(d1_volt),
-#                                                                        self.pv_get_str(d1_temp)
-#                                                                            ))
-#        elif pvname == d2_volt.pvname  or pvname == d2_curr.pvname or pvname == d2_temp.pvname:
-#            self.st_dipol2.SetLabel("Dipol 2\n%s V \n%s A\n%s °C" %(self.pv_get_str(d2_volt),
-#                                                                        self.pv_get_str(d2_volt),
-#                                                                        self.pv_get_str(d2_temp)
-#                                                                            ))
-#                #print 't1 changed %f'%value
-
+    start_app_time = time.time()
     def onPVChanges(self, pvname=None, value=None, char_value=None, **kw):
 
         global mquad1, mquad2, mquad3, mquad4, mquad5, mquad6, mquad7, mdipol1, mdipol2
+
+        marr = [mquad1, mquad2, mquad3, mquad4, mquad5, mquad6, mquad7, mdipol1, mdipol2]
 
         relee_plus=0
         relee_minus=24
@@ -423,54 +373,61 @@ class DataPanel(wx.Panel):
                 self.q7_temp=arr[6]
                 self.d1_temp=arr[7]
                 self.d2_temp=arr[8]
+        
+
+                # fill in the numpy arrays for StripChart visualisation
+                for i in range(0,len(marr)):
+                    marr[i].strip_chart_temp.append(float(arr[i]))
+                    marr[i].strip_chart_temp_time.append(temp_all.timestamp-self.start_app_time)
+                    
 
             except Exception as e:
                 print 'temp_all: ',e
 
-        elif pvname==ps_volt_all.pvname:
+        elif pvname==magn_volt_all.pvname:
             #print type(value)
             arr = value.tostring().split(' ')
-            relee=round(float(arr[0]))
-            if relee==relee_plus: sign=1
-            else: sign=-1
+            #relee=round(float(arr[0]))
+            #if relee==relee_plus: sign=1
+            #else: sign=-1
             try:
-                self.q1_volt=sign*float(arr[1])
-                self.q2_volt=sign*float(arr[2])
-                self.q3_volt=sign*float(arr[3])
-                self.q4_volt=sign*float(arr[4])
-                self.q5_volt=sign*float(arr[5])
-                self.q6_volt=sign*float(arr[6])
-                self.q7_volt=sign*float(arr[7])
-                self.d1_volt=sign*float(arr[8])
-                self.d2_volt=sign*float(arr[9])
+                self.q1_volt=float(arr[0])
+                self.q2_volt=float(arr[1])
+                self.q3_volt=float(arr[2])
+                self.q4_volt=float(arr[3])
+                self.q5_volt=float(arr[4])
+                self.q6_volt=float(arr[5])
+                self.q7_volt=float(arr[6])
+                self.d1_volt=float(arr[7])
+                self.d2_volt=float(arr[8])
             except Exception as e:
                 print 'volt_all:',e
 
-        elif pvname==ps_curr_all.pvname:
+        elif pvname==magn_curr_all.pvname:
             arr = value.tostring().split(' ')
-            relee=round(float(arr[0]))
-            if relee==relee_plus: sign=1
-            else: sign=-1
+            #relee=round(float(arr[0]))
+            #if relee==relee_plus: sign=1
+            #else: sign=-1
             try:
-                self.q1_curr=sign*float(arr[1])
-                self.q2_curr=sign*float(arr[2])
-                self.q3_curr=sign*float(arr[3])
-                self.q4_curr=sign*float(arr[4])
-                self.q5_curr=sign*float(arr[5])
-                self.q6_curr=sign*float(arr[6])
-                self.q7_curr=sign*float(arr[7])
-                self.d1_curr=sign*float(arr[8])
-                self.d2_curr=sign*float(arr[9])
+                self.q1_curr=float(arr[0])
+                self.q2_curr=float(arr[1])
+                self.q3_curr=float(arr[2])
+                self.q4_curr=float(arr[3])
+                self.q5_curr=float(arr[4])
+                self.q6_curr=float(arr[5])
+                self.q7_curr=float(arr[6])
+                self.d1_curr=float(arr[7])
+                self.d2_curr=float(arr[8])
 
-                self.q1_k=mquad1.get_k(float(arr[1]))
-                self.q2_k=mquad2.get_k(float(arr[2]))
-                self.q3_k=mquad3.get_k(float(arr[3]))
-                self.q4_k=mquad4.get_k(float(arr[4]))
-                self.q5_k=mquad5.get_k(float(arr[5]))
-                self.q6_k=mquad6.get_k(float(arr[6]))
-                self.q7_k=mquad7.get_k(float(arr[7]))
-                self.d1_alpha=mdipol1.get_k(float(arr[8]))
-                self.d2_alpha=mdipol2.get_k(float(arr[9]))
+                self.q1_k=mquad1.get_k(float(arr[0]))
+                self.q2_k=mquad2.get_k(float(arr[1]))
+                self.q3_k=mquad3.get_k(float(arr[2]))
+                self.q4_k=mquad4.get_k(float(arr[3]))
+                self.q5_k=mquad5.get_k(float(arr[4]))
+                self.q6_k=mquad6.get_k(float(arr[5]))
+                self.q7_k=mquad7.get_k(float(arr[6]))
+                self.d1_alpha=mdipol1.get_k(float(arr[7]))
+                self.d2_alpha=mdipol2.get_k(float(arr[8]))
             except Exception as e:
                 print 'temp_all:',e
 

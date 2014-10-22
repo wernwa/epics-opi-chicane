@@ -62,10 +62,8 @@ class MainFrame(wx.Frame):
         self.nb.AddPage(TabOverview(nb), "Overview")
         self.tabMagnProperties = TabMagnProperties(nb)
         self.nb.AddPage(self.tabMagnProperties, "Magnet Properties")
-        #self.nb.AddPage(TabMultipoleCurrent(nb), "Multipole Current")
-        nb.AddPage(TabStripChart(nb), "StripChart")
-            #nb.AddPage(PageThree(nb), "Magnetic Fields")
-            #nb.AddPage(TabStripChartGNUPLOT(nb), "StripChartGNUPLOT (old)")
+        self.tabStripChart = TabStripChart(nb)
+        nb.AddPage(self.tabStripChart, "StripChart")
 
         # finally, put the notebook in a sizer for the panel to manage
         # the layout
@@ -181,12 +179,13 @@ class MainFrame(wx.Frame):
             for pv_str in m:
                 m[pv_str].disconnect()
 
-        used_pvs = [temp_all,ps_volt_all,ps_curr_all]
+        used_pvs = [temp_all,magn_volt_all,magn_curr_all]
         for pv in used_pvs:
             pv.disconnect()
 
         # Thread noch aktiv, besser destructor!
         #self.tabShicane.alive=False
+        self.tabStripChart.__del__()
         self.dataPanel.__del__()
 
 

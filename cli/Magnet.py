@@ -12,6 +12,7 @@ from init_vars import *
 from PV_CONN import PV_CONN
 
 import re
+import numpy
 
 from scipy.interpolate import interp1d
 
@@ -20,6 +21,7 @@ class Magnet:
 
     data_xlabel=None
     data_ylabel=None
+
 
     def __init__(self, ps=None, pv_volt=None, pv_curr=None, pv_temp=None, magn_type='quad'):
 
@@ -39,6 +41,14 @@ class Magnet:
             self.data_ylabel = 'angle [mrad]'
         else:
             self.data_ylabel = 'y [??]'
+
+        # Data for StripChart
+        self.strip_chart_temp = []
+        self.strip_chart_temp_time = []
+        self.strip_chart_volt = []
+        self.strip_chart_volt_time = []
+        self.strip_chart_curr = []
+        self.strip_chart_curr_time = []
 
 
     def load_data(self,file_name):

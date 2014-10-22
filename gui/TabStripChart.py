@@ -23,6 +23,8 @@ import random
 import sys
 import wx
 import time
+import thread
+
 
 # The recommended way to use wx with mpl is with the WXAgg
 # backend.
@@ -33,7 +35,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_wxagg import \
     FigureCanvasWxAgg as FigCanvas, \
     NavigationToolbar2WxAgg as NavigationToolbar
-import numpy as np
+import numpy
 import pylab
 
 # Epics imports
@@ -169,7 +171,6 @@ class TabStripChart(wx.Panel):
     """ The main frame of the application
     """
     title = 'Demo: dynamic matplotlib graph'
-
     def __init__(self,parent):
         wx.Panel.__init__(self, parent)
 
@@ -185,11 +186,16 @@ class TabStripChart(wx.Panel):
         self.create_main_panel()
 
 
+        self.update_axes=False
+        self.alive=True
+        self.axes_lock = thread.allocate_lock()
 
 
         self.redraw_timer = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.on_redraw_timer, self.redraw_timer)
-        self.redraw_timer.Start(200)
+        self.redraw_timer.Start(500)
+
+        thread.start_new_thread(self.on_update_axes,())
 
     def create_menu(self):
         self.menubar = wx.MenuBar()
@@ -253,6 +259,7 @@ class TabStripChart(wx.Panel):
         #self.SetSizer(self.vbox)
         self.SetSizer(self.vbox)
         self.vbox.Fit(self)
+        
 
     def create_status_bar(self):
         self.statusbar = self.CreateStatusBar()
@@ -276,6 +283,7 @@ class TabStripChart(wx.Panel):
             linewidth=1,
             color=(1, 1, 0),
             )[0]
+
 
     def draw_plot(self):
         """ Redraws the plot
@@ -311,8 +319,8 @@ class TabStripChart(wx.Panel):
         else:
             ymax = int(self.ymax_control.manual_value())
 
-        self.axes.set_xbound(lower=xmin, upper=xmax)
-        self.axes.set_ybound(lower=ymin, upper=ymax)
+        #self.axes.set_xbound(lower=xmin, upper=xmax)
+        #self.axes.set_ybound(lower=ymin, upper=ymax)
 
         # anecdote: axes.grid assumes b=True if any other flag is
         # given even if b is set to False.
@@ -334,12 +342,26 @@ class TabStripChart(wx.Panel):
         # assighn to epics records
         #self.plot_data.set_xdata(np.arange(len(self.data)))
         #self.plot_data.set_ydata(np.array(self.data))
-        self.plot_data.set_xdata(np.arange(len(self.strip_chart02.time)))
-        self.plot_data.set_ydata(np.array(self.strip_chart02.data))
+        #self.plot_data.set_xdata(np.arange(len(self.strip_chart02.time)))
+        #self.plot_data.set_ydata(np.array(self.strip_chart02.data))
 
-        #print self.strip_chart02.data
-
+        self.update_axes=True
+        self.axes_lock.acquire()
         self.canvas.draw()
+        self.axes_lock.release()
+
+    def on_update_axes(self):
+        while self.alive:
+            while self.update_axes:
+                self.axes_lock.acquire()
+                self.axes.plot(numpy.array(mquad1.strip_chart_temp_time),
+                    numpy.array(mquad1.strip_chart_temp),  linewidth=1,color=(1,0,0))
+                self.axes.plot(numpy.array(mquad2.strip_chart_temp_time), 
+                        numpy.array(mquad2.strip_chart_temp),  linewidth=1,color=(1,0,1))
+                self.update_axes=False
+                self.axes_lock.release()
+            time.sleep(.1)
+
 
     def on_pause_button(self, event):
         self.paused = not self.paused
@@ -376,11 +398,11 @@ class TabStripChart(wx.Panel):
         #
         if not self.paused:
             #self.data.append(self.datagen.next())
-            value = self.strip_chart02.pv.get()
-            if value!=None:
-                print value
-                self.strip_chart02.add(time.time(),value)
-                self.draw_plot()
+            #value = self.strip_chart02.pv.get()
+            #if value!=None:
+            #    self.strip_chart02.add(time.time(),value)
+            #    self.draw_plot()
+            self.draw_plot()
 
     def on_exit(self, event):
         self.Destroy()
@@ -397,4 +419,6 @@ class TabStripChart(wx.Panel):
     def on_flash_status_off(self, event):
         self.statusbar.SetStatusText('')
 
-
+    def __del__(self):
+        self.paused=True
+        self.alive=False
