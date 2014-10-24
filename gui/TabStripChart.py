@@ -237,6 +237,47 @@ class TabStripChart(wx.Panel):
         self.Bind(wx.EVT_CHECKBOX, self.on_cb_xlab, self.cb_xlab)
         self.cb_xlab.SetValue(True)
 
+        self.pvListNames =[q1_temp.pvname,
+                      q2_temp.pvname,  
+                      q3_temp.pvname,  
+                      q4_temp.pvname,  
+                      q5_temp.pvname,  
+                      q6_temp.pvname,  
+                      q7_temp.pvname,  
+                      d1_temp.pvname,  
+                      d2_temp.pvname,  
+                    ]
+        self.ListNames_to_magn = {
+            q1_temp.pvname : mquad1,
+            q2_temp.pvname : mquad2,  
+            q3_temp.pvname : mquad3,  
+            q4_temp.pvname : mquad4,  
+            q5_temp.pvname : mquad5,  
+            q6_temp.pvname : mquad6,  
+            q7_temp.pvname : mquad7,  
+            d1_temp.pvname : mdipol1,  
+            d2_temp.pvname : mdipol2,  
+        }
+        self.ListNames_to_color = {
+            q1_temp.pvname : (1,0,0),
+            q2_temp.pvname : (1,0.5,0),  
+            q3_temp.pvname : (1,0,0.5),  
+            q4_temp.pvname : (0,1,0),  
+            q5_temp.pvname : (0.5,1,0),  
+            q6_temp.pvname : (0,1,0.5),  
+            q7_temp.pvname : (0,0,1),  
+            d1_temp.pvname : (0.5,0,1),  
+            d2_temp.pvname : (0,0.5,1),  
+        }
+        self.lb = wx.CheckListBox(self, -1, wx.DefaultPosition, (150,600), self.pvListNames)
+
+        self.Bind(wx.EVT_CHECKLISTBOX, self.EvtCheckListBox, self.lb)
+        
+
+        self.hbox0 = wx.BoxSizer(wx.HORIZONTAL)
+        self.hbox0.Add(self.canvas, 1, flag=wx.LEFT | wx.TOP | wx.GROW)
+        self.hbox0.Add(self.lb ,0, flag=wx.RIGHT | wx.TOP)
+        
         self.hbox1 = wx.BoxSizer(wx.HORIZONTAL)
         self.hbox1.Add(self.pause_button, border=5, flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL)
         self.hbox1.AddSpacer(20)
@@ -251,15 +292,24 @@ class TabStripChart(wx.Panel):
         self.hbox2.Add(self.ymin_control, border=5, flag=wx.ALL)
         self.hbox2.Add(self.ymax_control, border=5, flag=wx.ALL)
 
+
         self.vbox = wx.BoxSizer(wx.VERTICAL)
-        self.vbox.Add(self.canvas, 1, flag=wx.LEFT | wx.TOP | wx.GROW)
+        #self.vbox.Add(self.canvas, 1, flag=wx.LEFT | wx.TOP | wx.GROW)
+        self.vbox.Add(self.hbox0, 1, flag=wx.LEFT | wx.TOP | wx.GROW)
         self.vbox.Add(self.hbox1, 0, flag=wx.ALIGN_LEFT | wx.TOP)
         self.vbox.Add(self.hbox2, 0, flag=wx.ALIGN_LEFT | wx.TOP)
 
-        #self.SetSizer(self.vbox)
         self.SetSizer(self.vbox)
         self.vbox.Fit(self)
+
+        self.xmin = 0
+        self.max_datapoints_plot = 1024
         
+    def EvtCheckListBox(self, evt):
+        #print "The current selections are: "+str(self.lb.GetChecked())
+        #for i in self.lb.GetChecked():
+        #    print self.pvListNames[i]
+        evt.Skip()
 
     def create_status_bar(self):
         self.statusbar = self.CreateStatusBar()
@@ -278,11 +328,11 @@ class TabStripChart(wx.Panel):
         # plot the data as a line series, and save the reference
         # to the plotted line series
         #
-        self.plot_data = self.axes.plot(
-            self.strip_chart02.data,
-            linewidth=1,
-            color=(1, 1, 0),
-            )[0]
+        #self.plot_data = self.axes.plot(
+        #    self.strip_chart02.data,
+        #    linewidth=1,
+        #    color=(1, 1, 0),
+        #    )[0]
 
 
     def draw_plot(self):
@@ -293,7 +343,8 @@ class TabStripChart(wx.Panel):
         # xmax.
         #
         if self.xmax_control.is_auto():
-            xmax = len(self.strip_chart02.time) if len(self.strip_chart02.time) > 50 else 50
+            #xmax = len(mquad1.strip_chart_temp) if len(mquad1.strip_chart_temp) > 50 else 50
+            xmax = mquad1.strip_chart_temp_time[-1] if mquad1.strip_chart_temp_time[-1] > 50 else 50
         else:
             xmax = int(self.xmax_control.manual_value())
 
@@ -301,6 +352,7 @@ class TabStripChart(wx.Panel):
             xmin = xmax - 50
         else:
             xmin = int(self.xmin_control.manual_value())
+        self.xmin = xmin
 
         # for ymin and ymax, find the minimal and maximal values
         # in the data set and add a mininal margin.
@@ -310,16 +362,18 @@ class TabStripChart(wx.Panel):
         # the whole data set.
         #
         if self.ymin_control.is_auto():
-            ymin = round(min(self.strip_chart02.data), 0) - 1
+            #ymin = round(min(mquad1.strip_chart_temp), 0) - 1
+            ymin = mquad1.strip_chart_temp[-1] - 50
         else:
             ymin = int(self.ymin_control.manual_value())
 
         if self.ymax_control.is_auto():
-            ymax = round(max(self.strip_chart02.data), 0) + 1
+            #ymax = round(max(mquad1.strip_chart_temp), 0) + 1
+            ymax = mquad1.strip_chart_temp[-1]
         else:
             ymax = int(self.ymax_control.manual_value())
 
-        #self.axes.set_xbound(lower=xmin, upper=xmax)
+        self.axes.set_xbound(lower=xmin, upper=xmax)
         #self.axes.set_ybound(lower=ymin, upper=ymax)
 
         # anecdote: axes.grid assumes b=True if any other flag is
@@ -351,13 +405,36 @@ class TabStripChart(wx.Panel):
         self.axes_lock.release()
 
     def on_update_axes(self):
+        xmin = self.xmin
         while self.alive:
             while self.update_axes:
                 self.axes_lock.acquire()
-                self.axes.plot(numpy.array(mquad1.strip_chart_temp_time),
-                    numpy.array(mquad1.strip_chart_temp),  linewidth=1,color=(1,0,0))
-                self.axes.plot(numpy.array(mquad2.strip_chart_temp_time), 
-                        numpy.array(mquad2.strip_chart_temp),  linewidth=1,color=(1,0,1))
+                self.axes.cla()
+                
+                for i in self.lb.GetChecked():
+                    list_name =  self.pvListNames[i]
+                    magn = self.ListNames_to_magn[list_name]
+                    color = self.ListNames_to_color[list_name]
+                    if len(magn.strip_chart_temp_time)-xmin < self.max_datapoints_plot:
+                        self.axes.plot(numpy.array(magn.strip_chart_temp_time),
+                                numpy.array(magn.strip_chart_temp),  linewidth=1, color=color)
+                    else:
+                        #print 'reduzed axes'
+                        l = float(len(magn.strip_chart_temp_time))
+                        x_arr=[]
+                        y_arr=[]
+                        step = l/float(self.max_datapoints_plot)
+                        for i in range(xmin,self.max_datapoints_plot):
+                            ii = int(round(i*step))
+                            x_arr.append(magn.strip_chart_temp_time[ii])
+                            y_arr.append(magn.strip_chart_temp[ii])
+                        if (i*step < l):
+                            x_arr.append(magn.strip_chart_temp_time[-1])
+                            y_arr.append(magn.strip_chart_temp[-1])
+                        self.axes.plot(numpy.array(x_arr),
+                                        numpy.array(y_arr),  linewidth=1, color=color)
+                    
+
                 self.update_axes=False
                 self.axes_lock.release()
             time.sleep(.1)
