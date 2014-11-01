@@ -173,6 +173,7 @@ class TabStripChart(wx.Panel):
     title = 'Demo: dynamic matplotlib graph'
     def __init__(self,parent):
         wx.Panel.__init__(self, parent)
+        self.parent = parent
 
         self.datagen = DataGen()
         #self.data = [self.datagen.next()]
@@ -238,46 +239,46 @@ class TabStripChart(wx.Panel):
         self.cb_xlab.SetValue(True)
 
         self.pvListNames =[q1_temp.pvname,
-                      q2_temp.pvname,  
-                      q3_temp.pvname,  
-                      q4_temp.pvname,  
-                      q5_temp.pvname,  
-                      q6_temp.pvname,  
-                      q7_temp.pvname,  
-                      d1_temp.pvname,  
-                      d2_temp.pvname,  
+                      q2_temp.pvname,
+                      q3_temp.pvname,
+                      q4_temp.pvname,
+                      q5_temp.pvname,
+                      q6_temp.pvname,
+                      q7_temp.pvname,
+                      d1_temp.pvname,
+                      d2_temp.pvname,
                     ]
         self.ListNames_to_magn = {
             q1_temp.pvname : mquad1,
-            q2_temp.pvname : mquad2,  
-            q3_temp.pvname : mquad3,  
-            q4_temp.pvname : mquad4,  
-            q5_temp.pvname : mquad5,  
-            q6_temp.pvname : mquad6,  
-            q7_temp.pvname : mquad7,  
-            d1_temp.pvname : mdipol1,  
-            d2_temp.pvname : mdipol2,  
+            q2_temp.pvname : mquad2,
+            q3_temp.pvname : mquad3,
+            q4_temp.pvname : mquad4,
+            q5_temp.pvname : mquad5,
+            q6_temp.pvname : mquad6,
+            q7_temp.pvname : mquad7,
+            d1_temp.pvname : mdipol1,
+            d2_temp.pvname : mdipol2,
         }
         self.ListNames_to_color = {
             q1_temp.pvname : (1,0,0),
-            q2_temp.pvname : (1,0.5,0),  
-            q3_temp.pvname : (1,0,0.5),  
-            q4_temp.pvname : (0,1,0),  
-            q5_temp.pvname : (0.5,1,0),  
-            q6_temp.pvname : (0,1,0.5),  
-            q7_temp.pvname : (0,0,1),  
-            d1_temp.pvname : (0.5,0,1),  
-            d2_temp.pvname : (0,0.5,1),  
+            q2_temp.pvname : (1,0.5,0),
+            q3_temp.pvname : (1,0,0.5),
+            q4_temp.pvname : (0,1,0),
+            q5_temp.pvname : (0.5,1,0),
+            q6_temp.pvname : (0,1,0.5),
+            q7_temp.pvname : (0,0,1),
+            d1_temp.pvname : (0.5,0,1),
+            d2_temp.pvname : (0,0.5,1),
         }
         self.lb = wx.CheckListBox(self, -1, wx.DefaultPosition, (150,600), self.pvListNames)
 
         self.Bind(wx.EVT_CHECKLISTBOX, self.EvtCheckListBox, self.lb)
-        
+
 
         self.hbox0 = wx.BoxSizer(wx.HORIZONTAL)
         self.hbox0.Add(self.canvas, 1, flag=wx.LEFT | wx.TOP | wx.GROW)
         self.hbox0.Add(self.lb ,0, flag=wx.RIGHT | wx.TOP)
-        
+
         self.hbox1 = wx.BoxSizer(wx.HORIZONTAL)
         self.hbox1.Add(self.pause_button, border=5, flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL)
         self.hbox1.AddSpacer(20)
@@ -304,7 +305,8 @@ class TabStripChart(wx.Panel):
 
         self.xmin = 0
         self.max_datapoints_plot = 1024
-        
+        #self.max_datapoints_plot = 200
+
     def EvtCheckListBox(self, evt):
         #print "The current selections are: "+str(self.lb.GetChecked())
         #for i in self.lb.GetChecked():
@@ -320,7 +322,7 @@ class TabStripChart(wx.Panel):
 
         self.axes = self.fig.add_subplot(111)
         self.axes.set_axis_bgcolor('black')
-        self.axes.set_title('Very important TITLE (TODO)', size=12)
+        self.axes.set_title('Temperature', size=12)
 
         pylab.setp(self.axes.get_xticklabels(), fontsize=8)
         pylab.setp(self.axes.get_yticklabels(), fontsize=8)
@@ -353,6 +355,7 @@ class TabStripChart(wx.Panel):
         else:
             xmin = int(self.xmin_control.manual_value())
         self.xmin = xmin
+        self.xmax = xmax
 
         # for ymin and ymax, find the minimal and maximal values
         # in the data set and add a mininal margin.
@@ -372,9 +375,9 @@ class TabStripChart(wx.Panel):
             ymax = mquad1.strip_chart_temp[-1]
         else:
             ymax = int(self.ymax_control.manual_value())
+            self.axes.set_ybound(lower=ymin, upper=ymax)
 
         self.axes.set_xbound(lower=xmin, upper=xmax)
-        #self.axes.set_ybound(lower=ymin, upper=ymax)
 
         # anecdote: axes.grid assumes b=True if any other flag is
         # given even if b is set to False.
@@ -405,35 +408,81 @@ class TabStripChart(wx.Panel):
         self.axes_lock.release()
 
     def on_update_axes(self):
-        xmin = self.xmin
         while self.alive:
             while self.update_axes:
                 self.axes_lock.acquire()
                 self.axes.cla()
-                
-                for i in self.lb.GetChecked():
-                    list_name =  self.pvListNames[i]
+                self.axes.set_xlabel('time in seconds', fontsize = 9)
+                self.axes.set_ylabel('temperature in degree', fontsize = 9)
+
+                for pv_i in self.lb.GetChecked():
+                    list_name =  self.pvListNames[pv_i]
                     magn = self.ListNames_to_magn[list_name]
                     color = self.ListNames_to_color[list_name]
-                    if len(magn.strip_chart_temp_time)-xmin < self.max_datapoints_plot:
-                        self.axes.plot(numpy.array(magn.strip_chart_temp_time),
-                                numpy.array(magn.strip_chart_temp),  linewidth=1, color=color)
+
+                    # find the x boundaries
+                    xmin_i = 0
+                    for i in xrange(0,len(magn.strip_chart_temp_time)):
+                        if self.xmin<=magn.strip_chart_temp_time[i]:
+                            xmin_i = i
+                            break
+                    xmax_i = len(magn.strip_chart_temp_time)-1
+                    for i in xrange(len(magn.strip_chart_temp_time)-1,0,-1):
+                        if self.xmax==magn.strip_chart_temp_time[i]:
+                            xmax_i = i
+                            break
+
+
+                    if xmax_i-xmin_i < self.max_datapoints_plot:
+                        part_arr_x = magn.strip_chart_temp_time[xmin_i:xmax_i]
+                        part_arr_y = magn.strip_chart_temp[xmin_i:xmax_i]
                     else:
-                        #print 'reduzed axes'
-                        l = float(len(magn.strip_chart_temp_time))
+                        l = float(xmax_i-xmin_i)
                         x_arr=[]
                         y_arr=[]
-                        step = l/float(self.max_datapoints_plot)
-                        for i in range(xmin,self.max_datapoints_plot):
-                            ii = int(round(i*step))
-                            x_arr.append(magn.strip_chart_temp_time[ii])
-                            y_arr.append(magn.strip_chart_temp[ii])
-                        if (i*step < l):
+                        step = int(round(l/float(self.max_datapoints_plot)))
+                        #print 'reduzed axes',xmin_i,xmax_i,step
+                        for i in range(xmin_i,xmax_i+1,step):
+                            #ii = int(round(i*step))
+                            x_arr.append(magn.strip_chart_temp_time[i])
+                            y_arr.append(magn.strip_chart_temp[i])
+                        if l%step!=0:
                             x_arr.append(magn.strip_chart_temp_time[-1])
                             y_arr.append(magn.strip_chart_temp[-1])
-                        self.axes.plot(numpy.array(x_arr),
-                                        numpy.array(y_arr),  linewidth=1, color=color)
-                    
+                        part_arr_x = x_arr
+                        part_arr_y = y_arr
+
+
+                    arr_x = numpy.array(part_arr_x)
+                    arr_y = numpy.array(part_arr_y)
+
+                    self.axes.plot(arr_x, arr_y, linewidth=1, color=color)
+
+
+#                    if magn.strip_chart_temp_time[-1]-self.xmin < self.max_datapoints_plot:
+#                        xmin_i = 0
+#                        for j in range(0,len(magn.strip_chart_temp_time)):
+#                            if self.xmin==magn.strip_chart_temp_time[j]:
+#                                xmin_i = j
+#                                break
+#                        self.axes.plot(numpy.array(magn.strip_chart_temp_time[xmin_i:]),
+#                                numpy.array(magn.strip_chart_temp[xmin_i:]),  linewidth=1, color=color)
+#                    else:
+#                        #print 'reduzed axes'
+#                        l = float(len(magn.strip_chart_temp_time))
+#                        x_arr=[]
+#                        y_arr=[]
+#                        step = l/float(self.max_datapoints_plot)
+#                        for j in range(int(self.xmin),self.max_datapoints_plot):
+#                            jj = int(round(i*step))
+#                            x_arr.append(magn.strip_chart_temp_time[jj])
+#                            y_arr.append(magn.strip_chart_temp[jj])
+#                        if (i*step < l):
+#                            x_arr.append(magn.strip_chart_temp_time[-1])
+#                            y_arr.append(magn.strip_chart_temp[-1])
+#                        self.axes.plot(numpy.array(x_arr),
+#                                        numpy.array(y_arr),  linewidth=1, color=color)
+
 
                 self.update_axes=False
                 self.axes_lock.release()
@@ -473,12 +522,8 @@ class TabStripChart(wx.Panel):
         # if paused do not add data, but still redraw the plot
         # (to respond to scale modifications, grid change, etc.)
         #
-        if not self.paused:
-            #self.data.append(self.datagen.next())
-            #value = self.strip_chart02.pv.get()
-            #if value!=None:
-            #    self.strip_chart02.add(time.time(),value)
-            #    self.draw_plot()
+        tab_selection = self.parent.GetSelection()
+        if not self.paused and tab_selection==2:
             self.draw_plot()
 
     def on_exit(self, event):

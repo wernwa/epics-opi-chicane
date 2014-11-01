@@ -13,7 +13,7 @@ from Experiment import *
 from PowerSupplyControls import PowerSupplyControls
 from thread import start_new_thread
 import time
-
+import traceback
 
 shicane_type=None
 
@@ -56,6 +56,7 @@ class DataPanel(wx.Panel):
         wx.Panel.__init__(self, parent, style=wx.SUNKEN_BORDER)
         #panel2 = wx.Panel(self,-1, style=wx.SUNKEN_BORDER)
 
+        self.start_app_time = time.time()
         panel = self
 
         #hbox = wx.BoxSizer(wx.HORIZONTAL)
@@ -259,15 +260,15 @@ class DataPanel(wx.Panel):
         self.d1_temp=d1_temp.get()
         self.d2_temp=d2_temp.get()
 
-        self.q1_k=0
-        self.q2_k=0
-        self.q3_k=0
-        self.q4_k=0
-        self.q5_k=0
-        self.q6_k=0
-        self.q7_k=0
-        self.d1_alpha=0
-        self.d2_alpha=0
+        self.q1_k=mquad1.get_k(self.q1_curr)
+        self.q2_k=mquad2.get_k(self.q2_curr)
+        self.q3_k=mquad3.get_k(self.q3_curr)
+        self.q4_k=mquad4.get_k(self.q4_curr)
+        self.q5_k=mquad5.get_k(self.q5_curr)
+        self.q6_k=mquad6.get_k(self.q6_curr)
+        self.q7_k=mquad7.get_k(self.q7_curr)
+        self.d1_alpha=mdipol1.get_k(self.d1_curr)
+        self.d2_alpha=mdipol2.get_k(self.d2_curr)
 
 
         self.temp_all_arr = [self.q1_temp,self.q3_temp,self.q3_temp,self.q4_temp,self.q5_temp,self.q6_temp,self.q7_temp,self.d1_temp,self.d2_temp]
@@ -349,8 +350,7 @@ class DataPanel(wx.Panel):
 
 
 
-    start_app_time = time.time()
-    def onPVChanges(self, pvname=None, value=None, char_value=None, **kw):
+    def onPVChanges(self, pvname=None, value=None, timestamp=None, **kw):
 
         global mquad1, mquad2, mquad3, mquad4, mquad5, mquad6, mquad7, mdipol1, mdipol2
 
@@ -373,16 +373,21 @@ class DataPanel(wx.Panel):
                 self.q7_temp=arr[6]
                 self.d1_temp=arr[7]
                 self.d2_temp=arr[8]
-        
+
 
                 # fill in the numpy arrays for StripChart visualisation
                 for i in range(0,len(marr)):
                     marr[i].strip_chart_temp.append(float(arr[i]))
-                    marr[i].strip_chart_temp_time.append(temp_all.timestamp-self.start_app_time)
-                    
+                    #print 'start_app_time',type(self.start_app_time)
+                    #print 'temp_all',type(temp_all)
+                    # strange Error for temp_all.timestamp=NoneType
+                    #marr[i].strip_chart_temp_time.append(temp_all.timestamp-self.start_app_time)
+                    marr[i].strip_chart_temp_time.append(time.time()-self.start_app_time)
+
 
             except Exception as e:
-                print 'temp_all: ',e
+                #print 'temp_all: ',e
+                print traceback.format_exc()
 
         elif pvname==magn_volt_all.pvname:
             #print type(value)
@@ -401,7 +406,8 @@ class DataPanel(wx.Panel):
                 self.d1_volt=float(arr[7])
                 self.d2_volt=float(arr[8])
             except Exception as e:
-                print 'volt_all:',e
+                #print 'volt_all:',e
+                print traceback.format_exc()
 
         elif pvname==magn_curr_all.pvname:
             arr = value.tostring().split(' ')
@@ -429,7 +435,8 @@ class DataPanel(wx.Panel):
                 self.d1_alpha=mdipol1.get_k(float(arr[7]))
                 self.d2_alpha=mdipol2.get_k(float(arr[8]))
             except Exception as e:
-                print 'temp_all:',e
+                #print 'temp_all:',e
+                print traceback.format_exc()
 
     SomeNewEvent=None
     def call_routine_over_event(self, handler):
