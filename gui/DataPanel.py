@@ -260,15 +260,24 @@ class DataPanel(wx.Panel):
         self.d1_temp=d1_temp.get()
         self.d2_temp=d2_temp.get()
 
-        self.q1_k=mquad1.get_k(self.q1_curr)
-        self.q2_k=mquad2.get_k(self.q2_curr)
-        self.q3_k=mquad3.get_k(self.q3_curr)
-        self.q4_k=mquad4.get_k(self.q4_curr)
-        self.q5_k=mquad5.get_k(self.q5_curr)
-        self.q6_k=mquad6.get_k(self.q6_curr)
-        self.q7_k=mquad7.get_k(self.q7_curr)
-        self.d1_alpha=mdipol1.get_k(self.d1_curr)
-        self.d2_alpha=mdipol2.get_k(self.d2_curr)
+        if self.q1_curr!=None: self.q1_k=mquad1.get_k(self.q1_curr)
+        else: self.q1_k=mquad1.get_k(0)
+        if self.q2_curr!=None: self.q2_k=mquad2.get_k(self.q2_curr)
+        else: self.q2_k=mquad2.get_k(0)
+        if self.q3_curr!=None: self.q3_k=mquad3.get_k(self.q3_curr)
+        else: self.q3_k=mquad3.get_k(0)
+        if self.q4_curr!=None: self.q4_k=mquad4.get_k(self.q4_curr)
+        else: self.q4_k=mquad4.get_k(0)
+        if self.q5_curr!=None: self.q5_k=mquad5.get_k(self.q5_curr)
+        else: self.q5_k=mquad5.get_k(0)
+        if self.q6_curr!=None: self.q6_k=mquad6.get_k(self.q6_curr)
+        else: self.q6_k=mquad6.get_k(0)
+        if self.q7_curr!=None: self.q7_k=mquad7.get_k(self.q7_curr)
+        else: self.q7_k=mquad7.get_k(0)
+        if self.d1_curr!=None: self.d1_alpha=mdipol1.get_k(self.d1_curr)
+        else: self.d1_alpha=mdipol1.get_k(0)
+        if self.d2_curr!=None: self.d2_alpha=mdipol2.get_k(self.d2_curr)
+        else: self.d2_alpha=mdipol1.get_k(0)
 
 
         self.temp_all_arr = [self.q1_temp,self.q3_temp,self.q3_temp,self.q4_temp,self.q5_temp,self.q6_temp,self.q7_temp,self.d1_temp,self.d2_temp]
@@ -335,16 +344,16 @@ class DataPanel(wx.Panel):
 
 
         global shicane_type, mquad1, mquad2, mquad3, mquad4, mquad5, mquad6, mquad7, mdipol1, mdipol2
-        self.st_quad1.SetLabel("Quadrupol 1\n%s V \n%s A\n%s °C\n%.2f [1/m]" %(self.q1_volt,self.q1_curr,self.q1_temp,self.q1_k))
-        self.st_quad2.SetLabel("Quadrupol 2\n%s V \n%s A\n%s °C\n%.2f [1/m]" %(self.q2_volt,self.q2_curr,self.q2_temp,self.q2_k))
-        self.st_quad3.SetLabel("Quadrupol 3\n%s V \n%s A\n%s °C\n%.2f [1/m]" %(self.q3_volt,self.q3_curr,self.q3_temp,self.q3_k))
-        self.st_quad4.SetLabel("Quadrupol 4\n%s V \n%s A\n%s °C\n%.2f [1/m]" %(self.q4_volt,self.q4_curr,self.q4_temp,self.q4_k))
-        self.st_quad5.SetLabel("Quadrupol 5\n%s V \n%s A\n%s °C\n%.2f [1/m]" %(self.q5_volt,self.q5_curr,self.q5_temp,self.q5_k))
-        self.st_quad6.SetLabel("Quadrupol 6\n%s V \n%s A\n%s °C\n%.2f [1/m]" %(self.q6_volt,self.q6_curr,self.q6_temp,self.q6_k))
+        self.st_quad1.SetLabel("Quadrupol 1\n%s V \n%s A\n%.2f [1/m]\n%s °C" %(self.q1_volt,self.q1_curr,self.q1_k,self.q1_temp))
+        self.st_quad2.SetLabel("Quadrupol 2\n%s V \n%s A\n%.2f [1/m]\n%s °C" %(self.q2_volt,self.q2_curr,self.q2_k,self.q2_temp))
+        self.st_quad3.SetLabel("Quadrupol 3\n%s V \n%s A\n%.2f [1/m]\n%s °C" %(self.q3_volt,self.q3_curr,self.q3_k,self.q3_temp))
+        self.st_quad4.SetLabel("Quadrupol 4\n%s V \n%s A\n%.2f [1/m]\n%s °C" %(self.q4_volt,self.q4_curr,self.q4_k,self.q4_temp))
+        self.st_quad5.SetLabel("Quadrupol 5\n%s V \n%s A\n%.2f [1/m]\n%s °C" %(self.q5_volt,self.q5_curr,self.q5_k,self.q5_temp))
+        self.st_quad6.SetLabel("Quadrupol 6\n%s V \n%s A\n%.2f [1/m]\n%s °C" %(self.q6_volt,self.q6_curr,self.q6_k,self.q6_temp))
         if shicane_type=='quadruplett':
-            self.st_quad7.SetLabel("Quadrupol 7\n%s V \n%s A\n%s °C\n%.2f [1/m]" %(self.q7_volt,self.q7_curr,self.q7_temp,self.q7_k))
-        self.st_dipol1.SetLabel("Dipol 1\n%s V \n%s A\n%s °C\n%.2f [mrad]" %(self.d1_volt,self.d1_curr,self.d1_temp,self.d1_alpha))
-        self.st_dipol2.SetLabel("Dipol 2\n%s V \n%s A\n%s °C\n%.2f [mrad]" %(self.d2_volt,self.d2_curr,self.d2_temp,self.d2_alpha))
+            self.st_quad7.SetLabel("Quadrupol 7\n%s V \n%s A\n%.2f [1/m]\n%s °C" %(self.q7_volt,self.q7_curr,self.q7_k,self.q7_temp))
+        self.st_dipol1.SetLabel("Dipol 1\n%s V \n%s A\n%.2f [mrad]\n%s °C" %(self.d1_volt,self.d1_curr,self.d1_alpha,self.d1_temp))
+        self.st_dipol2.SetLabel("Dipol 2\n%s V \n%s A\n%.2f [mrad]\n%s °C" %(self.d2_volt,self.d2_curr,self.d2_alpha,self.d2_temp))
 
 
 

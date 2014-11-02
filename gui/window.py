@@ -191,6 +191,7 @@ class MainFrame(wx.Frame):
         #self.tabShicane.alive=False
         self.tabStripChartTemp.__del__()
         self.tabStripChartVolt.__del__()
+        self.tabStripChartCurr.__del__()
         self.dataPanel.__del__()
 
 
