@@ -13,7 +13,7 @@ import wx
 from epics import PV
 import math
 import thread
-
+import time
 import numpy
 import matplotlib
 
@@ -104,6 +104,7 @@ class TabMagnProperties(wx.Panel):
 
 
     def set_background_ctrl(self,evt):
+
         self.tcV.SetBackgroundColour(self.colour_curr)
         self.tcA.SetBackgroundColour(self.colour_curr)
         self.tck.SetBackgroundColour(self.colour_curr)
@@ -161,6 +162,9 @@ class TabMagnProperties(wx.Panel):
         self.tck.SetValue('%.3f'%self.magn.get_k(curr))
         if 'Quadrupol' in title: self.st_lab_y_achsis.SetLabel('k')
         elif 'Dipol' in title: self.st_lab_y_achsis.SetLabel('alpha')
+
+        #thread.start_new_thread(self.plot,())
+        #self.call_routine_over_event(self.plot)
         self.plot()
 
 
@@ -200,7 +204,6 @@ class TabMagnProperties(wx.Panel):
             #print 'curr %f'%self.magn.get_k(curr)
 
     def plot(self):
-
         x=self.magn.data_x
         y=self.magn.data_y
 
@@ -217,6 +220,14 @@ class TabMagnProperties(wx.Panel):
         xnew = numpy.linspace(x[0], x[len(x)-1], len(x)*10)
 
         self.axes.plot(xnew,spline(xnew), linestyle='-', color='g')
+
+#        def myfkt(evt):
+#            print 'drawing canvas'
+#            self.canvas.draw()
+#            print 'drawing canvas finished'
+#
+#
+#        self.call_routine_over_event(myfkt)
 
         self.canvas.draw()
 

@@ -14,9 +14,9 @@ from Experiment import *
 import wx
 from TabMagnProperties import TabMagnProperties
 from TabOverview import TabOverview
-#from TabStripChartGNUPLOT import TabStripChartGNUPLOT
-from TabStripChart import TabStripChart
-#from TabMultipoleCurrent import TabMultipoleCurrent
+from TabStripChartTemp import TabStripChartTemp
+from TabStripChartVolt import TabStripChartVolt
+from TabStripChartCurr import TabStripChartCurr
 from DataPanel import DataPanel
 
 import thread
@@ -62,8 +62,12 @@ class MainFrame(wx.Frame):
         self.nb.AddPage(TabOverview(nb), "Overview")
         self.tabMagnProperties = TabMagnProperties(nb)
         self.nb.AddPage(self.tabMagnProperties, "Magnet Properties")
-        self.tabStripChart = TabStripChart(nb)
-        nb.AddPage(self.tabStripChart, "StripChart")
+        self.tabStripChartTemp = TabStripChartTemp(nb)
+        nb.AddPage(self.tabStripChartTemp, "Temperature")
+        self.tabStripChartVolt = TabStripChartVolt(nb)
+        nb.AddPage(self.tabStripChartVolt, "Voltage")
+        self.tabStripChartCurr = TabStripChartCurr(nb)
+        nb.AddPage(self.tabStripChartCurr, "Current")
 
         # finally, put the notebook in a sizer for the panel to manage
         # the layout
@@ -94,15 +98,15 @@ class MainFrame(wx.Frame):
             return     # the user changed idea...
 
         pyfile = openFileDialog.GetPath()
-        
+
         def str_helper(string,pv):
             val = pv.get()
             if val==None:
                 return '#'+string%0
             else:
                 return string%val
-            
-        
+
+
         fh = open(pyfile,'w+')
 
         fh.write(str_helper( 'mquad1.ps.Volt.put(%.3f)\n', mquad1.ps.Volt))
@@ -185,7 +189,8 @@ class MainFrame(wx.Frame):
 
         # Thread noch aktiv, besser destructor!
         #self.tabShicane.alive=False
-        self.tabStripChart.__del__()
+        self.tabStripChartTemp.__del__()
+        self.tabStripChartVolt.__del__()
         self.dataPanel.__del__()
 
 

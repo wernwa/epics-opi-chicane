@@ -405,6 +405,12 @@ class DataPanel(wx.Panel):
                 self.q7_volt=float(arr[6])
                 self.d1_volt=float(arr[7])
                 self.d2_volt=float(arr[8])
+
+                # fill in the numpy arrays for StripChart visualisation
+                for i in range(0,len(marr)):
+                    marr[i].strip_chart_volt.append(float(arr[i]))
+                    marr[i].strip_chart_volt_time.append(time.time()-self.start_app_time)
+
             except Exception as e:
                 #print 'volt_all:',e
                 print traceback.format_exc()
@@ -434,6 +440,12 @@ class DataPanel(wx.Panel):
                 self.q7_k=mquad7.get_k(float(arr[6]))
                 self.d1_alpha=mdipol1.get_k(float(arr[7]))
                 self.d2_alpha=mdipol2.get_k(float(arr[8]))
+
+                # fill in the numpy arrays for StripChart visualisation
+                for i in range(0,len(marr)):
+                    marr[i].strip_chart_curr.append(float(arr[i]))
+                    marr[i].strip_chart_curr_time.append(time.time()-self.start_app_time)
+
             except Exception as e:
                 #print 'temp_all:',e
                 print traceback.format_exc()

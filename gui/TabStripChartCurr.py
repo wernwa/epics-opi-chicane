@@ -67,57 +67,6 @@ class DataGen(object):
             self.data += delta
 
 
-class StripChartMemory:
-
-
-    def __init__(self, pv, limit=60):
-        self.limit = limit
-        self.time = []
-        self.data = []
-        self.pv = pv
-        self.add(time.time(),pv.get())
-        self.pv.add_callback(self.onPVChanges)
-
-    def add(self, t,d):
-        if t == None:
-            t = time.time()
-        self.time.append(t)
-        self.data.append(d)
-
-        #self.time.insert(0,t)
-        #self.data.insert(0,d)
-
-    def delete_data_over_limit(self):
-        time_now = time.time()
-
-        for i in range(len(self.time)):
-            if self.time[i] > time_now - self.limit:
-                del self.time[0:i]
-                del self.data[0:i]
-                #del self.time[i:len(self.time)]
-                #del self.data[i:len(self.data)]
-                break
-
-    def clean(self):
-        self.time = []
-        self.data = []
-
-    def print_gnuplot_data(self, chart_data_pipe):
-        self.delete_data_over_limit()
-        data = '# t \n'
-        for i in range(len(self.time)):
-            time_now = time.time()
-            data += '%0.3f %0.3f\n' %(self.time[i]-time_now,self.data[i])
-        with io.open(chart_data_pipe, 'w') as f:
-            f.write(unicode(data))
-            f.close()
-
-    def onPVChanges(self, pvname=None, value=None, char_value=None, **kw):
-        # epics timestamp vom Record scheint nicht gleich dem python time.time() timestamp zu sein
-        # Aus dem Grund verwende die von python
-        #self.strip_chart01.add(ps[8].getterVolt.timestamp,value)
-        #print 'adding value tu the strip chart memory %f'%value
-        self.add(time.time(),value)
 
 class BoundControlBox(wx.Panel):
     """ A static box with a couple of radio buttons and a text
@@ -137,7 +86,7 @@ class BoundControlBox(wx.Panel):
         self.radio_manual = wx.RadioButton(self, -1,
             label="Manual")
         self.manual_text = wx.TextCtrl(self, -1,
-            size=(35,-1),
+            size=(70,-1),
             value=str(initval),
             style=wx.TE_PROCESS_ENTER)
 
@@ -167,7 +116,7 @@ class BoundControlBox(wx.Panel):
         return self.value
 
 
-class TabStripChart(wx.Panel):
+class TabStripChartCurr(wx.Panel):
     """ The main frame of the application
     """
     title = 'Demo: dynamic matplotlib graph'
@@ -175,10 +124,10 @@ class TabStripChart(wx.Panel):
         wx.Panel.__init__(self, parent)
         self.parent = parent
 
-        self.datagen = DataGen()
+        #self.datagen = DataGen()
         #self.data = [self.datagen.next()]
         ## init two test PV variables ##
-        self.strip_chart02 = StripChartMemory(q1_temp)
+        #self.strip_chart02 = StripChartMemory(q1_temp)
         #self.strip_chart02 = StripChartMemory(t1)
         self.paused = True
 
@@ -238,37 +187,37 @@ class TabStripChart(wx.Panel):
         self.Bind(wx.EVT_CHECKBOX, self.on_cb_xlab, self.cb_xlab)
         self.cb_xlab.SetValue(True)
 
-        self.pvListNames =[q1_temp.pvname,
-                      q2_temp.pvname,
-                      q3_temp.pvname,
-                      q4_temp.pvname,
-                      q5_temp.pvname,
-                      q6_temp.pvname,
-                      q7_temp.pvname,
-                      d1_temp.pvname,
-                      d2_temp.pvname,
+        self.pvListNames =[q1_curr.pvname,
+                      q2_curr.pvname,
+                      q3_curr.pvname,
+                      q4_curr.pvname,
+                      q5_curr.pvname,
+                      q6_curr.pvname,
+                      q7_curr.pvname,
+                      d1_curr.pvname,
+                      d2_curr.pvname,
                     ]
         self.ListNames_to_magn = {
-            q1_temp.pvname : mquad1,
-            q2_temp.pvname : mquad2,
-            q3_temp.pvname : mquad3,
-            q4_temp.pvname : mquad4,
-            q5_temp.pvname : mquad5,
-            q6_temp.pvname : mquad6,
-            q7_temp.pvname : mquad7,
-            d1_temp.pvname : mdipol1,
-            d2_temp.pvname : mdipol2,
+            q1_curr.pvname : mquad1,
+            q2_curr.pvname : mquad2,
+            q3_curr.pvname : mquad3,
+            q4_curr.pvname : mquad4,
+            q5_curr.pvname : mquad5,
+            q6_curr.pvname : mquad6,
+            q7_curr.pvname : mquad7,
+            d1_curr.pvname : mdipol1,
+            d2_curr.pvname : mdipol2,
         }
         self.ListNames_to_color = {
-            q1_temp.pvname : (1,0,0),
-            q2_temp.pvname : (1,0.5,0),
-            q3_temp.pvname : (1,0,0.5),
-            q4_temp.pvname : (0,1,0),
-            q5_temp.pvname : (0.5,1,0),
-            q6_temp.pvname : (0,1,0.5),
-            q7_temp.pvname : (0,0,1),
-            d1_temp.pvname : (0.5,0,1),
-            d2_temp.pvname : (0,0.5,1),
+            q1_curr.pvname : (1,0,0),
+            q2_curr.pvname : (1,0.5,0),
+            q3_curr.pvname : (1,0,0.5),
+            q4_curr.pvname : (0,1,0),
+            q5_curr.pvname : (0.5,1,0),
+            q6_curr.pvname : (0,1,0.5),
+            q7_curr.pvname : (0,0,1),
+            d1_curr.pvname : (0.5,0,1),
+            d2_curr.pvname : (0,0.5,1),
         }
         self.lb = wx.CheckListBox(self, -1, wx.DefaultPosition, (150,600), self.pvListNames)
 
@@ -295,7 +244,6 @@ class TabStripChart(wx.Panel):
 
 
         self.vbox = wx.BoxSizer(wx.VERTICAL)
-        #self.vbox.Add(self.canvas, 1, flag=wx.LEFT | wx.TOP | wx.GROW)
         self.vbox.Add(self.hbox0, 1, flag=wx.LEFT | wx.TOP | wx.GROW)
         self.vbox.Add(self.hbox1, 0, flag=wx.ALIGN_LEFT | wx.TOP)
         self.vbox.Add(self.hbox2, 0, flag=wx.ALIGN_LEFT | wx.TOP)
@@ -322,7 +270,7 @@ class TabStripChart(wx.Panel):
 
         self.axes = self.fig.add_subplot(111)
         self.axes.set_axis_bgcolor('black')
-        self.axes.set_title('Temperature', size=12)
+        self.axes.set_title('Current', size=12)
 
         pylab.setp(self.axes.get_xticklabels(), fontsize=8)
         pylab.setp(self.axes.get_yticklabels(), fontsize=8)
@@ -346,7 +294,7 @@ class TabStripChart(wx.Panel):
         #
         if self.xmax_control.is_auto():
             #xmax = len(mquad1.strip_chart_temp) if len(mquad1.strip_chart_temp) > 50 else 50
-            xmax = mquad1.strip_chart_temp_time[-1] if mquad1.strip_chart_temp_time[-1] > 50 else 50
+            xmax = mquad1.strip_chart_curr_time[-1] if mquad1.strip_chart_curr_time[-1] > 50 else 50
         else:
             xmax = int(self.xmax_control.manual_value())
 
@@ -366,13 +314,13 @@ class TabStripChart(wx.Panel):
         #
         if self.ymin_control.is_auto():
             #ymin = round(min(mquad1.strip_chart_temp), 0) - 1
-            ymin = mquad1.strip_chart_temp[-1] - 50
+            ymin = mquad1.strip_chart_curr[-1] - 50
         else:
             ymin = int(self.ymin_control.manual_value())
 
         if self.ymax_control.is_auto():
             #ymax = round(max(mquad1.strip_chart_temp), 0) + 1
-            ymax = mquad1.strip_chart_temp[-1]
+            ymax = mquad1.strip_chart_curr[-1]
         else:
             ymax = int(self.ymax_control.manual_value())
             self.axes.set_ybound(lower=ymin, upper=ymax)
@@ -413,7 +361,7 @@ class TabStripChart(wx.Panel):
                 self.axes_lock.acquire()
                 self.axes.cla()
                 self.axes.set_xlabel('time in seconds', fontsize = 9)
-                self.axes.set_ylabel('temperature in degree', fontsize = 9)
+                self.axes.set_ylabel('Current in Ampere', fontsize = 9)
 
                 for pv_i in self.lb.GetChecked():
                     list_name =  self.pvListNames[pv_i]
@@ -422,20 +370,20 @@ class TabStripChart(wx.Panel):
 
                     # find the x boundaries
                     xmin_i = 0
-                    for i in xrange(0,len(magn.strip_chart_temp_time)):
-                        if self.xmin<=magn.strip_chart_temp_time[i]:
+                    for i in xrange(0,len(magn.strip_chart_curr_time)):
+                        if self.xmin<=magn.strip_chart_curr_time[i]:
                             xmin_i = i
                             break
-                    xmax_i = len(magn.strip_chart_temp_time)-1
-                    for i in xrange(len(magn.strip_chart_temp_time)-1,0,-1):
-                        if self.xmax==magn.strip_chart_temp_time[i]:
+                    xmax_i = len(magn.strip_chart_curr_time)-1
+                    for i in xrange(len(magn.strip_chart_curr_time)-1,0,-1):
+                        if self.xmax==magn.strip_chart_curr_time[i]:
                             xmax_i = i
                             break
 
 
                     if xmax_i-xmin_i < self.max_datapoints_plot:
-                        part_arr_x = magn.strip_chart_temp_time[xmin_i:xmax_i]
-                        part_arr_y = magn.strip_chart_temp[xmin_i:xmax_i]
+                        part_arr_x = magn.strip_chart_curr_time[xmin_i:xmax_i]
+                        part_arr_y = magn.strip_chart_curr[xmin_i:xmax_i]
                     else:
                         l = float(xmax_i-xmin_i)
                         x_arr=[]
@@ -444,11 +392,11 @@ class TabStripChart(wx.Panel):
                         #print 'reduzed axes',xmin_i,xmax_i,step
                         for i in range(xmin_i,xmax_i+1,step):
                             #ii = int(round(i*step))
-                            x_arr.append(magn.strip_chart_temp_time[i])
-                            y_arr.append(magn.strip_chart_temp[i])
+                            x_arr.append(magn.strip_chart_curr_time[i])
+                            y_arr.append(magn.strip_chart_curr[i])
                         if l%step!=0:
-                            x_arr.append(magn.strip_chart_temp_time[-1])
-                            y_arr.append(magn.strip_chart_temp[-1])
+                            x_arr.append(magn.strip_chart_curr_time[-1])
+                            y_arr.append(magn.strip_chart_curr[-1])
                         part_arr_x = x_arr
                         part_arr_y = y_arr
 
@@ -458,30 +406,6 @@ class TabStripChart(wx.Panel):
 
                     self.axes.plot(arr_x, arr_y, linewidth=1, color=color)
 
-
-#                    if magn.strip_chart_temp_time[-1]-self.xmin < self.max_datapoints_plot:
-#                        xmin_i = 0
-#                        for j in range(0,len(magn.strip_chart_temp_time)):
-#                            if self.xmin==magn.strip_chart_temp_time[j]:
-#                                xmin_i = j
-#                                break
-#                        self.axes.plot(numpy.array(magn.strip_chart_temp_time[xmin_i:]),
-#                                numpy.array(magn.strip_chart_temp[xmin_i:]),  linewidth=1, color=color)
-#                    else:
-#                        #print 'reduzed axes'
-#                        l = float(len(magn.strip_chart_temp_time))
-#                        x_arr=[]
-#                        y_arr=[]
-#                        step = l/float(self.max_datapoints_plot)
-#                        for j in range(int(self.xmin),self.max_datapoints_plot):
-#                            jj = int(round(i*step))
-#                            x_arr.append(magn.strip_chart_temp_time[jj])
-#                            y_arr.append(magn.strip_chart_temp[jj])
-#                        if (i*step < l):
-#                            x_arr.append(magn.strip_chart_temp_time[-1])
-#                            y_arr.append(magn.strip_chart_temp[-1])
-#                        self.axes.plot(numpy.array(x_arr),
-#                                        numpy.array(y_arr),  linewidth=1, color=color)
 
 
                 self.update_axes=False
@@ -522,8 +446,8 @@ class TabStripChart(wx.Panel):
         # if paused do not add data, but still redraw the plot
         # (to respond to scale modifications, grid change, etc.)
         #
-        tab_selection = self.parent.GetSelection()
-        if not self.paused and tab_selection==2:
+        tab_i = self.parent.GetSelection()
+        if not self.paused and self.parent.GetPageText(tab_i)=='Current':
             self.draw_plot()
 
     def on_exit(self, event):
