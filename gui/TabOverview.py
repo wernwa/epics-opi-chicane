@@ -25,13 +25,13 @@ class TabOverview(wx.Panel):
         hbox = wx.BoxSizer(wx.HORIZONTAL)
 
 
-        shicane_type = sys.argv[1]
-        if shicane_type=='quadruplett':
+        chicane_type = sys.argv[1]
+        if chicane_type=='quadruplett':
             imageFile = 'pics/quadruplett.png'
-        elif shicane_type=='triplett':
+        elif chicane_type=='triplett':
             imageFile = 'pics/triplett.png'
         else:
-            print 'Err: shicane type not known'
+            print 'Err: chicane type not known'
             exit(0)
         image = wx.Image(imageFile, wx.BITMAP_TYPE_ANY)
         #image = image.Scale(0.5,0.5)

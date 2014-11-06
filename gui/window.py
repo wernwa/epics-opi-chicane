@@ -29,7 +29,7 @@ class PageThree(wx.Panel):
 
 class MainFrame(wx.Frame):
     def __init__(self):
-        wx.Frame.__init__(self, None, title="shicane interface", pos=(10,10), size=(1000,800))
+        wx.Frame.__init__(self, None, title="chicane interface", pos=(10,10), size=(1000,800))
         self.Bind(wx.EVT_CLOSE, self.OnClose)
 
         menuBar = wx.MenuBar()

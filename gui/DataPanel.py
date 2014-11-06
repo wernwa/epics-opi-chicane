@@ -15,7 +15,7 @@ from thread import start_new_thread
 import time
 import traceback
 
-shicane_type=None
+chicane_type=None
 
 class DataPanel(wx.Panel):
 
@@ -95,11 +95,11 @@ class DataPanel(wx.Panel):
             'q7': {'x':750,'y':qy},
             'd2': {'x':850,'y':dy},
         }
-        global shicane_type
-        shicane_type = sys.argv[1]
-        if shicane_type=='quadruplett':
+        global chicane_type
+        chicane_type = sys.argv[1]
+        if chicane_type=='quadruplett':
             lpos = self.lpos_quadruplett
-        elif shicane_type=='triplett':
+        elif chicane_type=='triplett':
             lpos = self.lpos_triplett
         else:
             print 'TODO'
@@ -161,7 +161,7 @@ class DataPanel(wx.Panel):
         self.st_quad6.SetForegroundColour(text_color_quad)
 
         self.st_quad7=None
-        if shicane_type=='quadruplett':
+        if chicane_type=='quadruplett':
             self.st_quad7 = wx.StaticText(label="Quadrupol 7\n#.##V \n#.##A\n##°C",  parent=panel,
                 pos=wx.Point(lpos['q7']['x'],lpos['q7']['y']))
             self.st_quad7.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Quadrupol 7',mquad7,self.st_quad7))
@@ -179,7 +179,7 @@ class DataPanel(wx.Panel):
 
         self.st_arr = [self.st_quad1, self.st_quad2, self.st_quad3, self.st_quad4, self.st_quad5, self.st_quad6, self.st_quad7, self.st_dipol1, self.st_dipol2]
 
-        if shicane_type=='quadruplett':
+        if chicane_type=='quadruplett':
             self.st_text_color_arr = [text_color_quad, text_color_quad, text_color_quad, text_color_quad,
                             text_color_dipol,
                             text_color_quad, text_color_quad, text_color_quad,
@@ -343,14 +343,14 @@ class DataPanel(wx.Panel):
                 self.st_arr[i].SetForegroundColour(self.text_color_hihi)
 
 
-        global shicane_type, mquad1, mquad2, mquad3, mquad4, mquad5, mquad6, mquad7, mdipol1, mdipol2
+        global chicane_type, mquad1, mquad2, mquad3, mquad4, mquad5, mquad6, mquad7, mdipol1, mdipol2
         self.st_quad1.SetLabel("Quadrupol 1\n%s V \n%s A\n%.2f [1/m]\n%s °C" %(self.q1_volt,self.q1_curr,self.q1_k,self.q1_temp))
         self.st_quad2.SetLabel("Quadrupol 2\n%s V \n%s A\n%.2f [1/m]\n%s °C" %(self.q2_volt,self.q2_curr,self.q2_k,self.q2_temp))
         self.st_quad3.SetLabel("Quadrupol 3\n%s V \n%s A\n%.2f [1/m]\n%s °C" %(self.q3_volt,self.q3_curr,self.q3_k,self.q3_temp))
         self.st_quad4.SetLabel("Quadrupol 4\n%s V \n%s A\n%.2f [1/m]\n%s °C" %(self.q4_volt,self.q4_curr,self.q4_k,self.q4_temp))
         self.st_quad5.SetLabel("Quadrupol 5\n%s V \n%s A\n%.2f [1/m]\n%s °C" %(self.q5_volt,self.q5_curr,self.q5_k,self.q5_temp))
         self.st_quad6.SetLabel("Quadrupol 6\n%s V \n%s A\n%.2f [1/m]\n%s °C" %(self.q6_volt,self.q6_curr,self.q6_k,self.q6_temp))
-        if shicane_type=='quadruplett':
+        if chicane_type=='quadruplett':
             self.st_quad7.SetLabel("Quadrupol 7\n%s V \n%s A\n%.2f [1/m]\n%s °C" %(self.q7_volt,self.q7_curr,self.q7_k,self.q7_temp))
         self.st_dipol1.SetLabel("Dipol 1\n%s V \n%s A\n%.2f [mrad]\n%s °C" %(self.d1_volt,self.d1_curr,self.d1_alpha,self.d1_temp))
         self.st_dipol2.SetLabel("Dipol 2\n%s V \n%s A\n%.2f [mrad]\n%s °C" %(self.d2_volt,self.d2_curr,self.d2_alpha,self.d2_temp))
