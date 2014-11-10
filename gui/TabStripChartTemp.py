@@ -24,7 +24,7 @@ import sys
 import wx
 import time
 import thread
-
+import traceback
 
 # The recommended way to use wx with mpl is with the WXAgg
 # backend.
@@ -341,8 +341,14 @@ class TabStripChartTemp(wx.Panel):
         # returns a list over which one needs to explicitly
         # iterate, and setp already handles this.
         #
-        pylab.setp(self.axes.get_xticklabels(),
-            visible=self.cb_xlab.IsChecked())
+
+        try:
+            pylab.setp(self.axes.get_xticklabels(),
+                visible=self.cb_xlab.IsChecked())
+        except Exception as e:
+            print '------ longtime memory exception? -------'
+            print traceback.format_exc()
+            print '------ longtime memory exception? -------'
 
         # assighn to epics records
         #self.plot_data.set_xdata(np.arange(len(self.data)))

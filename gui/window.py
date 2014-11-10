@@ -44,8 +44,8 @@ class MainFrame(wx.Frame):
         menuBar.Append(menu, "&File")
 
         menu = wx.Menu()
-        m_magn = menu.Append(wx.NewId(), "&demag\tAlt-d", "demag all magnets")
-        self.Bind(wx.EVT_MENU, self.OnDemag, m_magn)
+        self.menu_magn = menu.Append(wx.NewId(), "&cycle all magnets\tAlt-d", "demag all magnets")
+        self.Bind(wx.EVT_MENU, self.OnDemag, self.menu_magn)
         menuBar.Append(menu, "&Magnets")
 
         self.SetMenuBar(menuBar)
@@ -157,12 +157,21 @@ class MainFrame(wx.Frame):
         print 'TODO'
 
     def OnDemag(self, event):
+
         def demagThread():
             #self.b_demag.Enable(False)
+            self.menu_magn.Enable(False)
             demag()
+            self.menu_magn.Enable(True)
             #self.b_demag.Enable(True)
 
-        thread.start_new_thread( demagThread,() )
+
+        dlg = wx.MessageDialog(self, 'Do you realy want to start cycling all magnets?', 'Cycling',
+                wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
+
+        if dlg.ShowModal() == wx.ID_YES:
+            thread.start_new_thread( demagThread,() )
+
 
     def OnClose(self, event):
         #dlg = wx.MessageDialog(self,
