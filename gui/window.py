@@ -17,6 +17,7 @@ from TabOverview import TabOverview
 from TabStripChartTemp import TabStripChartTemp
 from TabStripChartVolt import TabStripChartVolt
 from TabStripChartCurr import TabStripChartCurr
+from TabAppProperties import TabAppProperties
 from DataPanel import DataPanel
 
 import thread
@@ -68,6 +69,8 @@ class MainFrame(wx.Frame):
         nb.AddPage(self.tabStripChartVolt, "Voltage")
         self.tabStripChartCurr = TabStripChartCurr(nb)
         nb.AddPage(self.tabStripChartCurr, "Current")
+        self.tabAppProperties = TabAppProperties(nb)
+        nb.AddPage(self.tabAppProperties, "Application Properties")
 
         # finally, put the notebook in a sizer for the panel to manage
         # the layout

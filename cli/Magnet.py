@@ -84,6 +84,7 @@ class Magnet:
         return k
 
     def get_curr(self,k):
+        #print 'k=%f curr exact %f'%(k,self.I_spline(abs(k)))
         curr = round(self.I_spline(abs(k)),3)
         return curr
 
