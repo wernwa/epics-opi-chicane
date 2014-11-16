@@ -60,16 +60,28 @@ class MainFrame(wx.Frame):
         # create the page windows as children of the notebook
 
         # add the pages to the notebook with the label to show on the tab
-        self.nb.AddPage(TabOverview(nb), "Overview")
+        self.tabOverview = TabOverview(nb)
+        self.tabOverview.window = self
+        self.nb.AddPage(self.tabOverview, "Overview")
+
         self.tabMagnProperties = TabMagnProperties(nb)
+        self.tabMagnProperties.window = self
         self.nb.AddPage(self.tabMagnProperties, "Magnet Properties")
+
         self.tabStripChartTemp = TabStripChartTemp(nb)
+        self.tabStripChartTemp.window = self
         nb.AddPage(self.tabStripChartTemp, "Temperature")
+
         self.tabStripChartVolt = TabStripChartVolt(nb)
+        self.tabStripChartVolt.window = self
         nb.AddPage(self.tabStripChartVolt, "Voltage")
+
         self.tabStripChartCurr = TabStripChartCurr(nb)
+        self.tabStripChartCurr.window = self
         nb.AddPage(self.tabStripChartCurr, "Current")
+
         self.tabAppProperties = TabAppProperties(nb)
+        self.tabAppProperties.window = self
         nb.AddPage(self.tabAppProperties, "Application Properties")
 
         # finally, put the notebook in a sizer for the panel to manage

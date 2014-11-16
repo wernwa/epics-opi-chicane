@@ -69,18 +69,24 @@ class Magnet:
                 continue
             # fill the x,y arrays
             x.append(float(arr[0]))
-            if self.magn_type=='quad':
-                # do the umrechnung
-                y.append(float(arr[1])*c/E)
-            else:
-                y.append(float(arr[1]))
+            y.append(float(arr[1]))
+
+#            if self.magn_type=='quad':
+#                # do the umrechnung
+#                y.append(float(arr[1])*c/E)
+#            else:
+#                y.append(float(arr[1]))
 
         # init splines
-        self.k_spline = interp1d(x,y, kind='cubic')
+        #self.k_spline = interp1d(x,y, kind='cubic')
+        self.g_spline = interp1d(x,y, kind='cubic')
         self.I_spline = interp1d(y,x, kind='cubic')
 
     def get_k(self,curr):
-        k = round(self.k_spline(abs(curr)),3)
+        if self.magn_type=='quad':
+            k = round(self.g_spline(abs(curr))*c/E,3)
+        else:
+            k = round(self.g_spline(abs(curr)),3)
         return k
 
     def get_curr(self,k):

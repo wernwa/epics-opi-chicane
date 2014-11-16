@@ -47,6 +47,9 @@ class TabOverview(wx.Panel):
         #self.b_demag.Bind(wx.EVT_BUTTON, self.OnDemag)
         panel.SetSizer(hbox)
 
+    def OnChangeEnergy(self,energy):
+        E=energy
+        self.st_variables.SetLabel("E=%.0f MeV"%(E/1e+6))
 
 #    def __del__(self):
 #        self.alive=False

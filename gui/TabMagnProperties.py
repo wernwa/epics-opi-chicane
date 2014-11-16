@@ -29,6 +29,7 @@ from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from scipy.interpolate import interp1d
 import re
 
+from init_vars import *
 
 class TabMagnProperties(wx.Panel):
 
@@ -203,15 +204,29 @@ class TabMagnProperties(wx.Panel):
             self.tck.SetValue('%.3f'%abs(self.magn.get_k(curr)))
             #print 'curr %f'%self.magn.get_k(curr)
 
+    def OnChangeEnergy(self,energy):
+        global E
+        E=energy
+
     def plot(self):
+
         x=self.magn.data_x
         y=self.magn.data_y
+
+
+        # calc k from g
+        if self.magn.magn_type=='quad':
+            g=y
+            y=[]
+            for i in range(0,len(g)): y.append(g[i]*c/E)
 
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
         self.axes.grid(True)
         self.axes.set_xlabel(self.magn.data_xlabel)
-        self.axes.set_ylabel(self.magn.data_ylabel)
+        if self.magn.magn_type=='quad':
+            self.axes.set_ylabel(self.magn.data_ylabel+", E=%.0f MeV"%(E/1e+6))
+        else: self.axes.set_ylabel(self.magn.data_ylabel)
         #self.axes.plot(self.magn.data_x,self.magn.data_y)
         self.axes.plot(x,y, marker='o', linestyle='--', color='r')
 
