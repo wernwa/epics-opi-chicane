@@ -40,6 +40,7 @@ class TabMagnProperties(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
 
+        self.parent = parent
         panel = self
 
         hbox = wx.BoxSizer(wx.HORIZONTAL)
@@ -102,6 +103,11 @@ class TabMagnProperties(wx.Panel):
 
         self.colour_inactive = (90,90,90)
         self.colour_active = (255,255,255)
+
+
+        self.redraw_timer = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.on_redraw_timer, self.redraw_timer)
+        self.redraw_timer.Start(500)
 
 
     def set_background_ctrl(self,evt):
@@ -208,7 +214,17 @@ class TabMagnProperties(wx.Panel):
         global E
         E=energy
 
+
+    def on_redraw_timer(self, event):
+
+        tab_i = self.parent.GetSelection()
+        if self.parent.GetPageText(tab_i)=='Magnet Properties':
+            self.plot()
+
+
     def plot(self):
+
+        if self.magn==None: return
 
         x=self.magn.data_x
         y=self.magn.data_y
@@ -235,6 +251,17 @@ class TabMagnProperties(wx.Panel):
         xnew = numpy.linspace(x[0], x[len(x)-1], len(x)*10)
 
         self.axes.plot(xnew,spline(xnew), linestyle='-', color='g')
+
+        # set the ylim from 0
+        ylim = self.axes.get_ylim()
+        self.axes.set_ylim((0,ylim[1]))
+
+        # plot the current k position as vertical line
+        curr = self.magn.pv_curr.get()
+        if curr==None: return
+        curr = abs(curr)
+        k = self.magn.get_k(curr) + 10
+        self.axes.plot((curr,curr),(0,ylim[1]), 'k-')
 
 #        def myfkt(evt):
 #            print 'drawing canvas'
