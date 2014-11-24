@@ -209,15 +209,6 @@ class DataPanel(wx.Panel):
         self.q7_volt=self.get_num_or_dash(arr[6])
         self.d1_volt=self.get_num_or_dash(arr[7])
         self.d2_volt=self.get_num_or_dash(arr[8])
-        #self.q1_volt=q1_volt.get()
-        #self.q2_volt=q2_volt.get()
-        #self.q3_volt=q3_volt.get()
-        #self.q4_volt=q4_volt.get()
-        #self.q5_volt=q5_volt.get()
-        #self.q6_volt=q6_volt.get()
-        #self.q7_volt=q7_volt.get()
-        #self.d1_volt=d1_volt.get()
-        #self.d2_volt=d2_volt.get()
 
         value = magn_curr_all.get()
         arr = value.tostring().split(' ')
@@ -230,25 +221,7 @@ class DataPanel(wx.Panel):
         self.q7_curr=self.get_num_or_dash(arr[6])
         self.d1_curr=self.get_num_or_dash(arr[7])
         self.d2_curr=self.get_num_or_dash(arr[8])
-        #self.q1_curr=q1_curr.get()
-        #self.q2_curr=q2_curr.get()
-        #self.q3_curr=q3_curr.get()
-        #self.q4_curr=q4_curr.get()
-        #self.q5_curr=q5_curr.get()
-        #self.q6_curr=q6_curr.get()
-        #self.q7_curr=q7_curr.get()
-        #self.d1_curr=d1_curr.get()
-        #self.d2_curr=d2_curr.get()
 
-        self.q1_temp=q1_temp.get()
-        self.q2_temp=q2_temp.get()
-        self.q3_temp=q3_temp.get()
-        self.q4_temp=q4_temp.get()
-        self.q5_temp=q5_temp.get()
-        self.q6_temp=q6_temp.get()
-        self.q7_temp=q7_temp.get()
-        self.d1_temp=d1_temp.get()
-        self.d2_temp=d2_temp.get()
 
         if self.q1_curr!='##.##': self.q1_k=mquad1.get_k(self.q1_curr)
         else: self.q1_k='##.##'
@@ -269,6 +242,17 @@ class DataPanel(wx.Panel):
         if self.d2_curr!='##.##': self.d2_alpha=mdipol2.get_k(self.d2_curr)
         else: self.d2_alpha='##.##'
 
+        value = temp_all.get()
+        arr = value.tostring().split(' ')
+        self.q1_temp=self.get_num_or_dash(arr[0])
+        self.q2_temp=self.get_num_or_dash(arr[1])
+        self.q3_temp=self.get_num_or_dash(arr[2])
+        self.q4_temp=self.get_num_or_dash(arr[3])
+        self.q5_temp=self.get_num_or_dash(arr[4])
+        self.q6_temp=self.get_num_or_dash(arr[5])
+        self.q7_temp=self.get_num_or_dash(arr[6])
+        self.d1_temp=self.get_num_or_dash(arr[7])
+        self.d2_temp=self.get_num_or_dash(arr[8])
 
         self.temp_all_arr = [self.q1_temp,self.q3_temp,self.q3_temp,self.q4_temp,self.q5_temp,self.q6_temp,self.q7_temp,self.d1_temp,self.d2_temp]
         self.temp_heigh = 70
