@@ -97,7 +97,7 @@ class MainFrame(wx.Frame):
 
 
         box = wx.BoxSizer(wx.VERTICAL)
-        box.Add(p, 5, wx.EXPAND)
+        box.Add(p, 4, wx.EXPAND)
         box.Add(self.dataPanel, 1, wx.EXPAND)
 
         self.SetAutoLayout(True)

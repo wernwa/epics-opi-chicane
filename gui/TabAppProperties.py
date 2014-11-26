@@ -9,7 +9,6 @@
 import wx
 from epics import PV
 from Experiment import *
-from PowerSupplyControls import PowerSupplyControls
 from thread import start_new_thread
 import time
 from init_vars import *

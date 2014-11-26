@@ -13,16 +13,16 @@ from time import strftime
 from init_vars import *
 import numpy
 
-relee = PowerSupply('chicane:zps:relee:volt','chicane:zps:relee:curr')
-ps1 =  PowerSupply('chicane:zps:1:volt','chicane:zps:1:curr')
-ps2 =  PowerSupply('chicane:zps:2:volt','chicane:zps:2:curr')
-ps3 =  PowerSupply('chicane:zps:3:volt','chicane:zps:3:curr')
-ps4 =  PowerSupply('chicane:zps:4:volt','chicane:zps:4:curr')
-ps5 =  PowerSupply('chicane:zps:5:volt','chicane:zps:5:curr')
-ps6 =  PowerSupply('chicane:zps:6:volt','chicane:zps:6:curr')
-ps7 =  PowerSupply('chicane:zps:7:volt','chicane:zps:7:curr')
-ps8 =  PowerSupply('chicane:zps:8:volt','chicane:zps:8:curr')
-ps9 =  PowerSupply('chicane:zps:9:volt','chicane:zps:9:curr')
+relee =PowerSupply(prefix='chicane:zps:', nr='relee:')
+ps1 =  PowerSupply(prefix='chicane:zps:', nr='1:',   )
+ps2 =  PowerSupply(prefix='chicane:zps:', nr='2:',   )
+ps3 =  PowerSupply(prefix='chicane:zps:', nr='3:',   )
+ps4 =  PowerSupply(prefix='chicane:zps:', nr='4:',   )
+ps5 =  PowerSupply(prefix='chicane:zps:', nr='5:',   )
+ps6 =  PowerSupply(prefix='chicane:zps:', nr='6:',   )
+ps7 =  PowerSupply(prefix='chicane:zps:', nr='7:',   )
+ps8 =  PowerSupply(prefix='chicane:zps:', nr='8:',   )
+ps9 =  PowerSupply(prefix='chicane:zps:', nr='9:',   )
 
 q1_temp = PV_CONN('chicane:q1:temp', auto_monitor=True )
 q2_temp = PV_CONN('chicane:q2:temp', auto_monitor=True )
