@@ -14,6 +14,9 @@ class PowerSupply:
 
     def __init__(self, prefix=None, nr=None):
 
+        self.prefix = prefix
+        self.NR = nr
+
         self.Volt = PV_CONN(prefix+nr+'volt', auto_monitor=True)
         self.Curr = PV_CONN(prefix+nr+'curr', auto_monitor=True)
         self.output = PV_CONN(prefix+nr+'output', auto_monitor=True)

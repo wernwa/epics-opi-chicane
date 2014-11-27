@@ -134,18 +134,32 @@ class DataPanel(wx.Panel):
         image_green = wx.Image('pics/green-status.png', wx.BITMAP_TYPE_ANY).ConvertToBitmap()
         image_gray = wx.Image('pics/gray-status.png', wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 
-        def ps_onoff(event,magnet,button):
+        # toggle power supply output on/off
+        def ps_onoff(event,magnet,button,magn_name):
+            online = magnet.ps.online.get()
+            if online == 0: return
+
             output = magnet.ps.output.get()
-            #print magnet.ps.output.pvname, magnet.ps.output.get()
-            #print magnet.ps.online.pvname, magnet.ps.online.get()
+            nr = magnet.ps.NR
+            info = 'magnet '+magn_name+'\n'+'power supply Nr '+nr+'\n'
+
             if output == 0:
-                magnet.ps.output.put(1)
-                button.SetBitmapLabel(image_green)
-                button.Refresh()
+                dlg = wx.MessageDialog(self, info+'Do you want to turn the output on?', 'TURN OUTPUT ON?',
+                    wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
+
+                if dlg.ShowModal() == wx.ID_YES:
+                    magnet.ps.output.put(1)
+                    button.SetBitmapLabel(image_green)
+                    button.Refresh()
+
             elif output == 1:
-                magnet.ps.output.put(0)
-                button.SetBitmapLabel(image_gray)
-                button.Refresh()
+                dlg = wx.MessageDialog(self, info+'Do you want to turn the output off?', 'TURN OUTPUT OFF?',
+                    wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
+
+                if dlg.ShowModal() == wx.ID_YES:
+                    magnet.ps.output.put(0)
+                    button.SetBitmapLabel(image_gray)
+                    button.Refresh()
 
         def ps_online(magnet,button):
             online = magnet.ps.online.get()
@@ -157,70 +171,45 @@ class DataPanel(wx.Panel):
                 elif output == 1: button.SetBitmapLabel(image_green)
                 button.Refresh()
 
-            print magnet.ps.online.pvname
+
+        # there are min 9 magnets gui elements to initialize
+        # this function returns a wx.StaticText and wx.BitmapButton
+        def init_magnet_labels(magnet, magn_name=None, position=None):
+            static_text = wx.StaticText(label="%s\n#.##V\n#.##A\n##°C"%magn_name,  parent=panel, pos=wx.Point(position[0],position[1]))
+            static_text.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, magn_name, magnet, static_text))
+            static_text.SetForegroundColour(text_color_quad)
+            button_ps = wx.BitmapButton(panel, id=-1, bitmap=image_disconn,
+                    pos=wx.Point(position[0]+20,position[1]+90), size =(image_disconn.GetWidth()+10, image_disconn.GetHeight()+10))
+            button_ps.Bind(wx.EVT_BUTTON, lambda event: ps_onoff(event,magnet,button_ps,magn_name))
+            magnet.ps.online.add_callback(lambda **kw: ps_online(magnet,button_ps))
+            magnet.ps.output.add_callback(lambda **kw: ps_online(magnet,button_ps))
+            ps_online(magnet,button_ps)
+
+            return static_text, button_ps
+
+        # init magnet labels
+        self.st_quad1, self.bsp_quad1 = init_magnet_labels(mquad1,magn_name='Quadrupol 1',position=(lpos['q1']['x'],lpos['q1']['y']))
+        self.st_quad2, self.bsp_quad2 = init_magnet_labels(mquad2,magn_name='Quadrupol 2',position=(lpos['q2']['x'],lpos['q2']['y']))
+        self.st_quad3, self.bsp_quad3 = init_magnet_labels(mquad3,magn_name='Quadrupol 3',position=(lpos['q3']['x'],lpos['q3']['y']))
+        self.st_quad4, self.bsp_quad4 = init_magnet_labels(mquad4,magn_name='Quadrupol 4',position=(lpos['q4']['x'],lpos['q4']['y']))
+        self.st_quad5, self.bsp_quad5 = init_magnet_labels(mquad5,magn_name='Quadrupol 5',position=(lpos['q5']['x'],lpos['q5']['y']))
+        self.st_quad6, self.bsp_quad6 = init_magnet_labels(mquad6,magn_name='Quadrupol 6',position=(lpos['q6']['x'],lpos['q6']['y']))
+
+        self.st_quad7=None
+        if chicane_type=='quadruplett':
+            self.st_quad7, self.bsp_quad7 = init_magnet_labels(mquad7,magn_name='Quadrupol 7',position=(lpos['q7']['x'],lpos['q7']['y']))
+
+        self.st_dipol1, self.bsp_dipol1 = init_magnet_labels(mdipol1,magn_name='Dipol 1',position=(lpos['d1']['x'],lpos['d1']['y']))
+        self.st_dipol2, self.bsp_dipol2 = init_magnet_labels(mdipol2,magn_name='Dipol 2',position=(lpos['d2']['x'],lpos['d2']['y']))
 
 
-        # quad 1
-        self.st_quad1 = wx.StaticText(label="Quadrupol 1\n#.##V \n#.##A\n##°C",  parent=panel,
-                pos=wx.Point(lpos['q1']['x'],lpos['q1']['y']))
-        self.st_quad1.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Quadrupol 1',mquad1,self.st_quad1))
-        self.st_quad1.SetForegroundColour(text_color_quad)
-        self.bps_quad1 = wx.BitmapButton(panel, id=-1, bitmap=image_disconn,
-                pos=wx.Point(lpos['q1']['x']+20,lpos['q1']['y']+90), size =(image_disconn.GetWidth()+10, image_disconn.GetHeight()+10))
-        self.bps_quad1.Bind(wx.EVT_BUTTON, lambda event: ps_onoff(event,mquad1,self.bps_quad1))
-        mquad1.ps.online.add_callback(lambda **kw: ps_online(mquad1,self.bps_quad1))
-        ps_online(mquad1,self.bps_quad1)
+
+
 
         self.st_selected = self.st_quad1
         self.st_selected.SetFont(self.font_bold)
 
-        # quad 2
-        self.st_quad2 = wx.StaticText(label="Quadrupol 2\n#.##V\n#.##A\n##°C",   parent=panel,
-                pos=wx.Point(lpos['q2']['x'],lpos['q2']['y']))
-        self.st_quad2.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Quadrupol 2',mquad2,self.st_quad2))
-        self.st_quad2.SetForegroundColour(text_color_quad)
-        self.bps_quad2 = wx.BitmapButton(panel, id=-1, bitmap=image_disconn,
-                pos=wx.Point(lpos['q2']['x']+20,lpos['q2']['y']+90), size =(image_disconn.GetWidth()+10, image_disconn.GetHeight()+10))
-        self.bps_quad2.Bind(wx.EVT_BUTTON, lambda event: ps_onoff(event,mquad2,self.bps_quad2))
-        mquad2.ps.online.add_callback(lambda **kw: ps_online(mquad2,self.bps_quad2))
-        ps_online(mquad2,self.bps_quad2)
 
-        self.st_quad3 = wx.StaticText(label="Quadrupol 3\n#.##V\n#.##A\n##°C",   parent=panel,
-                pos=wx.Point(lpos['q3']['x'],lpos['q3']['y']))
-        self.st_quad3.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Quadrupol 3',mquad3,self.st_quad3))
-        self.st_quad3.SetForegroundColour(text_color_quad)
-
-        self.st_quad4 = wx.StaticText(label="Quadrupol 4\n#.##V\n#.##A\n##°C",   parent=panel,
-                pos=wx.Point(lpos['q4']['x'],lpos['q4']['y']))
-        self.st_quad4.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Quadrupol 4',mquad4,self.st_quad4))
-        self.st_quad4.SetForegroundColour(text_color_quad)
-
-        self.st_quad5 = wx.StaticText(label="Quadrupol 5\n#.##V\n#.##A\n##°C",   parent=panel,
-                pos=wx.Point(lpos['q5']['x'],lpos['q5']['y']))
-        self.st_quad5.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Quadrupol 5',mquad5,self.st_quad5))
-        self.st_quad5.SetForegroundColour(text_color_quad)
-
-        self.st_quad6 = wx.StaticText(label="Quadrupol 6\n#.##V\n#.##A\n##°C",   parent=panel,
-                pos=wx.Point(lpos['q6']['x'],lpos['q6']['y']))
-        self.st_quad6.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Quadrupol 6',mquad6,self.st_quad6))
-        self.st_quad6.SetForegroundColour(text_color_quad)
-
-        self.st_quad7=None
-        if chicane_type=='quadruplett':
-            self.st_quad7 = wx.StaticText(label="Quadrupol 7\n#.##V \n#.##A\n##°C",  parent=panel,
-                pos=wx.Point(lpos['q7']['x'],lpos['q7']['y']))
-            self.st_quad7.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Quadrupol 7',mquad7,self.st_quad7))
-            self.st_quad7.SetForegroundColour(text_color_quad)
-
-        self.st_dipol1 = wx.StaticText(label="Dipol      \n#.##V \n#.##A\n##°C", parent=panel,
-                pos=wx.Point(lpos['d1']['x'],lpos['d1']['y']))
-        self.st_dipol1.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Dipol 1',mdipol1,self.st_dipol1))
-        self.st_dipol1.SetForegroundColour(text_color_dipol)
-
-        self.st_dipol2 = wx.StaticText(label="Dipol 2    \n#.##V\n#.##A\n##°C",  parent=panel,
-                pos=wx.Point(lpos['d2']['x'],lpos['d2']['y']))
-        self.st_dipol2.Bind(wx.EVT_LEFT_DOWN, lambda event: magnet_selected(event, 'Dipol 2',mdipol2,self.st_dipol2))
-        self.st_dipol2.SetForegroundColour(text_color_dipol)
 
         self.st_arr = [self.st_quad1, self.st_quad2, self.st_quad3, self.st_quad4, self.st_quad5, self.st_quad6, self.st_quad7, self.st_dipol1, self.st_dipol2]
 
