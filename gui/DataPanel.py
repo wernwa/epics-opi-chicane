@@ -421,13 +421,6 @@ class DataPanel(wx.Panel):
             arr = value.tostring().split(' ')
             #print 'volt arr',arr
             try:
-                #for i in range(0,len(q_volt_arr)):
-                #    if arr[i] == 'None':
-                #        q_volt = q_volt_arr[i]
-                #        q_volt = '##.##'
-                #        print self.q1_volt
-                #    else:
-                #        self.q1_volt=float(arr[i])
                 self.q1_volt=self.get_num_or_dash(arr[0])
                 self.q2_volt=self.get_num_or_dash(arr[1])
                 self.q3_volt=self.get_num_or_dash(arr[2])
@@ -441,7 +434,7 @@ class DataPanel(wx.Panel):
                 # fill in the numpy arrays for StripChart visualisation
                 for i in range(0,len(marr)):
                     if arr[i]=='None': continue
-                    marr[i].strip_chart_volt.append(arr[i])
+                    marr[i].strip_chart_volt.append(float(arr[i]))
                     marr[i].strip_chart_volt_time.append(time.time()-self.start_app_time)
 
             except Exception as e:
@@ -450,9 +443,6 @@ class DataPanel(wx.Panel):
 
         elif pvname==magn_curr_all.pvname:
             arr = value.tostring().split(' ')
-            #relee=round(float(arr[0]))
-            #if relee==relee_plus: sign=1
-            #else: sign=-1
             try:
                 self.q1_curr=self.get_num_or_dash(arr[0])
                 self.q2_curr=self.get_num_or_dash(arr[1])
