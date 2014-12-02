@@ -134,6 +134,12 @@ class DataPanel(wx.Panel):
         image_green = wx.Image('pics/green-status.png', wx.BITMAP_TYPE_ANY).ConvertToBitmap()
         image_gray = wx.Image('pics/gray-status.png', wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 
+        self.image_thermo_0 = wx.Image('pics/thermometer_0.png', wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+        self.image_thermo_20 = wx.Image('pics/thermometer_20.png', wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+        self.image_thermo_50 = wx.Image('pics/thermometer_50.png', wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+        self.image_thermo_70 = wx.Image('pics/thermometer_70.png', wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+        self.image_thermo_100 = wx.Image('pics/thermometer_100.png', wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+
         # toggle power supply output on/off
         def ps_onoff(event,magnet,button,magn_name):
             online = magnet.ps.online.get()
@@ -180,27 +186,31 @@ class DataPanel(wx.Panel):
             static_text.SetForegroundColour(text_color_quad)
             button_ps = wx.BitmapButton(panel, id=-1, bitmap=image_disconn,
                     pos=wx.Point(position[0]+20,position[1]+90), size =(image_disconn.GetWidth()+10, image_disconn.GetHeight()+10))
+            thermo = wx.StaticBitmap(panel, wx.ID_ANY,
+                    self.image_thermo_0,
+                    pos=wx.Point(position[0]+50,position[1]+90),
+                    size =(self.image_thermo_0.GetWidth(), self.image_thermo_0.GetHeight()))
             button_ps.Bind(wx.EVT_BUTTON, lambda event: ps_onoff(event,magnet,button_ps,magn_name))
             magnet.ps.online.add_callback(lambda **kw: ps_online(magnet,button_ps))
             magnet.ps.output.add_callback(lambda **kw: ps_online(magnet,button_ps))
             ps_online(magnet,button_ps)
 
-            return static_text, button_ps
+            return static_text, button_ps, thermo
 
         # init magnet labels
-        self.st_quad1, self.bsp_quad1 = init_magnet_labels(mquad1,magn_name='Quadrupol 1',position=(lpos['q1']['x'],lpos['q1']['y']))
-        self.st_quad2, self.bsp_quad2 = init_magnet_labels(mquad2,magn_name='Quadrupol 2',position=(lpos['q2']['x'],lpos['q2']['y']))
-        self.st_quad3, self.bsp_quad3 = init_magnet_labels(mquad3,magn_name='Quadrupol 3',position=(lpos['q3']['x'],lpos['q3']['y']))
-        self.st_quad4, self.bsp_quad4 = init_magnet_labels(mquad4,magn_name='Quadrupol 4',position=(lpos['q4']['x'],lpos['q4']['y']))
-        self.st_quad5, self.bsp_quad5 = init_magnet_labels(mquad5,magn_name='Quadrupol 5',position=(lpos['q5']['x'],lpos['q5']['y']))
-        self.st_quad6, self.bsp_quad6 = init_magnet_labels(mquad6,magn_name='Quadrupol 6',position=(lpos['q6']['x'],lpos['q6']['y']))
+        self.st_quad1, self.bsp_quad1, self.thermo_quad1= init_magnet_labels(mquad1,magn_name='Quadrupol 1',position=(lpos['q1']['x'],lpos['q1']['y']))
+        self.st_quad2, self.bsp_quad2, self.thermo_quad2= init_magnet_labels(mquad2,magn_name='Quadrupol 2',position=(lpos['q2']['x'],lpos['q2']['y']))
+        self.st_quad3, self.bsp_quad3, self.thermo_quad3= init_magnet_labels(mquad3,magn_name='Quadrupol 3',position=(lpos['q3']['x'],lpos['q3']['y']))
+        self.st_quad4, self.bsp_quad4, self.thermo_quad4= init_magnet_labels(mquad4,magn_name='Quadrupol 4',position=(lpos['q4']['x'],lpos['q4']['y']))
+        self.st_quad5, self.bsp_quad5, self.thermo_quad5= init_magnet_labels(mquad5,magn_name='Quadrupol 5',position=(lpos['q5']['x'],lpos['q5']['y']))
+        self.st_quad6, self.bsp_quad6, self.thermo_quad6= init_magnet_labels(mquad6,magn_name='Quadrupol 6',position=(lpos['q6']['x'],lpos['q6']['y']))
 
         self.st_quad7=None
         if chicane_type=='quadruplett':
-            self.st_quad7, self.bsp_quad7 = init_magnet_labels(mquad7,magn_name='Quadrupol 7',position=(lpos['q7']['x'],lpos['q7']['y']))
+            self.st_quad7, self.bsp_quad7, self.thermo_quad7 = init_magnet_labels(mquad7,magn_name='Quadrupol 7',position=(lpos['q7']['x'],lpos['q7']['y']))
 
-        self.st_dipol1, self.bsp_dipol1 = init_magnet_labels(mdipol1,magn_name='Dipol 1',position=(lpos['d1']['x'],lpos['d1']['y']))
-        self.st_dipol2, self.bsp_dipol2 = init_magnet_labels(mdipol2,magn_name='Dipol 2',position=(lpos['d2']['x'],lpos['d2']['y']))
+        self.st_dipol1, self.bsp_dipol1, self.thermo_dipol1 = init_magnet_labels(mdipol1,magn_name='Dipol 1',position=(lpos['d1']['x'],lpos['d1']['y']))
+        self.st_dipol2, self.bsp_dipol2, self.thermo_dipol2 = init_magnet_labels(mdipol2,magn_name='Dipol 2',position=(lpos['d2']['x'],lpos['d2']['y']))
 
 
 
@@ -212,6 +222,7 @@ class DataPanel(wx.Panel):
 
 
         self.st_arr = [self.st_quad1, self.st_quad2, self.st_quad3, self.st_quad4, self.st_quad5, self.st_quad6, self.st_quad7, self.st_dipol1, self.st_dipol2]
+        self.thermo_arr = [self.thermo_quad1, self.thermo_quad2, self.thermo_quad3, self.thermo_quad4, self.thermo_quad5, self.thermo_quad6, self.thermo_quad7, self.thermo_dipol1, self.thermo_dipol2]
 
         if chicane_type=='quadruplett':
             self.st_text_color_arr = [text_color_quad, text_color_quad, text_color_quad, text_color_quad,
@@ -335,7 +346,14 @@ class DataPanel(wx.Panel):
         for i in range(0,self.temp_cnt):
             if self.st_arr[i]==None or self.temp_all_arr[i]==None:
                 continue
-            t = float(self.temp_all_arr[i])
+            t_unknown = self.temp_all_arr[i]
+            if t_unknown==None:
+                self.thermo_arr[i].SetBitmap(self.image_thermo_0)
+                continue
+
+            t = float(t_unknown)
+
+            # StaticText Background
             if t < self.temp_heigh:
                 self.st_arr[i].SetForegroundColour(self.text_color_normal)
             if self.temp_heigh <= t and t < self.temp_hihi:
@@ -345,6 +363,13 @@ class DataPanel(wx.Panel):
             elif t >= self.temp_hihi:
                 #print 'temperature too heigh for q%d, please start demag!!!'%(i+1)
                 self.st_arr[i].SetForegroundColour(self.text_color_hihi)
+
+            #StaticBitmap Thermometer
+            if t < 20: self.thermo_arr[i].SetBitmap(self.image_thermo_20)
+            elif t < 50: self.thermo_arr[i].SetBitmap(self.image_thermo_50)
+            elif t < 70: self.thermo_arr[i].SetBitmap(self.image_thermo_70)
+            elif t >= 70: self.thermo_arr[i].SetBitmap(self.image_thermo_100)
+
 
 
         global chicane_type, mquad1, mquad2, mquad3, mquad4, mquad5, mquad6, mquad7, mdipol1, mdipol2
