@@ -390,25 +390,21 @@ class TabStripChart(wx.Panel):
                             xmax_i = i
                             break
 
-
+                    # slice part of the array because of the range
                     if xmax_i-xmin_i < self.max_datapoints_plot:
-                        part_arr_x = x_values[xmin_i:xmax_i]
-                        part_arr_y = y_values[xmin_i:xmax_i]
+                        part_arr_x = x_values[xmin_i:xmax_i+1]
+                        part_arr_y = y_values[xmin_i:xmax_i+1]
+                        #print 'body if xmax_i-xmin_i < self.max_datapoints_plot'
                     else:
-                        l = float(xmax_i-xmin_i)
-                        x_arr=[]
-                        y_arr=[]
+                        # skip datapoints if difference xmax_i-xmin_i > self.max_datapoints_plot
+                        l = float(xmax_i-xmin_i+1)
                         step = int(round(l/float(self.max_datapoints_plot)))
                         #print 'reduzed axes',xmin_i,xmax_i,step
-                        for i in range(xmin_i,xmax_i+1,step):
-                            #ii = int(round(i*step))
-                            x_arr.append(x_values[i])
-                            y_arr.append(y_values[i])
+                        part_arr_x = x_values[xmin_i:xmax_i+1:step]
+                        part_arr_y = y_values[xmin_i:xmax_i+1:step]
                         if l%step!=0:
-                            x_arr.append(x_values[-1])
-                            y_arr.append(y_values[-1])
-                        part_arr_x = x_arr
-                        part_arr_y = y_arr
+                            part_arr_x.append(x_values[-1])
+                            part_arr_y.append(y_values[-1])
 
 
                     arr_x = numpy.array(part_arr_x)
