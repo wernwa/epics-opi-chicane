@@ -287,25 +287,34 @@ class DataPanel(wx.Panel):
             self.d1_curr='##.##'
             self.d2_curr='##.##'
 
+        self.q1_k=self.get_num_of_k_or_dash(mquad1,self.q1_curr)
+        self.q2_k=self.get_num_of_k_or_dash(mquad2,self.q2_curr)
+        self.q3_k=self.get_num_of_k_or_dash(mquad3,self.q3_curr)
+        self.q4_k=self.get_num_of_k_or_dash(mquad4,self.q4_curr)
+        self.q5_k=self.get_num_of_k_or_dash(mquad5,self.q5_curr)
+        self.q6_k=self.get_num_of_k_or_dash(mquad6,self.q6_curr)
+        self.q7_k=self.get_num_of_k_or_dash(mquad7,self.q7_curr)
+        self.d1_alpha=self.get_num_of_k_or_dash(mdipol1,self.d1_curr)
+        self.d2_alpha=self.get_num_of_k_or_dash(mdipol2,self.d2_curr)
 
-        if self.q1_curr!='##.##': self.q1_k=mquad1.get_k(self.q1_curr)
-        else: self.q1_k='##.##'
-        if self.q2_curr!='##.##': self.q2_k=mquad2.get_k(self.q2_curr)
-        else: self.q2_k='##.##'
-        if self.q3_curr!='##.##': self.q3_k=mquad3.get_k(self.q3_curr)
-        else: self.q3_k='##.##'
-        if self.q4_curr!='##.##': self.q4_k=mquad4.get_k(self.q4_curr)
-        else: self.q4_k='##.##'
-        if self.q5_curr!='##.##': self.q5_k=mquad5.get_k(self.q5_curr)
-        else: self.q5_k='##.##'
-        if self.q6_curr!='##.##': self.q6_k=mquad6.get_k(self.q6_curr)
-        else: self.q6_k='##.##'
-        if self.q7_curr!='##.##': self.q7_k=mquad7.get_k(self.q7_curr)
-        else: self.q7_k='##.##'
-        if self.d1_curr!='##.##': self.d1_alpha=mdipol1.get_k(self.d1_curr)
-        else: self.d1_alpha='##.##'
-        if self.d2_curr!='##.##': self.d2_alpha=mdipol2.get_k(self.d2_curr)
-        else: self.d2_alpha='##.##'
+        #if self.q1_curr!='##.##': self.q1_k=mquad1.get_k(self.q1_curr)
+        #else: self.q1_k='##.##'
+        #if self.q2_curr!='##.##': self.q2_k=mquad2.get_k(self.q2_curr)
+        #else: self.q2_k='##.##'
+        #if self.q3_curr!='##.##': self.q3_k=mquad3.get_k(self.q3_curr)
+        #else: self.q3_k='##.##'
+        #if self.q4_curr!='##.##': self.q4_k=mquad4.get_k(self.q4_curr)
+        #else: self.q4_k='##.##'
+        #if self.q5_curr!='##.##': self.q5_k=mquad5.get_k(self.q5_curr)
+        #else: self.q5_k='##.##'
+        #if self.q6_curr!='##.##': self.q6_k=mquad6.get_k(self.q6_curr)
+        #else: self.q6_k='##.##'
+        #if self.q7_curr!='##.##': self.q7_k=mquad7.get_k(self.q7_curr)
+        #else: self.q7_k='##.##'
+        #if self.d1_curr!='##.##': self.d1_alpha=mdipol1.get_k(self.d1_curr)
+        #else: self.d1_alpha='##.##'
+        #if self.d2_curr!='##.##': self.d2_alpha=mdipol2.get_k(self.d2_curr)
+        #else: self.d2_alpha='##.##'
 
         value = temp_all.get()
         if value!=None:
@@ -484,6 +493,19 @@ class DataPanel(wx.Panel):
 
             return num
 
+    # for spline interpolation
+    # display a number or if spline out of range
+    def get_num_of_k_or_dash(self,magn,curr):
+        if type(curr)==float:
+            try:
+                num = magn.get_k(curr)
+            except Exception as e:
+                #print traceback.format_exc()
+                num = '##.##'
+        else: num = '##.##'
+
+        return num
+
 
 
     def onPVChanges(self, pvname=None, value=None, timestamp=None, **kw):
@@ -565,33 +587,17 @@ class DataPanel(wx.Panel):
                 self.d1_curr=self.get_num_or_dash(arr[7])
                 self.d2_curr=self.get_num_or_dash(arr[8])
 
-                if self.q1_curr!='##.##': self.q1_k=mquad1.get_k(self.q1_curr)
-                else: self.q1_k='##.##'
-                if self.q2_curr!='##.##': self.q2_k=mquad2.get_k(self.q2_curr)
-                else: self.q2_k='##.##'
-                if self.q3_curr!='##.##': self.q3_k=mquad3.get_k(self.q3_curr)
-                else: self.q3_k='##.##'
-                if self.q4_curr!='##.##': self.q4_k=mquad4.get_k(self.q4_curr)
-                else: self.q4_k='##.##'
-                if self.q5_curr!='##.##': self.q5_k=mquad5.get_k(self.q5_curr)
-                else: self.q5_k='##.##'
-                if self.q6_curr!='##.##': self.q6_k=mquad6.get_k(self.q6_curr)
-                else: self.q6_k='##.##'
-                if self.q7_curr!='##.##': self.q7_k=mquad7.get_k(self.q7_curr)
-                else: self.q7_k='##.##'
-                if self.d1_curr!='##.##': self.d1_alpha=mdipol1.get_k(self.d1_curr)
-                else: self.d1_alpha='##.##'
-                if self.d2_curr!='##.##': self.d2_alpha=mdipol2.get_k(self.d2_curr)
-                else: self.d2_alpha='##.##'
-                #self.q1_k=mquad1.get_k(float(arr[0]))
-                #self.q2_k=mquad2.get_k(float(arr[1]))
-                #self.q3_k=mquad3.get_k(float(arr[2]))
-                #self.q4_k=mquad4.get_k(float(arr[3]))
-                #self.q5_k=mquad5.get_k(float(arr[4]))
-                #self.q6_k=mquad6.get_k(float(arr[5]))
-                #self.q7_k=mquad7.get_k(float(arr[6]))
-                #self.d1_alpha=mdipol1.get_k(float(arr[7]))
-                #self.d2_alpha=mdipol2.get_k(float(arr[8]))
+
+                self.q1_k=self.get_num_of_k_or_dash(mquad1,self.q1_curr)
+                self.q2_k=self.get_num_of_k_or_dash(mquad2,self.q2_curr)
+                self.q3_k=self.get_num_of_k_or_dash(mquad3,self.q3_curr)
+                self.q4_k=self.get_num_of_k_or_dash(mquad4,self.q4_curr)
+                self.q5_k=self.get_num_of_k_or_dash(mquad5,self.q5_curr)
+                self.q6_k=self.get_num_of_k_or_dash(mquad6,self.q6_curr)
+                self.q7_k=self.get_num_of_k_or_dash(mquad7,self.q7_curr)
+                self.d1_alpha=self.get_num_of_k_or_dash(mdipol1,self.d1_curr)
+                self.d2_alpha=self.get_num_of_k_or_dash(mdipol2,self.d2_curr)
+
 
                 # fill in the numpy arrays for StripChart visualisation
                 for i in range(0,len(marr)):

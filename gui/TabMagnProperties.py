@@ -266,7 +266,7 @@ class TabMagnProperties(wx.Panel):
             curr = self.magn.pv_curr.get()
             if curr==None: return
             curr = abs(curr)
-            k = self.magn.get_k(curr) + 10
+            #k = self.magn.get_k(curr) + 10
             self.axes.plot((curr,curr),(0,ylim[1]), 'k-')
 
         #def myfkt(evt):
