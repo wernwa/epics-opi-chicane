@@ -206,6 +206,7 @@ class DataPanel(wx.Panel):
         self.st_quad6, self.bsp_quad6, self.thermo_quad6= init_magnet_labels(mquad6,magn_name='Quadrupol 6',position=(lpos['q6']['x'],lpos['q6']['y']))
 
         self.st_quad7=None
+        self.thermo_quad7=None
         if chicane_type=='quadruplett':
             self.st_quad7, self.bsp_quad7, self.thermo_quad7 = init_magnet_labels(mquad7,magn_name='Quadrupol 7',position=(lpos['q7']['x'],lpos['q7']['y']))
 
