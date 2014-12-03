@@ -151,12 +151,16 @@ class TabMagnProperties(wx.Panel):
         magn.pv_curr_status.add_callback(self.onPVChanges)
 
 
-        if magn.pv_volt_status.value==1 or magn.pv_curr_status.value==1:
-            self.colour_curr = self.colour_inactive
-            self.call_routine_over_event(self.set_background_ctrl)
-        else:
-            self.colour_curr = self.colour_active
-            self.call_routine_over_event(self.set_background_ctrl)
+        #start = time.time()
+        if magn.pv_volt_status.conn!=False:
+            if magn.pv_volt_status.value==1 or magn.pv_curr_status.value==1:
+                self.colour_curr = self.colour_inactive
+                #self.call_routine_over_event(self.set_background_ctrl)
+            else:
+                self.colour_curr = self.colour_active
+        else: self.colour_curr = self.colour_inactive
+        self.call_routine_over_event(self.set_background_ctrl)
+        #print time.time()-start
 
 
         self.st_title.SetLabel(title+'\n')
@@ -224,6 +228,7 @@ class TabMagnProperties(wx.Panel):
 
     def plot(self):
 
+
         if self.magn==None: return
 
         x=self.magn.data_x
@@ -257,19 +262,18 @@ class TabMagnProperties(wx.Panel):
         self.axes.set_ylim((0,ylim[1]))
 
         # plot the current k position as vertical line
-        curr = self.magn.pv_curr.get()
-        if curr==None: return
-        curr = abs(curr)
-        k = self.magn.get_k(curr) + 10
-        self.axes.plot((curr,curr),(0,ylim[1]), 'k-')
+        if self.magn.pv_curr.conn == True:
+            curr = self.magn.pv_curr.get()
+            if curr==None: return
+            curr = abs(curr)
+            k = self.magn.get_k(curr) + 10
+            self.axes.plot((curr,curr),(0,ylim[1]), 'k-')
 
-#        def myfkt(evt):
-#            print 'drawing canvas'
-#            self.canvas.draw()
-#            print 'drawing canvas finished'
-#
-#
-#        self.call_routine_over_event(myfkt)
+        #def myfkt(evt):
+        #    self.canvas.draw()
+
+
+        #self.call_routine_over_event(myfkt)
 
         self.canvas.draw()
 
@@ -278,6 +282,7 @@ class TabMagnProperties(wx.Panel):
     SomeNewEvent=None
     def call_routine_over_event(self, handler):
 
+        #print 'call_routine_over_event'
         if self.SomeNewEvent==None:
             self.SomeNewEvent, self.EVT_SOME_NEW_EVENT = wx.lib.newevent.NewEvent()
             self.Bind(self.EVT_SOME_NEW_EVENT, handler)
