@@ -284,16 +284,27 @@ class DataPanel(wx.Panel):
         else: self.d2_alpha='##.##'
 
         value = temp_all.get()
-        arr = value.tostring().split(' ')
-        self.q1_temp=self.get_num_or_dash(arr[0])
-        self.q2_temp=self.get_num_or_dash(arr[1])
-        self.q3_temp=self.get_num_or_dash(arr[2])
-        self.q4_temp=self.get_num_or_dash(arr[3])
-        self.q5_temp=self.get_num_or_dash(arr[4])
-        self.q6_temp=self.get_num_or_dash(arr[5])
-        self.q7_temp=self.get_num_or_dash(arr[6])
-        self.d1_temp=self.get_num_or_dash(arr[7])
-        self.d2_temp=self.get_num_or_dash(arr[8])
+        if value!=None:
+            arr = value.tostring().split(' ')
+            self.q1_temp=self.get_num_or_dash(arr[0])
+            self.q2_temp=self.get_num_or_dash(arr[1])
+            self.q3_temp=self.get_num_or_dash(arr[2])
+            self.q4_temp=self.get_num_or_dash(arr[3])
+            self.q5_temp=self.get_num_or_dash(arr[4])
+            self.q6_temp=self.get_num_or_dash(arr[5])
+            self.q7_temp=self.get_num_or_dash(arr[6])
+            self.d1_temp=self.get_num_or_dash(arr[7])
+            self.d2_temp=self.get_num_or_dash(arr[8])
+        else:
+            self.q1_temp='##.##'
+            self.q2_temp='##.##'
+            self.q3_temp='##.##'
+            self.q4_temp='##.##'
+            self.q5_temp='##.##'
+            self.q6_temp='##.##'
+            self.q7_temp='##.##'
+            self.d1_temp='##.##'
+            self.d2_temp='##.##'
 
         self.temp_all_arr = [self.q1_temp,self.q3_temp,self.q3_temp,self.q4_temp,self.q5_temp,self.q6_temp,self.q7_temp,self.d1_temp,self.d2_temp]
         self.temp_heigh = 70
@@ -315,6 +326,57 @@ class DataPanel(wx.Panel):
         temp_all.add_callback(self.onPVChanges)
         magn_curr_all.add_callback(self.onPVChanges)
         magn_volt_all.add_callback(self.onPVChanges)
+
+        temp_all.connection_callbacks.append(self.onConnectionChange)
+        magn_curr_all.connection_callbacks.append(self.onConnectionChange)
+        magn_volt_all.connection_callbacks.append(self.onConnectionChange)
+
+
+    def onConnectionChange(self, pvname=None, conn= None, **kws):
+        #sys.stdout.write('PV connection status changed: %s %s\n' % (pvname,  repr(conn)))
+        #sys.stdout.flush()
+
+        if conn==True: return
+
+        if temp_all.pvname==pvname:
+            self.q1_temp='##.##'
+            self.q2_temp='##.##'
+            self.q3_temp='##.##'
+            self.q4_temp='##.##'
+            self.q5_temp='##.##'
+            self.q6_temp='##.##'
+            self.q7_temp='##.##'
+            self.d1_temp='##.##'
+            self.d2_temp='##.##'
+        elif magn_volt_all.pvname==pvname:
+            self.q1_volt='##.##'
+            self.q2_volt='##.##'
+            self.q3_volt='##.##'
+            self.q4_volt='##.##'
+            self.q5_volt='##.##'
+            self.q6_volt='##.##'
+            self.q7_volt='##.##'
+            self.d1_volt='##.##'
+            self.d2_volt='##.##'
+        elif magn_curr_all.pvname==pvname:
+            self.q1_curr='##.##'
+            self.q2_curr='##.##'
+            self.q3_curr='##.##'
+            self.q4_curr='##.##'
+            self.q5_curr='##.##'
+            self.q6_curr='##.##'
+            self.q7_curr='##.##'
+            self.d1_curr='##.##'
+            self.d2_curr='##.##'
+            self.q1_k='##.##'
+            self.q2_k='##.##'
+            self.q3_k='##.##'
+            self.q4_k='##.##'
+            self.q5_k='##.##'
+            self.q6_k='##.##'
+            self.q7_k='##.##'
+            self.d1_k='##.##'
+            self.d2_k='##.##'
 
 
     def __del__(self):
@@ -347,7 +409,7 @@ class DataPanel(wx.Panel):
             if self.st_arr[i]==None or self.temp_all_arr[i]==None:
                 continue
             t_unknown = self.temp_all_arr[i]
-            if t_unknown==None:
+            if t_unknown==None or t_unknown=='##.##':
                 self.thermo_arr[i].SetBitmap(self.image_thermo_0)
                 continue
 
