@@ -241,28 +241,51 @@ class DataPanel(wx.Panel):
         #panel.SetSizer(hbox)
 
         value = magn_volt_all.get()
-        arr = value.tostring().split(' ')
-        self.q1_volt=self.get_num_or_dash(arr[0])
-        self.q2_volt=self.get_num_or_dash(arr[1])
-        self.q3_volt=self.get_num_or_dash(arr[2])
-        self.q4_volt=self.get_num_or_dash(arr[3])
-        self.q5_volt=self.get_num_or_dash(arr[4])
-        self.q6_volt=self.get_num_or_dash(arr[5])
-        self.q7_volt=self.get_num_or_dash(arr[6])
-        self.d1_volt=self.get_num_or_dash(arr[7])
-        self.d2_volt=self.get_num_or_dash(arr[8])
+        if value!=None:
+            arr = value.tostring().split(' ')
+            self.q1_volt=self.get_num_or_dash(arr[0])
+            self.q2_volt=self.get_num_or_dash(arr[1])
+            self.q3_volt=self.get_num_or_dash(arr[2])
+            self.q4_volt=self.get_num_or_dash(arr[3])
+            self.q5_volt=self.get_num_or_dash(arr[4])
+            self.q6_volt=self.get_num_or_dash(arr[5])
+            self.q7_volt=self.get_num_or_dash(arr[6])
+            self.d1_volt=self.get_num_or_dash(arr[7])
+            self.d2_volt=self.get_num_or_dash(arr[8])
+        else:
+            self.q1_volt='##.##'
+            self.q2_volt='##.##'
+            self.q3_volt='##.##'
+            self.q4_volt='##.##'
+            self.q5_volt='##.##'
+            self.q6_volt='##.##'
+            self.q7_volt='##.##'
+            self.d1_volt='##.##'
+            self.d2_volt='##.##'
+
 
         value = magn_curr_all.get()
-        arr = value.tostring().split(' ')
-        self.q1_curr=self.get_num_or_dash(arr[0])
-        self.q2_curr=self.get_num_or_dash(arr[1])
-        self.q3_curr=self.get_num_or_dash(arr[2])
-        self.q4_curr=self.get_num_or_dash(arr[3])
-        self.q5_curr=self.get_num_or_dash(arr[4])
-        self.q6_curr=self.get_num_or_dash(arr[5])
-        self.q7_curr=self.get_num_or_dash(arr[6])
-        self.d1_curr=self.get_num_or_dash(arr[7])
-        self.d2_curr=self.get_num_or_dash(arr[8])
+        if value!=None:
+            arr = value.tostring().split(' ')
+            self.q1_curr=self.get_num_or_dash(arr[0])
+            self.q2_curr=self.get_num_or_dash(arr[1])
+            self.q3_curr=self.get_num_or_dash(arr[2])
+            self.q4_curr=self.get_num_or_dash(arr[3])
+            self.q5_curr=self.get_num_or_dash(arr[4])
+            self.q6_curr=self.get_num_or_dash(arr[5])
+            self.q7_curr=self.get_num_or_dash(arr[6])
+            self.d1_curr=self.get_num_or_dash(arr[7])
+            self.d2_curr=self.get_num_or_dash(arr[8])
+        else:
+            self.q1_curr='##.##'
+            self.q2_curr='##.##'
+            self.q3_curr='##.##'
+            self.q4_curr='##.##'
+            self.q5_curr='##.##'
+            self.q6_curr='##.##'
+            self.q7_curr='##.##'
+            self.d1_curr='##.##'
+            self.d2_curr='##.##'
 
 
         if self.q1_curr!='##.##': self.q1_k=mquad1.get_k(self.q1_curr)
