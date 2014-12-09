@@ -34,6 +34,7 @@ q7_temp = PV_CONN('chicane:q7:temp', auto_monitor=True )
 d1_temp = PV_CONN('chicane:d1:temp', auto_monitor=True )
 d2_temp = PV_CONN('chicane:d2:temp', auto_monitor=True )
 temp_all = PV_CONN('chicane:temp_all', auto_monitor=True )
+switchbox = PV_CONN('chicane:zps:switchbox', auto_monitor=True )
 
 q1_volt = PV_CONN('chicane:q1:volt', auto_monitor=True )
 q2_volt = PV_CONN('chicane:q2:volt', auto_monitor=True )

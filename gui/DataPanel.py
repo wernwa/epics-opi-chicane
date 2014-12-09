@@ -214,7 +214,50 @@ class DataPanel(wx.Panel):
         self.st_dipol2, self.bsp_dipol2, self.thermo_dipol2 = init_magnet_labels(mdipol2,magn_name='Dipol 2',position=(lpos['d2']['x'],lpos['d2']['y']))
 
 
+        # switchbox
+        def switchbox_onoff(event,button):
+            if switchbox.conn==False: return
+            output = switchbox.get()
+            if output == 0:
+                info='Please note, that the powersupplies can have hight current in memory.\n'
+                info+='By turning on the switchbox, all powersupplies are switched on at once.\n\n'
+                dlg = wx.MessageDialog(self, info+'Do you want to turn the switchbox on?', 'TURN SWITHBOX ON?',
+                    wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
 
+                if dlg.ShowModal() == wx.ID_YES:
+                    switchbox.put(1)
+                    button.SetBitmapLabel(image_green)
+                    button.Refresh()
+
+            elif output == 1:
+                info = 'Attention! Without cycling, turning off all of the powersupplies at once can damage the magnets!\n'
+                info += 'Click yes if you know what you are doing.\n\n'
+                dlg = wx.MessageDialog(self, info+'Do you realy want to turn the switchbox off?', 'TURN SWITCHBOX OFF?',
+                    wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
+
+                if dlg.ShowModal() == wx.ID_YES:
+                    switchbox.put(0)
+                    button.SetBitmapLabel(image_gray)
+                    button.Refresh()
+            
+
+        def switchbox_online(button):
+            if switchbox.conn == False:
+                button.SetBitmapLabel(image_disconn)
+                button.Refresh()
+            else:
+                output = switchbox.get()
+                if output == 0: button.SetBitmapLabel(image_gray)
+                elif output == 1: button.SetBitmapLabel(image_green)
+                button.Refresh()
+            
+        static_text = wx.StaticText(label="switchbox",  parent=panel, pos=wx.Point(lpos['d2']['x']+100,lpos['d2']['y']))
+        button_ps = wx.BitmapButton(panel, id=-1, bitmap=image_disconn,
+                    pos=wx.Point(lpos['d2']['x']+100,lpos['d2']['y']+20), size =(image_disconn.GetWidth()+10, image_disconn.GetHeight()+10))
+        button_ps.Bind(wx.EVT_BUTTON, lambda event: switchbox_onoff(event,button_ps))
+        switchbox.add_callback(lambda **kw: switchbox_online(button_ps))
+        switchbox_online(button_ps) 
+         
 
 
         self.st_selected = self.st_quad1
