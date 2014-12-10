@@ -168,6 +168,9 @@ class DataPanel(wx.Panel):
                     button.Refresh()
 
         def ps_online(magnet,button):
+            if magnet.ps.online.conn==False:
+                button.SetBitmapLabel(image_disconn)
+                return
             online = magnet.ps.online.get()
             if online == 0:
                 button.SetBitmapLabel(image_disconn)
@@ -193,6 +196,8 @@ class DataPanel(wx.Panel):
             button_ps.Bind(wx.EVT_BUTTON, lambda event: ps_onoff(event,magnet,button_ps,magn_name))
             magnet.ps.online.add_callback(lambda **kw: ps_online(magnet,button_ps))
             magnet.ps.output.add_callback(lambda **kw: ps_online(magnet,button_ps))
+            magnet.ps.online.connection_callbacks.append(lambda **kw: ps_online(magnet,button_ps))
+            magnet.ps.output.connection_callbacks.append(lambda **kw: ps_online(magnet,button_ps))
             ps_online(magnet,button_ps)
 
             return static_text, button_ps, thermo
@@ -239,7 +244,7 @@ class DataPanel(wx.Panel):
                     switchbox.put(0)
                     button.SetBitmapLabel(image_gray)
                     button.Refresh()
-            
+
 
         def switchbox_online(button):
             if switchbox.conn == False:
@@ -250,14 +255,15 @@ class DataPanel(wx.Panel):
                 if output == 0: button.SetBitmapLabel(image_gray)
                 elif output == 1: button.SetBitmapLabel(image_green)
                 button.Refresh()
-            
+
         static_text = wx.StaticText(label="switchbox",  parent=panel, pos=wx.Point(lpos['d2']['x']+100,lpos['d2']['y']))
         button_ps = wx.BitmapButton(panel, id=-1, bitmap=image_disconn,
                     pos=wx.Point(lpos['d2']['x']+100,lpos['d2']['y']+20), size =(image_disconn.GetWidth()+10, image_disconn.GetHeight()+10))
         button_ps.Bind(wx.EVT_BUTTON, lambda event: switchbox_onoff(event,button_ps))
         switchbox.add_callback(lambda **kw: switchbox_online(button_ps))
-        switchbox_online(button_ps) 
-         
+        switchbox.connection_callbacks.append(lambda **kw: switchbox_online(button_ps))
+        switchbox_online(button_ps)
+
 
 
         self.st_selected = self.st_quad1
