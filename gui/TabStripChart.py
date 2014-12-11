@@ -26,6 +26,7 @@ import time
 import thread
 import traceback
 
+
 # The recommended way to use wx with mpl is with the WXAgg
 # backend.
 #
@@ -37,6 +38,9 @@ from matplotlib.backends.backend_wxagg import \
     NavigationToolbar2WxAgg as NavigationToolbar
 import numpy
 import pylab
+import matplotlib.dates
+import datetime
+from matplotlib.ticker import MaxNLocator
 
 # Epics imports
 from epics import PV
@@ -86,7 +90,7 @@ class BoundControlBox(wx.Panel):
         self.radio_manual = wx.RadioButton(self, -1,
             label="Manual")
         self.manual_text = wx.TextCtrl(self, -1,
-            size=(70,-1),
+            size=(110,-1),
             value=str(initval),
             style=wx.TE_PROCESS_ENTER)
 
@@ -201,8 +205,10 @@ class TabStripChart(wx.Panel):
         self.init_plot()
         self.canvas = FigCanvas(self, -1, self.fig)
 
-        self.xmin_control = BoundControlBox(self, -1, "X min", 0)
-        self.xmax_control = BoundControlBox(self, -1, "X max", 50)
+        t_now=datetime.datetime.fromtimestamp(time.time())
+        t_future=datetime.datetime.fromtimestamp(time.time()+60*30)
+        self.xmin_control = BoundControlBox(self, -1, "X min", t_now.strftime('%m-%d %H:%M:%S'))
+        self.xmax_control = BoundControlBox(self, -1, "X max", t_future.strftime('%m-%d %H:%M:%S'))
         self.ymin_control = BoundControlBox(self, -1, "Y min", 0)
         self.ymax_control = BoundControlBox(self, -1, "Y max", 100)
 
@@ -299,12 +305,24 @@ class TabStripChart(wx.Panel):
             #xmax = len(self.y_list_ref) if len(self.y_list_ref) > 50 else 50
             xmax = self.x_list_ref[-1] if self.x_list_ref[-1] > 50 else 50
         else:
-            xmax = int(self.xmax_control.manual_value())
+            #xmax = int(self.xmax_control.manual_value())
+            try:
+                year = time.strftime('%Y',time.gmtime())
+                dt=datetime.datetime.strptime(year+'-'+self.xmax_control.manual_value(), '%Y-%m-%d %H:%M:%S')
+                xmax = time.mktime(dt.timetuple())
+            except:
+                print traceback.format_exc()
 
         if self.xmin_control.is_auto():
             xmin = xmax - 50
         else:
-            xmin = int(self.xmin_control.manual_value())
+            #xmin = int(self.xmin_control.manual_value())
+            try:
+                year = time.strftime('%Y',time.gmtime())
+                dt=datetime.datetime.strptime(year+'-'+self.xmin_control.manual_value(), '%Y-%m-%d %H:%M:%S')
+                xmin = time.mktime(dt.timetuple())
+            except:
+                print traceback.format_exc()
         self.xmin = xmin
         self.xmax = xmax
 
@@ -328,7 +346,8 @@ class TabStripChart(wx.Panel):
             ymax = int(self.ymax_control.manual_value())
             self.axes.set_ybound(lower=ymin, upper=ymax)
 
-        self.axes.set_xbound(lower=xmin, upper=xmax)
+        # TODO set date limints (not timestamp limits)
+        #self.axes.set_xbound(lower=xmin, upper=xmax)
 
         # anecdote: axes.grid assumes b=True if any other flag is
         # given even if b is set to False.
@@ -369,8 +388,17 @@ class TabStripChart(wx.Panel):
             while self.update_axes:
                 self.axes_lock.acquire()
                 self.axes.cla()
-                self.axes.set_xlabel(self.x_label, fontsize = 9)
+                #self.axes.set_xlabel(self.x_label, fontsize = 9)
                 self.axes.set_ylabel(self.y_label, fontsize = 9)
+                #pylab.xticks(dates, rotation=75, ha='right') # set ticks at plotted datetimes
+                xfmt = matplotlib.dates.DateFormatter('%m-%d %H:%M:%S')
+                self.axes.xaxis.set_major_formatter(xfmt)
+                self.axes.xaxis.set_major_locator(MaxNLocator(7))
+                # set xaxes limit
+                datemin = datetime.datetime.fromtimestamp(self.xmin)
+                datemax = datetime.datetime.fromtimestamp(self.xmax)
+                self.axes.set_xlim(datemin, datemax)
+
 
                 for pv_i in self.lb.GetChecked():
                     list_name =  self.pvListNames[pv_i]
@@ -407,12 +435,13 @@ class TabStripChart(wx.Panel):
                             part_arr_y.append(y_values[-1])
 
 
-                    arr_x = numpy.array(part_arr_x)
+                    #arr_x = numpy.array(part_arr_x)
+                    dates=[datetime.datetime.fromtimestamp(ts) for ts in part_arr_x]
                     arr_y = numpy.array(part_arr_y)
 
-                    self.axes.plot(arr_x, arr_y, linewidth=1, color=color)
+                    self.axes.plot(dates, arr_y, linewidth=1, color=color)
 
-
+                    self.fig.autofmt_xdate()
 
                 self.update_axes=False
                 self.axes_lock.release()

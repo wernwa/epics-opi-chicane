@@ -591,7 +591,8 @@ class DataPanel(wx.Panel):
                     #print 'temp_all',type(temp_all)
                     # strange Error for temp_all.timestamp=NoneType
                     #marr[i].strip_chart_temp_time.append(temp_all.timestamp-self.start_app_time)
-                    marr[i].strip_chart_temp_time.append(time.time()-self.start_app_time)
+                    #marr[i].strip_chart_temp_time.append(time.time()-self.start_app_time)
+                    marr[i].strip_chart_temp_time.append(time.time())
 
 
             except Exception as e:
