@@ -364,13 +364,13 @@ class TabStripChart(wx.Panel):
         # iterate, and setp already handles this.
         #
 
-        try:
-            pylab.setp(self.axes.get_xticklabels(),
-                visible=self.cb_xlab.IsChecked())
-        except Exception as e:
-            print '------ longtime memory exception? -------'
-            print traceback.format_exc()
-            print '------ longtime memory exception? -------'
+        #try:
+        #    pylab.setp(self.axes.get_xticklabels(),
+        #        visible=self.cb_xlab.IsChecked())
+        #except Exception as e:
+        #    print '------ longtime memory exception? -------'
+        #    print traceback.format_exc()
+        #    print '------ longtime memory exception? -------'
 
         # assighn to epics records
         #self.plot_data.set_xdata(np.arange(len(self.data)))
