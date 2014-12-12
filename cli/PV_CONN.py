@@ -6,6 +6,7 @@ import time
 #from epics_device import PowerSupply
 #from physics_device import Magnet
 #import json
+import thread
 
 class PV_CONN(epics.PV):
     def __init__(self, *args, **kwargs):
@@ -17,6 +18,17 @@ class PV_CONN(epics.PV):
         #sys.stdout.write('PV connection status changed: %s %s\n' % (pvname,  repr(conn)))
         #sys.stdout.flush()
         self.conn=conn
+        if conn==False:
+            #print 'connection lost'
+            thread.start_new_thread(self.reconnect,())
+
+    def reconnect(self):
+        try:
+            self.wait_for_connection()
+            #self.connect()
+        except Exception as e:
+            print 'Err: ',e
+
 
     def get(self, *args, **kwargs):
         if self.conn==True:
