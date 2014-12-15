@@ -19,8 +19,9 @@ class PowerSupply:
 
         self.Volt = PV_CONN(prefix+nr+'volt', auto_monitor=True)
         self.Curr = PV_CONN(prefix+nr+'curr', auto_monitor=True)
-        self.output = PV_CONN(prefix+nr+'output', auto_monitor=True)
-        self.online = PV_CONN(prefix+nr+'online', auto_monitor=True)
+        # tmp comment till found the output error
+        #self.output = PV_CONN(prefix+nr+'output', auto_monitor=True)
+        #self.online = PV_CONN(prefix+nr+'online', auto_monitor=True)
 
     def getVolt(self):
         return self.Volt.get()
