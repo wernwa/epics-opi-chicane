@@ -19,13 +19,10 @@ from TabStripChartVolt import TabStripChartVolt
 from TabStripChartCurr import TabStripChartCurr
 from TabAppProperties import TabAppProperties
 from DataPanel import DataPanel
-
+import epics
 import thread
 
-class PageThree(wx.Panel):
-    def __init__(self, parent):
-        wx.Panel.__init__(self, parent)
-        t = wx.StaticText(self, -1, "Assign currents to magnetic fields", (60,60))
+
 
 
 class MainFrame(wx.Frame):
@@ -228,6 +225,13 @@ if __name__ == "__main__":
     #print 'init the devices'
     #init_devices()
 
+    ##
+    ## redirect epics ca messages to a file
+    ##
+    def handle_epics_ca_messages(text):
+        with open("ca_error.log", "a") as cafile:
+           cafile.write(text)
+    epics.ca.replace_printf_handler(handle_epics_ca_messages)
 
     app = wx.App()
     MainFrame().Show()

@@ -155,8 +155,8 @@ class DataPanel(wx.Panel):
 
                 if dlg.ShowModal() == wx.ID_YES:
                     magnet.ps.output.put(1)
-                    button.SetBitmapLabel(image_green)
-                    button.Refresh()
+                    #button.SetBitmapLabel(image_green)
+                    #button.Refresh()
 
             elif output == 1:
                 dlg = wx.MessageDialog(self, info+'Do you want to turn the output off?', 'TURN OUTPUT OFF?',
@@ -164,8 +164,8 @@ class DataPanel(wx.Panel):
 
                 if dlg.ShowModal() == wx.ID_YES:
                     magnet.ps.output.put(0)
-                    button.SetBitmapLabel(image_gray)
-                    button.Refresh()
+                    #button.SetBitmapLabel(image_gray)
+                    #button.Refresh()
 
         def ps_online(magnet,button):
             if magnet.ps.online.conn==False:
@@ -178,7 +178,7 @@ class DataPanel(wx.Panel):
                 output = magnet.ps.output.get()
                 if output == 0: button.SetBitmapLabel(image_gray)
                 elif output == 1: button.SetBitmapLabel(image_green)
-                button.Refresh()
+		button.Refresh()
 
 
         # there are min 9 magnets gui elements to initialize
@@ -195,11 +195,11 @@ class DataPanel(wx.Panel):
                     size =(self.image_thermo_0.GetWidth(), self.image_thermo_0.GetHeight()))
             button_ps.Bind(wx.EVT_BUTTON, lambda event: ps_onoff(event,magnet,button_ps,magn_name))
             # tmp comment until the error is found
-            #magnet.ps.online.add_callback(lambda **kw: ps_online(magnet,button_ps))
-            #magnet.ps.output.add_callback(lambda **kw: ps_online(magnet,button_ps))
-            #magnet.ps.online.connection_callbacks.append(lambda **kw: ps_online(magnet,button_ps))
-            #magnet.ps.output.connection_callbacks.append(lambda **kw: ps_online(magnet,button_ps))
-            #ps_online(magnet,button_ps)
+            magnet.ps.online.add_callback(lambda **kw: ps_online(magnet,button_ps))
+            magnet.ps.output.add_callback(lambda **kw: ps_online(magnet,button_ps))
+            magnet.ps.online.connection_callbacks.append(lambda **kw: ps_online(magnet,button_ps))
+            magnet.ps.output.connection_callbacks.append(lambda **kw: ps_online(magnet,button_ps))
+            ps_online(magnet,button_ps)
 
             return static_text, button_ps, thermo
 

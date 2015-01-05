@@ -18,9 +18,9 @@ class PV_CONN(epics.PV):
         #sys.stdout.write('PV connection status changed: %s %s\n' % (pvname,  repr(conn)))
         #sys.stdout.flush()
         self.conn=conn
-        if conn==False:
-            #print 'connection lost'
-            thread.start_new_thread(self.reconnect,())
+        #if conn==False:
+        #    #print 'connection lost'
+        #    thread.start_new_thread(self.reconnect,())
 
     def reconnect(self):
         try:
