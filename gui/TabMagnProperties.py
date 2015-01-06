@@ -204,6 +204,8 @@ class TabMagnProperties(wx.Panel):
 
 
     def Refresh(self, e):
+        if self.magn.pv_volt.conn == False: return
+
         control = e.GetEventObject()
         if control == self.bV:
             self.tcV.SetValue('%.3f'%abs(self.magn.pv_volt.get()))
