@@ -45,7 +45,6 @@ class TabAppProperties(wx.Panel):
         panel.SetSizer(sizer)
 
     def OnApplyButton(self,evt):
-        #global E
         try:
             E = float(self.tE.GetValue())*1e+6
         except:

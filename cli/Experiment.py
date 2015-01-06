@@ -13,6 +13,7 @@ from time import strftime
 from init_vars import *
 import numpy
 
+relee_sign = PV_CONN('chicane:zps:relee:sign', auto_monitor=True )
 relee =PowerSupply(prefix='chicane:zps:', nr='relee:')
 ps1 =  PowerSupply(prefix='chicane:zps:', nr='1:',   )
 ps2 =  PowerSupply(prefix='chicane:zps:', nr='2:',   )

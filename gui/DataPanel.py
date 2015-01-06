@@ -228,8 +228,9 @@ class DataPanel(wx.Panel):
         self.st_dipol1, self.bsp_dipol1, self.thermo_dipol1 = init_magnet_labels(mdipol1,magn_name='Dipol 1',position=(lpos['d1']['x'],lpos['d1']['y']))
         self.st_dipol2, self.bsp_dipol2, self.thermo_dipol2 = init_magnet_labels(mdipol2,magn_name='Dipol 2',position=(lpos['d2']['x'],lpos['d2']['y']))
 
-
-        # switchbox
+        ##
+        ## switchbox
+        ##
         def switchbox_onoff(event,button):
             if switchbox.conn==False: return
             output = switchbox.get()
@@ -256,7 +257,6 @@ class DataPanel(wx.Panel):
                     button.SetBitmapLabel(image_gray)
                     button.Refresh()
 
-
         def switchbox_online(button):
             if switchbox.conn == False:
                 button.SetBitmapLabel(image_disconn)
@@ -275,6 +275,71 @@ class DataPanel(wx.Panel):
         switchbox.add_callback(lambda **kw: switchbox_online(button_ps))
         switchbox.connection_callbacks.append(lambda **kw: switchbox_online(button_ps))
         switchbox_online(button_ps)
+
+
+        ##
+        ## relee
+        ##
+        def relee_plus_minus(event,button):
+            if relee_sign.conn==False: return
+
+            sign = relee_sign.get()
+
+            print 'current sign',sign
+            relee_volt = 0
+            if sign == 1: relee_volt = 24
+
+            if sign==1: sign_str='+'
+            else: sign_str = '-'
+
+            # TODO start demag
+
+            print 'setting relee to %s'%sign_str
+            relee.Volt.put(relee_volt)
+
+
+#            if output == 0:
+#                info='Please note, that the powersupplies can have hight current in memory.\n'
+#                info+='By turning on the switchbox, all powersupplies are switched on at once.\n\n'
+#                dlg = wx.MessageDialog(self, info+'Do you want to turn the switchbox on?', 'TURN SWITHBOX ON?',
+#                    wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
+#
+#                if dlg.ShowModal() == wx.ID_YES:
+#                    switchbox.put(1)
+#                    button.SetBitmapLabel(image_green)
+#                    button.Refresh()
+#
+#            elif output == 1:
+#                info = 'Attention! Without cycling, turning off all of the powersupplies at once can damage the magnets!\n'
+#                info += 'Click yes if you know what you are doing.\n\n'
+#                dlg = wx.MessageDialog(self, info+'Do you realy want to turn the switchbox off?', 'TURN SWITCHBOX OFF?',
+#                    wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
+#
+#                if dlg.ShowModal() == wx.ID_YES:
+#                    switchbox.put(0)
+#                    button.SetBitmapLabel(image_gray)
+#                    button.Refresh()
+
+        def relee_state(button):
+            if relee_sign.conn == False:
+                button.SetLabel('?')
+                button.Refresh()
+            else:
+                sign = relee_sign.get()
+                if sign == 0: button.SetLabel('-')
+                elif sign == 1: button.SetLabel('+')
+                button.Refresh()
+
+        relee_label = '+'
+        if relee_sign.conn==True:
+            sign = relee_sign.get()
+            if sign==0: relee_label = '-'
+        static_text = wx.StaticText(label="relee",  parent=panel, pos=wx.Point(lpos['d2']['x']+100,lpos['d2']['y']+50))
+        button_relee = wx.Button(self, id=-1, label=relee_label,pos=wx.Point(lpos['d2']['x']+100,lpos['d2']['y']+70), size=(30, 30))
+        button_relee.Bind(wx.EVT_BUTTON, lambda event: relee_plus_minus(event,button_relee))
+        relee_sign.add_callback(lambda **kw: relee_state(button_relee))
+        relee_sign.connection_callbacks.append(lambda **kw: relee_state(button_relee))
+        relee_state(button_relee)
 
 
 
