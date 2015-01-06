@@ -20,7 +20,7 @@ from TabStripChartCurr import TabStripChartCurr
 from TabAppProperties import TabAppProperties
 from DataPanel import DataPanel
 import epics
-import thread
+import threading
 
 
 
@@ -182,7 +182,8 @@ class MainFrame(wx.Frame):
                 wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
 
         if dlg.ShowModal() == wx.ID_YES:
-            thread.start_new_thread( demagThread,() )
+            thread=threading.Thread(target=demagThread,args=())
+            thread.start()
 
 
     def OnClose(self, event):

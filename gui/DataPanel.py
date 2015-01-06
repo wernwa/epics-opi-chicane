@@ -9,11 +9,12 @@
 import wx
 import wx.lib.newevent
 from epics import PV
+import epics
 from Experiment import *
-from PowerSupplyControls import PowerSupplyControls
-from thread import start_new_thread
+import threading
 import time
 import traceback
+import numpy
 
 chicane_type=None
 
@@ -142,10 +143,16 @@ class DataPanel(wx.Panel):
 
         # toggle power supply output on/off
         def ps_onoff(event,magnet,button,magn_name):
-            online = magnet.ps.online.get()
+            if magnet.ps.online.conn==False:
+                button.SetBitmapLabel(image_disconn)
+                return
+
+            #online = magnet.ps.online.get()
+            online = magnet.ps.online.value
             if online == 0: return
 
-            output = magnet.ps.output.get()
+            #output = magnet.ps.output.get()
+            output = magnet.ps.output.value
             nr = magnet.ps.NR
             info = 'magnet '+magn_name+'\n'+'power supply Nr '+nr+'\n'
 
@@ -171,11 +178,13 @@ class DataPanel(wx.Panel):
             if magnet.ps.online.conn==False:
                 button.SetBitmapLabel(image_disconn)
                 return
-            online = magnet.ps.online.get()
+            #online = magnet.ps.online.get()
+            online = magnet.ps.online.value
             if online == 0:
                 button.SetBitmapLabel(image_disconn)
             elif online == 1:
-                output = magnet.ps.output.get()
+                #output = magnet.ps.output.get()
+                output = magnet.ps.output.value
                 if output == 0: button.SetBitmapLabel(image_gray)
                 elif output == 1: button.SetBitmapLabel(image_green)
 		button.Refresh()
@@ -224,6 +233,7 @@ class DataPanel(wx.Panel):
         def switchbox_onoff(event,button):
             if switchbox.conn==False: return
             output = switchbox.get()
+            #output = switchbox.value
             if output == 0:
                 info='Please note, that the powersupplies can have hight current in memory.\n'
                 info+='By turning on the switchbox, all powersupplies are switched on at once.\n\n'
@@ -253,6 +263,7 @@ class DataPanel(wx.Panel):
                 button.Refresh()
             else:
                 output = switchbox.get()
+                #output = switchbox.value
                 if output == 0: button.SetBitmapLabel(image_gray)
                 elif output == 1: button.SetBitmapLabel(image_green)
                 button.Refresh()
@@ -290,8 +301,9 @@ class DataPanel(wx.Panel):
         #self.b_demag.Bind(wx.EVT_BUTTON, self.OnDemag)
         #panel.SetSizer(hbox)
 
-        value = magn_volt_all.get()
-        if value!=None:
+        #value = magn_volt_all.get()
+        if magn_volt_all.conn==True:
+            value = magn_volt_all.get()
             arr = value.tostring().split(' ')
             self.q1_volt=self.get_num_or_dash(arr[0])
             self.q2_volt=self.get_num_or_dash(arr[1])
@@ -314,8 +326,9 @@ class DataPanel(wx.Panel):
             self.d2_volt='##.##'
 
 
-        value = magn_curr_all.get()
-        if value!=None:
+        #value = magn_curr_all.get()
+        if magn_curr_all.conn==True:
+            value = magn_curr_all.get()
             arr = value.tostring().split(' ')
             self.q1_curr=self.get_num_or_dash(arr[0])
             self.q2_curr=self.get_num_or_dash(arr[1])
@@ -347,27 +360,10 @@ class DataPanel(wx.Panel):
         self.d1_alpha=self.get_num_of_k_or_dash(mdipol1,self.d1_curr)
         self.d2_alpha=self.get_num_of_k_or_dash(mdipol2,self.d2_curr)
 
-        #if self.q1_curr!='##.##': self.q1_k=mquad1.get_k(self.q1_curr)
-        #else: self.q1_k='##.##'
-        #if self.q2_curr!='##.##': self.q2_k=mquad2.get_k(self.q2_curr)
-        #else: self.q2_k='##.##'
-        #if self.q3_curr!='##.##': self.q3_k=mquad3.get_k(self.q3_curr)
-        #else: self.q3_k='##.##'
-        #if self.q4_curr!='##.##': self.q4_k=mquad4.get_k(self.q4_curr)
-        #else: self.q4_k='##.##'
-        #if self.q5_curr!='##.##': self.q5_k=mquad5.get_k(self.q5_curr)
-        #else: self.q5_k='##.##'
-        #if self.q6_curr!='##.##': self.q6_k=mquad6.get_k(self.q6_curr)
-        #else: self.q6_k='##.##'
-        #if self.q7_curr!='##.##': self.q7_k=mquad7.get_k(self.q7_curr)
-        #else: self.q7_k='##.##'
-        #if self.d1_curr!='##.##': self.d1_alpha=mdipol1.get_k(self.d1_curr)
-        #else: self.d1_alpha='##.##'
-        #if self.d2_curr!='##.##': self.d2_alpha=mdipol2.get_k(self.d2_curr)
-        #else: self.d2_alpha='##.##'
 
-        value = temp_all.get()
-        if value!=None:
+        #value = temp_all.get()
+        if temp_all.conn==True:
+            value = temp_all.get()
             arr = value.tostring().split(' ')
             self.q1_temp=self.get_num_or_dash(arr[0])
             self.q2_temp=self.get_num_or_dash(arr[1])
@@ -403,7 +399,8 @@ class DataPanel(wx.Panel):
                 #self.call_routine_over_event( self.changeLables )
                 self.call_routine_over_event( self.labels_update )
                 time.sleep(0.5)
-        start_new_thread(refresh_labels,())
+        thread=threading.Thread(target=refresh_labels,args=())
+        thread.start()
 
         time.sleep(0.1)
         temp_all.add_callback(self.onPVChanges)
@@ -472,15 +469,16 @@ class DataPanel(wx.Panel):
             demag()
             self.b_demag.Enable(True)
 
-        start_new_thread( demagThread,() )
+        thread = threading.Thread(target=demagThread, args=())
+        thread.start()
 
-    def pv_get_str(self, pv):
-        #print 'DataPanel.pv_get_str ',pv
-        value = pv.get()
-        str_val = '##.###'
-        if value!=None:
-            str_val = '%.3f'%value
-        return str_val
+#    def pv_get_str(self, pv):
+#        #print 'DataPanel.pv_get_str ',pv
+#        value = pv.get()
+#        str_val = '##.###'
+#        if value!=None:
+#            str_val = '%.3f'%value
+#        return str_val
 
 
 

@@ -12,7 +12,7 @@ from Experiment import *
 import wx
 from epics import PV
 import math
-import thread
+import threading
 import time
 import numpy
 import matplotlib
@@ -164,19 +164,18 @@ class TabMagnProperties(wx.Panel):
 
 
         self.st_title.SetLabel(title+'\n')
-        volt = magn.pv_volt.get()
-        if volt==None: volt=0
-        self.tcV.SetValue('%.3f'%abs(volt))
-        curr = magn.pv_curr.get()
-        if curr==None: curr=0
-        self.tcA.SetValue('%.3f'%abs(curr))
-        self.tck.SetValue('%.3f'%self.magn.get_k(curr))
-        if 'Quadrupol' in title: self.st_lab_y_achsis.SetLabel('k')
-        elif 'Dipol' in title: self.st_lab_y_achsis.SetLabel('alpha')
+        if magn.pv_volt_status.conn==True:
+            volt = magn.pv_volt.get()
+            if volt==None: volt=0
+            self.tcV.SetValue('%.3f'%abs(volt))
+            curr = magn.pv_curr.get()
+            if curr==None: curr=0
+            self.tcA.SetValue('%.3f'%abs(curr))
+            self.tck.SetValue('%.3f'%self.magn.get_k(curr))
+            if 'Quadrupol' in title: self.st_lab_y_achsis.SetLabel('k')
+            elif 'Dipol' in title: self.st_lab_y_achsis.SetLabel('alpha')
 
-        #thread.start_new_thread(self.plot,())
-        #self.call_routine_over_event(self.plot)
-        self.plot()
+            self.plot()
 
 
 
@@ -189,7 +188,8 @@ class TabMagnProperties(wx.Panel):
                 value = round(float(self.tcV.GetValue()),3)
                 #control.Enable(False)
                 #control.SetBackgroundcolour((50,50,50))
-                thread.start_new_thread(self.magn.ps.setVolt,(value,))
+                thread=threading.Thread(target=self.magn.ps.setVolt,args=(value,))
+                thread.start()
                 #sleep(2)
                 #control.SetBackgroundcolour((255,255,255))
                 #control.Enable(True)
