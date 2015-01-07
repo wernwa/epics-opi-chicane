@@ -285,7 +285,7 @@ class DataPanel(wx.Panel):
 
             sign = relee_sign.get()
 
-            print 'current sign',sign
+            #print 'current sign',sign
             relee_volt = 0
             if sign == 1: relee_volt = 24
 
@@ -294,31 +294,10 @@ class DataPanel(wx.Panel):
 
             # TODO start demag
 
-            print 'setting relee to %s'%sign_str
+            #print 'setting relee to %s'%sign_str
             relee.Volt.put(relee_volt)
 
 
-#            if output == 0:
-#                info='Please note, that the powersupplies can have hight current in memory.\n'
-#                info+='By turning on the switchbox, all powersupplies are switched on at once.\n\n'
-#                dlg = wx.MessageDialog(self, info+'Do you want to turn the switchbox on?', 'TURN SWITHBOX ON?',
-#                    wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
-#
-#                if dlg.ShowModal() == wx.ID_YES:
-#                    switchbox.put(1)
-#                    button.SetBitmapLabel(image_green)
-#                    button.Refresh()
-#
-#            elif output == 1:
-#                info = 'Attention! Without cycling, turning off all of the powersupplies at once can damage the magnets!\n'
-#                info += 'Click yes if you know what you are doing.\n\n'
-#                dlg = wx.MessageDialog(self, info+'Do you realy want to turn the switchbox off?', 'TURN SWITCHBOX OFF?',
-#                    wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
-#
-#                if dlg.ShowModal() == wx.ID_YES:
-#                    switchbox.put(0)
-#                    button.SetBitmapLabel(image_gray)
-#                    button.Refresh()
 
         def relee_state(button):
             if relee_sign.conn == False:
@@ -745,3 +724,17 @@ class DataPanel(wx.Panel):
         wx.PostEvent(self, self.evt)
 
 
+    def OnChangeEnergy(self,energy):
+        global E
+        E=energy
+        self.q1_k=self.get_num_of_k_or_dash(mquad1,self.q1_curr)
+        self.q2_k=self.get_num_of_k_or_dash(mquad2,self.q2_curr)
+        self.q3_k=self.get_num_of_k_or_dash(mquad3,self.q3_curr)
+        self.q4_k=self.get_num_of_k_or_dash(mquad4,self.q4_curr)
+        self.q5_k=self.get_num_of_k_or_dash(mquad5,self.q5_curr)
+        self.q6_k=self.get_num_of_k_or_dash(mquad6,self.q6_curr)
+        self.q7_k=self.get_num_of_k_or_dash(mquad7,self.q7_curr)
+        self.d1_alpha=self.get_num_of_k_or_dash(mdipol1,self.d1_curr)
+        self.d2_alpha=self.get_num_of_k_or_dash(mdipol2,self.d2_curr)
+
+        self.call_routine_over_event( self.labels_update )
