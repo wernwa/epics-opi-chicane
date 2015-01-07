@@ -593,9 +593,10 @@ class DataPanel(wx.Panel):
         self.st_dipol2.SetLabel("Dipol 2\n%s V \n%s A\n%s [mrad]\n%s °C" %(self.d2_volt,self.d2_curr,self.d2_alpha,self.d2_temp))
 
 
-
-    # for the convertion from pv-array,
-    # display a number or if None the dashes
+    ##
+    ## for the convertion from pv-array,
+    ## display a number or if None the dashes
+    ##
     def get_num_or_dash(self,obj):
         if obj == 'None' or obj == None: return '##.##'
         else:
@@ -605,9 +606,10 @@ class DataPanel(wx.Panel):
                 print traceback.format_exc()
 
             return num
-
-    # for spline interpolation
-    # display a number or if spline out of range
+    ##
+    ## for spline interpolation
+    ## display a number or if spline out of range
+    ##
     def get_num_of_k_or_dash(self,magn,curr):
         if type(curr)==float:
             try:
@@ -620,7 +622,9 @@ class DataPanel(wx.Panel):
         return num
 
 
-
+    ##
+    ## save changes of pv to variables
+    ##
     def onPVChanges(self, pvname=None, value=None, timestamp=None, **kw):
 
         global mquad1, mquad2, mquad3, mquad4, mquad5, mquad6, mquad7, mdipol1, mdipol2
@@ -723,8 +727,9 @@ class DataPanel(wx.Panel):
                 #print 'temp_all:',e
                 print traceback.format_exc()
 
-
-    # call the main thread throgh messaging for painting the gui
+    ##
+    ## call the main thread throgh messaging for painting the gui
+    ##
     SomeNewEvent=None
     def call_routine_over_event(self, handler):
 

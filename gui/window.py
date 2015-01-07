@@ -30,6 +30,9 @@ class MainFrame(wx.Frame):
         wx.Frame.__init__(self, None, title="chicane interface", pos=(10,10), size=(1200,800))
         self.Bind(wx.EVT_CLOSE, self.OnClose)
 
+        icon = wx.Icon('pics/physics_magnet_add.ico', wx.BITMAP_TYPE_ICO)
+        self.SetIcon(icon)
+
         menuBar = wx.MenuBar()
 
         menu = wx.Menu()
