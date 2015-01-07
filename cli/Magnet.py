@@ -86,7 +86,8 @@ class Magnet:
         if self.magn_type=='quad':
             k = round(self.g_spline(abs(curr))*c/E,3)
         else:
-            k = round(self.g_spline(abs(curr)),3)
+            # same for the alpha: alpha = B_int*c/E
+            k = round(self.g_spline(abs(curr))*c/E,3)
         return k
 
     def get_curr(self,k):

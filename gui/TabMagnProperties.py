@@ -238,19 +238,19 @@ class TabMagnProperties(wx.Panel):
 
 
         # calc k from g
-        if self.magn.magn_type=='quad':
-            g=y
-            y=[]
-            for i in range(0,len(g)): y.append(g[i]*c/E)
+        #if self.magn.magn_type=='quad':
+        g=y
+        y=[]
+        for i in range(0,len(g)): y.append(g[i]*c/E)
 
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
         self.axes.grid(True)
         self.axes.set_xlabel(self.magn.data_xlabel)
-        if self.magn.magn_type=='quad':
-            self.axes.set_ylabel(self.magn.data_ylabel+", E=%.0f MeV"%(E/1e+6))
-        else: self.axes.set_ylabel(self.magn.data_ylabel)
-        #self.axes.plot(self.magn.data_x,self.magn.data_y)
+        #if self.magn.magn_type=='quad':
+        #    self.axes.set_ylabel(self.magn.data_ylabel+", E=%.0f MeV"%(E/1e+6))
+        #else: self.axes.set_ylabel(self.magn.data_ylabel)
+        self.axes.set_ylabel(self.magn.data_ylabel+", E=%.0f MeV"%(E/1e+6))
         self.axes.plot(x,y, marker='o', linestyle='--', color='r')
 
         # spline the data
