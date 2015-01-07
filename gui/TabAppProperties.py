@@ -53,7 +53,10 @@ class TabAppProperties(wx.Panel):
         self.window.tabMagnProperties.OnChangeEnergy(E)
         self.window.tabOverview.OnChangeEnergy(E)
 
-        print 'E=%.0f'%E
+        marr = [mquad1, mquad2, mquad3, mquad4, mquad5, mquad6, mquad7, mdipol1, mdipol2]
+        for magn in marr: magn.OnChangeEnergy(E)
+
+        #print 'E=%.0f'%E
 
 
 #    def __del__(self):

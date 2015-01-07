@@ -95,3 +95,10 @@ class Magnet:
         curr = round(self.I_spline(abs(g)),3)
         return curr
 
+
+    def OnChangeEnergy(self,energy):
+        global E
+        E=energy
+
+        #print self.pv_volt.pvname,'E=%.0f'%E
+
