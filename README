@@ -21,6 +21,8 @@ The other two starter scripts starts the gui with the  quadruplett or the triple
 DEPENDENCIES
     python 2.7.5
     pyepics (http://pyepics.github.io/pyepics/installation.html)
+        sudo apt-get install python-pip
+        sudo pip install pyepics
     python-numpy
     python-scipy
     python-wxgtk2.8
