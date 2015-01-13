@@ -1,0 +1,62 @@
+#
+#   EPICs GUI as client for displaying the temperature, voltage and current of the magnets in the chicane.
+#
+#   author: Watler Werner
+#   email: wernwa@gmail.com
+
+START GUI
+
+There are three main starter scripts.
+
+./start-cli.sh
+
+starts a command line interface inside ipython. The user is able to call functions and look at variables. This setting is mainly for debugging purpose.
+
+./start-quadruplett-gui.sh
+./start-triplett-gui.sh
+
+The other two starter scripts starts the gui with the  quadruplett or the triplett combination of the magnets.
+
+
+DEPENDENCIES
+    python 2.7.5
+    pyepics (http://pyepics.github.io/pyepics/installation.html)
+    python-numpy
+    python-scipy
+    python-wxgtk2.8
+    python-matplotlib
+
+
+FILE STRUCTURE
+
+The cli directory contains non gui python files.
+Experiment.py       contains all EPICs PV variables
+epics_device.py     class for all PVs around a power supply
+Magnet.py           class for all PVs for one Magnet (voltage,current,temperature)
+PV_CONN.py          helper class for PV with a connection/disconnection guard
+
+The gui directory contains all gui related classes
+window.py           main Frame class
+DataPanel.py        The panel displaying all current magnet data (current, voltage, k/alpha, temperature)
+TabOverview.py      The first Tab that shows the chicane arangement
+TabMagnProperties.py    Allows the user to change the PVs of a magnet
+TabStripChart.py    main strip chart class for displaying values over time
+TabStripChartTemp.py    
+TabStripChartVolt.py    
+TabStripChartCurr.py    derived classes from TabStripChart class to display temperature, voltage and current
+
+The magnet-data directory contains curves data k-I and alpha-I of the magnets. The files
+
+q1-k-I.data
+q2-k-I.data
+q3-k-I.data
+q4-k-I.data
+q5-k-I.data
+q6-k-I.data
+q7-k-I.data
+d1-alpha-I.data
+d2-alpha-I.data
+
+are expected from the gui to be there at start time. The format of each file are two or more columns separated by white-spaces. The first column is always the current (I[A]) and the second is the y-value (k for quadrupoles or angle for dipoles). There can be comment lines starting with '#'. 
+
+

@@ -1,9 +1,10 @@
-
-# -*- coding: <<encoding>> -*-
-#-------------------------------------------------------------------------------
-#   <<project>>
 #
-#-------------------------------------------------------------------------------
+#   Magnet class, contains the PVs for a magnet
+#       The constructor also loads the k-I or alpha-I curves from the magn-data
+#       directory
+#
+#   author: Watler Werner
+#   email: wernwa@gmail.com
 
 
 from epics import PV

@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+#
+#   Strip chart for displaying the temperature over time
+#       This class is derived from TabStripChart.py
+#
+#   author: Watler Werner
+#   email: wernwa@gmail.com
+#
 import os
 import pprint
 import random

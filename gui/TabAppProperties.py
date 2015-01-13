@@ -1,9 +1,10 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
-#-------------------------------------------------------------------------------
-#   <<project>>
 #
-#-------------------------------------------------------------------------------
+#   Tabulator pane for setting some properties like the laser erngy
+#
+#   author: Watler Werner
+#   email: wernwa@gmail.com
+
 
 
 import wx

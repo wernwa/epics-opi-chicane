@@ -1,9 +1,11 @@
 #!/usr/bin/python
 # -*- coding: <<encoding>> -*-
-#-------------------------------------------------------------------------------
-#   <<project>>
 #
-#-------------------------------------------------------------------------------
+#   Main Frame Window of the chicane GUI
+#
+#   author: Watler Werner
+#   email: wernwa@gmail.com
+#
 
 
 
@@ -198,7 +200,7 @@ class MainFrame(wx.Frame):
         #if result == wx.ID_OK:
         #    self.Destroy()
 
-        # TODO release all PVs from callbacks
+        # release all PVs from callbacks
         global quad1, quad2, quad3, quad4, quad5, quad6, quad7, dipol1, dipol2
         global temp_all
         magnets = [quad1, quad2, quad3, quad4, quad5, quad6, quad7, dipol1, dipol2]

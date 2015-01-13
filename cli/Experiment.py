@@ -1,4 +1,9 @@
-
+#
+#   This file is imported from all other python files. It contains all EPICs PVs
+#   for the experiment. It also defines some functions for the cli interface
+#
+#   author: Watler Werner
+#   email: wernwa@gmail.com
 
 
 import sys

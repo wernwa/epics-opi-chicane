@@ -1,9 +1,9 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
-#-------------------------------------------------------------------------------
-#   <<project>>
 #
-#-------------------------------------------------------------------------------
+#   Tabulator pane for displaying the current configuration of the magnets
+#
+#   author: Watler Werner
+#   email: wernwa@gmail.com
 
 
 import wx

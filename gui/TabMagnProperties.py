@@ -1,10 +1,9 @@
-#!/usr/bin/python
 # -*- coding: <<encoding>> -*-
-#-------------------------------------------------------------------------------
-#   <<project>>
 #
-#-------------------------------------------------------------------------------
-
+#   Tabulator pane for changing the Properties of a magnet
+#
+#   author: Watler Werner
+#   email: wernwa@gmail.com
 
 import sys
 sys.path.insert(0, './cli')
@@ -20,11 +19,6 @@ import matplotlib
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 
-#from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
-#from matplotlib.backends.backend_wxagg import NavigationToolbar2WxAgg as NavigationToolbar
-#import matplotlib.pyplot as plt
-
-#import numpy as np
 
 from scipy.interpolate import interp1d
 import re

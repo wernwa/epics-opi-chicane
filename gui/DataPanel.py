@@ -1,9 +1,10 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
-#-------------------------------------------------------------------------------
-#   <<project>>
 #
-#-------------------------------------------------------------------------------
+#   DataPanel class. A panel for displaying the current pvs of all magnets
+#
+#
+#   author: Watler Werner
+#   email: wernwa@gmail.com
 
 
 import wx
@@ -57,6 +58,9 @@ class DataPanel(wx.Panel):
     st_quad1 = None
     b_demag = None
 
+    ##
+    ##  Constructor
+    ##
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, style=wx.SUNKEN_BORDER)
         #panel2 = wx.Panel(self,-1, style=wx.SUNKEN_BORDER)
@@ -292,7 +296,7 @@ class DataPanel(wx.Panel):
             if sign==1: sign_str='+'
             else: sign_str = '-'
 
-            # TODO start demag
+            # maybe start demag here ??
 
             #print 'setting relee to %s'%sign_str
             relee.Volt.put(relee_volt)
@@ -455,7 +459,9 @@ class DataPanel(wx.Panel):
         magn_curr_all.connection_callbacks.append(self.onConnectionChange)
         magn_volt_all.connection_callbacks.append(self.onConnectionChange)
 
-
+    ##
+    ##  if a connection of a pv changes, display it
+    ##
     def onConnectionChange(self, pvname=None, conn= None, **kws):
         #sys.stdout.write('PV connection status changed: %s %s\n' % (pvname,  repr(conn)))
         #sys.stdout.flush()
@@ -516,17 +522,10 @@ class DataPanel(wx.Panel):
         thread = threading.Thread(target=demagThread, args=())
         thread.start()
 
-#    def pv_get_str(self, pv):
-#        #print 'DataPanel.pv_get_str ',pv
-#        value = pv.get()
-#        str_val = '##.###'
-#        if value!=None:
-#            str_val = '%.3f'%value
-#        return str_val
 
-
-
-
+    ##
+    ##  updatets the gui labes called over the call_routine_over_event method
+    ##
     def labels_update(self,evt):
 
         # test for heigh temperature

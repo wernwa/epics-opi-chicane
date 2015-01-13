@@ -1,3 +1,10 @@
+#
+#
+#   Strip Chart class
+#
+#   author: Eli Bendersky (eliben@gmail.com)
+#   adapted: Walter Werner
+#   email: wernwa@gmail.com
 """
 This demo demonstrates how to draw a dynamic mpl (matplotlib)
 plot in a wxPython application.

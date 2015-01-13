@@ -1,3 +1,11 @@
+#
+#   helper Class derived from epics.PV class
+#       It saves the status of the current connection status.
+#       Although there is a PV.connected property but it dit not work always
+#       for me
+#
+#   author: Watler Werner
+#   email: wernwa@gmail.com
 
 import sys
 sys.path.insert(0, './')

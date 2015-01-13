@@ -1,9 +1,10 @@
-
-# -*- coding: <<encoding>> -*-
-#-------------------------------------------------------------------------------
-#   <<project>>
 #
-#-------------------------------------------------------------------------------
+#   PowerSupply class. Contains all PVs for a power supply
+#
+#   author: Watler Werner
+#   email: wernwa@gmail.com
+#
+
 from epics import PV
 from PV_CONN import PV_CONN
 
