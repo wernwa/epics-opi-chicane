@@ -165,7 +165,10 @@ class TabMagnProperties(wx.Panel):
             curr = magn.pv_curr.get()
             if curr==None: curr=0
             self.tcA.SetValue('%.3f'%abs(curr))
-            self.tck.SetValue('%.3f'%self.magn.get_k(curr))
+            try:
+                self.tck.SetValue('%.3f'%self.magn.get_k(curr))
+            except:
+                self.tck.SetValue('undef')
             if 'Quadrupol' in title: self.st_lab_y_achsis.SetLabel('k')
             elif 'Dipol' in title: self.st_lab_y_achsis.SetLabel('alpha')
 
@@ -207,7 +210,10 @@ class TabMagnProperties(wx.Panel):
             self.tcA.SetValue('%.3f'%abs(self.magn.pv_curr.get()))
         elif control == self.bk:
             curr = float(self.tcA.GetValue())
-            self.tck.SetValue('%.3f'%abs(self.magn.get_k(curr)))
+            try:
+                self.tck.SetValue('%.3f'%abs(self.magn.get_k(curr)))
+            except:
+                self.tck.SetValue('undef')
             #print 'curr %f'%self.magn.get_k(curr)
 
     def OnChangeEnergy(self,energy):
@@ -289,3 +295,7 @@ class TabMagnProperties(wx.Panel):
 
         # Post the event
         wx.PostEvent(self, self.evt)
+
+    def __del__(self):
+        self.redraw_timer.Stop()
+        time.sleep(0.5)

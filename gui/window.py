@@ -23,7 +23,7 @@ from TabAppProperties import TabAppProperties
 from DataPanel import DataPanel
 import epics
 import threading
-
+import time
 
 
 
@@ -214,12 +214,16 @@ class MainFrame(wx.Frame):
         for pv in used_pvs:
             pv.disconnect()
 
-        # Thread noch aktiv, besser destructor!
-        #self.tabShicane.alive=False
+        # end all threads in the tabs
+        #
+        myCursor= wx.StockCursor(wx.CURSOR_WAIT)
+        self.SetCursor(myCursor)
+
         self.tabStripChartTemp.__del__()
         self.tabStripChartVolt.__del__()
         self.tabStripChartCurr.__del__()
         self.dataPanel.__del__()
+        self.tabMagnProperties.__del__()
 
 
 
